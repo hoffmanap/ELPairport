@@ -799,6 +799,7 @@ function KPI({
     })]
   });
 }
+const REGION_COLORS = ["#facc15", "#2dd4bf", "#fb7185", "#818cf8", "#4ade80", "#f472b6", "#38bdf8", "#fb923c", "#a78bfa", "#94a3b8"];
 function BorderplexPanel({
   regions
 }) {
@@ -807,7 +808,11 @@ function BorderplexPanel({
   const quarters = Object.keys(region.quarters).sort(sortQuarters);
   const latestQ = quarters[quarters.length - 1];
   const latest = region.quarters[latestQ];
-  const trackedAirports = ["ELP", "ABQ", "CJS"];
+
+  // Rank airports by their latest-quarter share, so whichever airports
+  // actually have data (and matter) show up first -- no hardcoded list.
+  const rankedAirports = Object.entries(latest?.by_airport || {}).sort((a, b) => b[1].share - a[1].share).map(([code]) => code);
+  const colorFor = code => REGION_COLORS[rankedAirports.indexOf(code) % REGION_COLORS.length];
   return /*#__PURE__*/_jsxs("div", {
     className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
     children: [/*#__PURE__*/_jsxs("div", {
@@ -818,29 +823,27 @@ function BorderplexPanel({
       }), /*#__PURE__*/_jsx(Info, {
         className: "w-3.5 h-3.5 text-slate-600"
       })]
-    }), /*#__PURE__*/_jsx("p", {
+    }), /*#__PURE__*/_jsxs("p", {
       className: "text-xs text-slate-500 mb-4",
-      children: "Share of this region's device sample choosing each airport, by quarter. Region = El Paso County TX + Do\\u00f1a Ana & Otero Counties NM + Ju\\u00e1rez, MX."
+      children: ["Share of this region's device sample choosing each airport, by quarter (", latestQ, ", n=", fmt(latest?.total_devices), "). Region = El Paso County TX + Do\\u00f1a Ana & Otero Counties NM + Ju\\u00e1rez, MX."]
     }), /*#__PURE__*/_jsx("div", {
-      className: "flex gap-2 mb-4",
-      children: trackedAirports.map(code => {
-        const has = latest?.by_airport?.[code];
+      className: "flex gap-2 mb-4 flex-wrap",
+      children: rankedAirports.map(code => {
+        const has = latest.by_airport[code];
         return /*#__PURE__*/_jsxs("div", {
-          className: `flex-1 rounded-md border px-3 py-2 ${has ? "border-slate-700" : "border-slate-850 border-dashed"}`,
+          className: "flex-1 min-w-[90px] rounded-md border border-slate-700 px-3 py-2",
           children: [/*#__PURE__*/_jsx("div", {
             className: "text-[11px] text-slate-500",
             children: code
-          }), has ? /*#__PURE__*/_jsxs(_Fragment, {
-            children: [/*#__PURE__*/_jsx("div", {
-              className: "text-lg font-mono text-slate-100",
-              children: fmtPct(has.share)
-            }), /*#__PURE__*/_jsxs("div", {
-              className: "text-[10px] text-slate-500",
-              children: [fmt(has.devices), " devices · ", latestQ]
-            })]
-          }) : /*#__PURE__*/_jsx("div", {
-            className: "text-xs text-slate-600 mt-1",
-            children: "extract pending"
+          }), /*#__PURE__*/_jsx("div", {
+            className: "text-lg font-mono",
+            style: {
+              color: colorFor(code)
+            },
+            children: fmtPct(has.share)
+          }), /*#__PURE__*/_jsxs("div", {
+            className: "text-[10px] text-slate-500",
+            children: [fmt(has.devices), " devices"]
           })]
         }, code);
       })
@@ -889,66 +892,32 @@ function BorderplexPanel({
               color: "#e2e8f0"
             },
             formatter: v => [`${v.toFixed(1)}%`, "share"]
-          }), /*#__PURE__*/_jsx(Line, {
+          }), rankedAirports.map(code => /*#__PURE__*/_jsx(Line, {
             type: "monotone",
-            dataKey: "ELP",
-            stroke: "#facc15",
+            dataKey: code,
+            stroke: colorFor(code),
             strokeWidth: 2,
             dot: {
               r: 2
             },
             connectNulls: true
-          }), /*#__PURE__*/_jsx(Line, {
-            type: "monotone",
-            dataKey: "ABQ",
-            stroke: "#2dd4bf",
-            strokeWidth: 2,
-            dot: {
-              r: 2
-            },
-            connectNulls: true
-          }), /*#__PURE__*/_jsx(Line, {
-            type: "monotone",
-            dataKey: "CJS",
-            stroke: "#fb7185",
-            strokeWidth: 2,
-            dot: {
-              r: 2
-            },
-            connectNulls: true
-          })]
+          }, code))]
         })
       })
-    }), /*#__PURE__*/_jsxs("div", {
-      className: "flex gap-4 mt-2 text-[11px] text-slate-500",
-      children: [/*#__PURE__*/_jsxs("span", {
+    }), /*#__PURE__*/_jsx("div", {
+      className: "flex gap-4 mt-2 text-[11px] text-slate-500 flex-wrap",
+      children: rankedAirports.map(code => /*#__PURE__*/_jsxs("span", {
         className: "flex items-center gap-1",
         children: [/*#__PURE__*/_jsx("span", {
           className: "w-2 h-2 rounded-full inline-block",
           style: {
-            background: "#facc15"
+            background: colorFor(code)
           }
-        }), "ELP"]
-      }), /*#__PURE__*/_jsxs("span", {
-        className: "flex items-center gap-1",
-        children: [/*#__PURE__*/_jsx("span", {
-          className: "w-2 h-2 rounded-full inline-block",
-          style: {
-            background: "#2dd4bf"
-          }
-        }), "ABQ (pending extract)"]
-      }), /*#__PURE__*/_jsxs("span", {
-        className: "flex items-center gap-1",
-        children: [/*#__PURE__*/_jsx("span", {
-          className: "w-2 h-2 rounded-full inline-block",
-          style: {
-            background: "#fb7185"
-          }
-        }), "CJS (pending extract)"]
-      })]
+        }), code]
+      }, code))
     }), /*#__PURE__*/_jsxs("p", {
       className: "text-[11px] text-slate-600 mt-3 leading-relaxed",
-      children: ["Right now only ELP has a processed extract, so its line is the region's whole sample by definition (100% of tracked airports). Once ABQ and CJS extracts run through the pipeline, this chart becomes the actual three-way leakage split for the region \\u2014 no dashboard changes needed, since the rollup is computed directly from each airport's own home-location data in ", /*#__PURE__*/_jsx("code", {
+      children: ["Ranked by share of the region's ", latestQ, " sample. As more airports process extracts, they'll automatically appear here ranked by share \\u2014 no dashboard changes needed, since this rollup is computed directly from each airport's own home-location data in ", /*#__PURE__*/_jsx("code", {
         className: "text-amber-400",
         children: "aggregate.py"
       }), "."]
