@@ -132,22 +132,32 @@ export default function CatchmentDashboard() {
   const [tab, setTab] = useState("catchment");
   const hasData = Boolean(DATA && DATA[airport]);
   const quarters = useMemo(() => hasData ? Object.keys(DATA[airport].quarters).sort(sortQuarters) : [], [airport, hasData]);
-  const [qIdx, setQIdx] = useState(quarters.length - 1);
+  // -1 is a sentinel meaning "not set yet" -- this happens on first mount,
+  // before the fetch() in the top-level useEffect has resolved, when
+  // quarters is still []. The effect below snaps it to the latest quarter
+  // as soon as real data shows up, so this never stays -1 once loaded.
+  const [qIdx, setQIdx] = useState(-1);
+  useEffect(() => {
+    if (quarters.length && qIdx === -1) {
+      setQIdx(quarters.length - 1);
+    }
+  }, [quarters, qIdx]);
 
-  // clamp qIdx when switching to an airport with a different quarter count
-  const safeQIdx = Math.min(qIdx, Math.max(quarters.length - 1, 0));
+  // clamp qIdx into range; if quarters is empty (still loading, or genuinely
+  // no data), fall back to 0 rather than a negative index.
+  const safeQIdx = quarters.length ? Math.min(Math.max(qIdx, 0), quarters.length - 1) : 0;
   const quarter = quarters[safeQIdx];
-  const snap = hasData ? DATA[airport].quarters[quarter] : null;
+  const snap = hasData && quarter ? DATA[airport].quarters[quarter] : null;
   const prevQuarter = safeQIdx > 0 ? quarters[safeQIdx - 1] : null;
   const prevSnap = prevQuarter && hasData ? DATA[airport].quarters[prevQuarter] : null;
-  const qoq = prevSnap ? (snap.total_devices - prevSnap.total_devices) / prevSnap.total_devices * 100 : null;
+  const qoq = snap && prevSnap ? (snap.total_devices - prevSnap.total_devices) / prevSnap.total_devices * 100 : null;
   const years = useMemo(() => {
     const set = new Set(quarters.map(q => q.split("-")[0]));
     return Array.from(set).sort();
   }, [quarters]);
   function jumpToYear(year) {
     // land on the latest quarter available within that year
-    const candidates = quarters.filter(q => q.startsWith(String(year)));
+    const candidates = quarters.filter(q => q && q.startsWith(String(year)));
     if (candidates.length) setQIdx(quarters.indexOf(candidates[candidates.length - 1]));
   }
   const [trendMode, setTrendMode] = useState("indexed"); // "raw" | "indexed"
