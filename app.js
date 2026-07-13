@@ -328,13 +328,13 @@ export default function CatchmentDashboard() {
             className: "flex gap-1.5 flex-wrap mb-2",
             children: years.map(y => /*#__PURE__*/_jsx("button", {
               onClick: () => jumpToYear(y),
-              className: `px-2.5 py-1 rounded text-xs font-mono border transition-colors ${quarter.startsWith(String(y)) ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400 hover:border-slate-500"}`,
+              className: `px-2.5 py-1 rounded text-xs font-mono border transition-colors ${quarter?.startsWith(String(y)) ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400 hover:border-slate-500"}`,
               children: y
             }, y))
           }), /*#__PURE__*/_jsx("div", {
             className: "flex gap-1.5 flex-wrap",
             children: ["Q1", "Q2", "Q3", "Q4"].map(qLabel => {
-              const year = quarter.split("-")[0];
+              const year = quarter?.split("-")[0] || "";
               const candidate = `${year}-${qLabel}`;
               const exists = quarters.includes(candidate);
               const active = candidate === quarter;
