@@ -30,9 +30,13 @@
 <div id="root"></div>
 
 <script type="module">
+  // The "?v=2" on app.js is a cache-buster. Browsers (and GitHub Pages'
+  // CDN) aggressively cache .js files -- without a version bump, they can
+  // keep serving an OLD copy of app.js even after you upload a new one to
+  // the repo. Bump this number (v=3, v=4, ...) every time you update app.js.
   import React from "react";
   import { createRoot } from "react-dom/client";
-  import CatchmentDashboard from "./app.js";
+  import CatchmentDashboard from "./app.js?v=2";
 
   const root = createRoot(document.getElementById("root"));
   root.render(React.createElement(CatchmentDashboard));
