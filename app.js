@@ -86,6 +86,46 @@ function multiAirportQuarters(DATA, airportCodes) {
   });
   return Object.keys(counts).filter(q => counts[q] >= 2).sort(sortQuarters);
 }
+function haversineMiles(lat1, lon1, lat2, lon2) {
+  const R = 3958.8;
+  const toRad = d => d * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.asin(Math.sqrt(a));
+}
+
+// For every county, finds whichever tracked airport is geographically
+// nearest (straight-line distance from the county's true centroid to each
+// airport's own coordinates) -- independent of any device data. Comparing
+// this to which airport actually DOMINATES that county's device sample is
+// what surfaces genuine geographic leakage: people bypassing their closest
+// airport for a farther one.
+function computeNearestAirports(geometry, DATA, airportCodes) {
+  const result = {};
+  for (const c of geometry) {
+    const feature = {
+      type: "Feature",
+      geometry: {
+        type: c.type,
+        coordinates: c.coordinates
+      }
+    };
+    const [lon, lat] = d3.geoCentroid(feature);
+    let best = null;
+    for (const code of airportCodes) {
+      const meta = DATA[code]?.meta;
+      if (!meta || meta.lat == null || meta.lon == null) continue;
+      const dist = haversineMiles(lat, lon, meta.lat, meta.lon);
+      if (!best || dist < best.dist) best = {
+        code,
+        dist
+      };
+    }
+    if (best) result[c.fips] = best;
+  }
+  return result;
+}
 function distanceBucket(mi) {
   if (mi == null) return {
     key: "unknown",
@@ -131,6 +171,7 @@ export default function CatchmentDashboard() {
   const [DATA, setDATA] = useState(null);
   const [TX_COUNTY_GEOMETRY, setGeometry] = useState(null);
   const [REGIONS, setREGIONS] = useState(null);
+  const [DESTINATIONS, setDESTINATIONS] = useState(null);
   const [loadError, setLoadError] = useState(null);
   useEffect(() => {
     Promise.all([fetch("./data/summary.json").then(r => {
@@ -139,10 +180,14 @@ export default function CatchmentDashboard() {
     }), fetch("./data/tx_counties.geo.json").then(r => {
       if (!r.ok) throw new Error(`tx_counties.geo.json: ${r.status}`);
       return r.json();
-    }), fetch("./data/regions.json").then(r => r.ok ? r.json() : {}).catch(() => ({}))]).then(([summary, geometry, regions]) => {
+    }), fetch("./data/regions.json").then(r => r.ok ? r.json() : {}).catch(() => ({})),
+    // Destinations data is optional -- the tab shows a "not available yet"
+    // state instead of erroring if this file isn't present.
+    fetch("./data/destinations_summary.json").then(r => r.ok ? r.json() : null).catch(() => null)]).then(([summary, geometry, regions, destinations]) => {
       setDATA(summary);
       setGeometry(geometry);
       setREGIONS(regions);
+      setDESTINATIONS(destinations);
     }).catch(err => setLoadError(err.message));
   }, []);
   const airportCodes = useMemo(() => Object.keys(AIRPORT_REGISTRY), []);
@@ -738,8 +783,10 @@ export default function CatchmentDashboard() {
         }), /*#__PURE__*/_jsx(RoadmapPanel, {
           type: "leakage"
         })]
-      }), tab === "destinations" && /*#__PURE__*/_jsx(RoadmapPanel, {
-        type: "destinations"
+      }), tab === "destinations" && /*#__PURE__*/_jsx(DestinationsPanel, {
+        DESTINATIONS: DESTINATIONS,
+        airport: airport,
+        airportCodes: airportCodes
       })]
     }), /*#__PURE__*/_jsx("style", {
       children: `
@@ -839,6 +886,9 @@ function LeakageOverlapMap({
     }
     return rankings;
   }, [DATA, quarter, airportCodes, activeCodes]);
+  const nearestAirports = useMemo(() => computeNearestAirports(geometry, DATA, airportCodes.filter(c => activeCodes.has(c))), [geometry, DATA, airportCodes, activeCodes]);
+  const [showMismatch, setShowMismatch] = useState(false);
+  const mismatchCount = Object.entries(countyRankings).filter(([fips, r]) => nearestAirports[fips] && r.ranked[0].code !== nearestAirports[fips].code).length;
   const contestedCount = Object.values(countyRankings).filter(r => r.contested).length;
   const {
     features,
@@ -873,8 +923,12 @@ function LeakageOverlapMap({
         className: "text-sm font-semibold text-slate-200",
         children: "Catchment Overlap by County"
       }), /*#__PURE__*/_jsxs("div", {
-        className: "flex items-center gap-2",
+        className: "flex items-center gap-2 flex-wrap",
         children: [/*#__PURE__*/_jsx("button", {
+          onClick: () => setShowMismatch(v => !v),
+          className: `px-2.5 py-1 rounded text-xs border transition-colors ${showMismatch ? "border-cyan-400 bg-cyan-400/10 text-cyan-300" : "border-slate-700 text-slate-400"}`,
+          children: showMismatch ? `Showing: bypasses nearest airport (${mismatchCount})` : "Show geographic bypass"
+        }), /*#__PURE__*/_jsx("button", {
           onClick: () => setOverlapOnly(v => !v),
           className: `px-2.5 py-1 rounded text-xs border transition-colors ${overlapOnly ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400"}`,
           children: overlapOnly ? "Showing: contested counties only" : "Show all counties"
@@ -882,9 +936,9 @@ function LeakageOverlapMap({
           className: "w-3.5 h-3.5 text-slate-600"
         })]
       })]
-    }), /*#__PURE__*/_jsx("p", {
+    }), /*#__PURE__*/_jsxs("p", {
       className: "text-xs text-slate-500 mb-1",
-      children: "Each county colored by whichever tracked airport has the largest share of that county's pooled device sample this quarter — this is the actual leakage picture, not a distance estimate."
+      children: ["Each county colored by whichever tracked airport has the largest share of that county's pooled device sample this quarter — this is the actual leakage picture, not a distance estimate.", showMismatch && " Ring-outlined counties: the airport that WINS the county's device sample isn't the geographically nearest one \u2014 real bypass behavior, not just a data artifact."]
     }), /*#__PURE__*/_jsxs("p", {
       className: "text-xs text-slate-500 mb-3",
       children: [quarter, " · ", activeCodes.size, " of ", airportCodes.length, " airports selected ·", " ", activeCodes.size < 2 ? "select at least 2 to see contested counties" : `${contestedCount} of ${Object.keys(countyRankings).length} counties with any data are contested`, " ", "· hover any county for the full breakdown"]
@@ -929,20 +983,23 @@ function LeakageOverlapMap({
           })
         }), features.map(f => {
           const r = countyRankings[f.properties.fips];
+          const nearest = nearestAirports[f.properties.fips];
+          const isMismatch = r && nearest && r.ranked[0].code !== nearest.code;
           const isHovered = hovered && hovered.fips === f.properties.fips;
-          const dim = overlapOnly && r && !r.contested;
+          const dim = overlapOnly && r && !r.contested || showMismatch && !isMismatch;
           const fill = r ? colorFor(r.ranked[0].code) : "#1e293b";
           return /*#__PURE__*/_jsxs("g", {
             opacity: dim ? 0.12 : 1,
             children: [/*#__PURE__*/_jsx("path", {
               d: pathFor(f),
               fill: fill,
-              stroke: isHovered ? "#facc15" : "#0f172a",
-              strokeWidth: isHovered ? 1.5 : 0.6,
+              stroke: isHovered ? "#facc15" : showMismatch && isMismatch ? "#22d3ee" : "#0f172a",
+              strokeWidth: isHovered ? 1.5 : showMismatch && isMismatch ? 1.4 : 0.6,
               onMouseEnter: () => setHovered({
                 fips: f.properties.fips,
                 name: f.properties.name,
-                ranking: r
+                ranking: r,
+                nearest
               }),
               onMouseLeave: () => setHovered(null),
               style: {
@@ -985,7 +1042,16 @@ function LeakageOverlapMap({
             className: "font-mono text-slate-300",
             children: fmtPct(e.share)
           })]
-        }, e.code)), hovered.ranking.contested && /*#__PURE__*/_jsx("div", {
+        }, e.code)), hovered.nearest && /*#__PURE__*/_jsxs("div", {
+          className: "text-slate-500 mt-1.5 pt-1.5 border-t border-slate-800",
+          children: ["Nearest airport: ", /*#__PURE__*/_jsx("span", {
+            className: "text-slate-300",
+            children: hovered.nearest.code
+          }), " (", hovered.nearest.dist.toFixed(0), " mi)"]
+        }), hovered.ranking.ranked[0].code !== hovered.nearest?.code && hovered.nearest && /*#__PURE__*/_jsx("div", {
+          className: "text-cyan-400 text-[10px]",
+          children: "Bypasses nearest airport"
+        }), hovered.ranking.contested && /*#__PURE__*/_jsx("div", {
           className: "text-amber-400 mt-1 text-[10px]",
           children: "Contested — runner-up holds ≥25% here"
         })]
@@ -1068,7 +1134,7 @@ function LeakageOverlapMap({
       })]
     }), /*#__PURE__*/_jsx("p", {
       className: "text-[11px] text-slate-600 mt-3 leading-relaxed",
-      children: "Methodology: for each county, every SELECTED airport's device count from that county (same quarter) is pooled, then each airport's share is computed against that county-specific pool — not against the airport's own overall sample size. A county is \"contested\" when a non-dominant airport still holds at least 25% of the pooled total. Airports with no processed extract yet simply don't appear in the pool, so this map fills in automatically as more extracts are added, with no code changes needed."
+      children: "Methodology: for each county, every SELECTED airport's device count from that county (same quarter) is pooled, then each airport's share is computed against that county-specific pool — not against the airport's own overall sample size. A county is \"contested\" when a non-dominant airport still holds at least 25% of the pooled total. \"Nearest airport\" is computed independently of any device data — straight- line distance from the county's true geometric centroid to each selected airport's coordinates — so \"bypasses nearest airport\" counties are a genuine geographic signal, not a data artifact. Airports with no processed extract yet simply don't appear in the pool, so this map fills in automatically as more extracts are added, with no code changes needed."
     })]
   });
 }
@@ -1427,6 +1493,225 @@ function AirportLeakageTrend({
     }), /*#__PURE__*/_jsx("p", {
       className: "text-[11px] text-slate-600 mt-3 leading-relaxed",
       children: "Switch airports using the selector at the top of the page — this panel recomputes for whichever airport is currently selected, using only quarters where a real comparison is possible (2+ airports with processed extracts)."
+    })]
+  });
+}
+function DestinationsPanel({
+  DESTINATIONS,
+  airport,
+  airportCodes
+}) {
+  const [direction, setDirection] = useState("outbound");
+  const [qIdx, setQIdx] = useState(-1);
+  const hasAny = Boolean(DESTINATIONS);
+  const hasAirport = Boolean(DESTINATIONS && DESTINATIONS[airport]);
+  const quarters = useMemo(() => hasAirport ? Object.keys(DESTINATIONS[airport]).sort(sortQuarters) : [], [DESTINATIONS, airport, hasAirport]);
+  useEffect(() => {
+    if (quarters.length) setQIdx(quarters.length - 1);
+  }, [quarters.length, airport]);
+  const safeQIdx = quarters.length ? Math.min(Math.max(qIdx, 0), quarters.length - 1) : 0;
+  const quarter = quarters[safeQIdx];
+  const snap = quarter ? DESTINATIONS[airport][quarter]?.[direction] : null;
+  const trend = useMemo(() => {
+    if (!hasAirport) return [];
+    return quarters.map(q => ({
+      quarter: q,
+      outbound: DESTINATIONS[airport][q]?.outbound?.total_trips || 0,
+      inbound: DESTINATIONS[airport][q]?.inbound?.total_trips || 0
+    }));
+  }, [DESTINATIONS, airport, quarters, hasAirport]);
+  if (!hasAny) {
+    return /*#__PURE__*/_jsxs("div", {
+      className: "bg-slate-900/60 border border-slate-800 border-dashed rounded-lg p-10 flex flex-col items-center text-center gap-3",
+      children: [/*#__PURE__*/_jsx(Inbox, {
+        className: "w-8 h-8 text-slate-600"
+      }), /*#__PURE__*/_jsx("div", {
+        className: "text-sm font-semibold text-slate-300",
+        children: "No destination-trajectory data processed yet"
+      }), /*#__PURE__*/_jsxs("p", {
+        className: "text-xs text-slate-500 max-w-md",
+        children: ["Run ", /*#__PURE__*/_jsx("code", {
+          className: "text-amber-400",
+          children: "analyze_destinations.py"
+        }), " against a device-trajectory extract and upload the resulting ", /*#__PURE__*/_jsx("code", {
+          className: "text-amber-400",
+          children: "data/destinations_summary.json"
+        }), " to enable this tab."]
+      })]
+    });
+  }
+  if (!hasAirport) {
+    return /*#__PURE__*/_jsxs("div", {
+      className: "bg-slate-900/60 border border-slate-800 border-dashed rounded-lg p-10 flex flex-col items-center text-center gap-3",
+      children: [/*#__PURE__*/_jsx(Inbox, {
+        className: "w-8 h-8 text-slate-600"
+      }), /*#__PURE__*/_jsxs("div", {
+        className: "text-sm font-semibold text-slate-300",
+        children: ["No destination data for ", airport, " yet"]
+      }), /*#__PURE__*/_jsxs("p", {
+        className: "text-xs text-slate-500 max-w-md",
+        children: ["Destination trip data is currently processed for: ", Object.keys(DESTINATIONS).join(", ") || "none", ". Switch airports above, or run ", /*#__PURE__*/_jsx("code", {
+          className: "text-amber-400",
+          children: "analyze_destinations.py"
+        }), " against a", " ", airport, " trajectory extract to add it."]
+      })]
+    });
+  }
+  return /*#__PURE__*/_jsxs("div", {
+    className: "space-y-4",
+    children: [/*#__PURE__*/_jsxs("div", {
+      className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
+      children: [/*#__PURE__*/_jsxs("div", {
+        className: "flex items-center justify-between mb-3 flex-wrap gap-2",
+        children: [/*#__PURE__*/_jsxs("h3", {
+          className: "text-sm font-semibold text-slate-200",
+          children: ["Where ", airport, " Travelers Actually Go"]
+        }), /*#__PURE__*/_jsx("div", {
+          className: "flex gap-1",
+          children: ["outbound", "inbound"].map(d => /*#__PURE__*/_jsx("button", {
+            onClick: () => setDirection(d),
+            className: `px-2.5 py-1 rounded text-xs border capitalize ${direction === d ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400"}`,
+            children: d
+          }, d))
+        })]
+      }), /*#__PURE__*/_jsxs("p", {
+        className: "text-xs text-slate-500 mb-3",
+        children: [direction === "outbound" ? `Devices seen at ${airport}, then later seen at another tracked polygon \u2014 i.e. where they flew to.` : `Devices seen at another tracked polygon, then later seen at ${airport} \u2014 i.e. where they flew in from.`, " ", "Deduplicated to trips (not raw pings); see methodology note below."]
+      }), quarters.length > 1 && /*#__PURE__*/_jsxs("div", {
+        className: "flex items-center gap-2 mb-4",
+        children: [/*#__PURE__*/_jsx("span", {
+          className: "text-[11px] text-slate-500",
+          children: "Quarter:"
+        }), /*#__PURE__*/_jsx("input", {
+          type: "range",
+          min: 0,
+          max: quarters.length - 1,
+          value: safeQIdx,
+          onChange: e => setQIdx(Number(e.target.value)),
+          className: "flex-1 accent-amber-400"
+        }), /*#__PURE__*/_jsx("span", {
+          className: "text-xs font-mono text-amber-400 w-16 text-right",
+          children: quarter
+        })]
+      }), !snap || !snap.destinations.length ? /*#__PURE__*/_jsxs("p", {
+        className: "text-xs text-slate-600",
+        children: ["No ", direction, " trips found for ", quarter, "."]
+      }) : /*#__PURE__*/_jsxs(_Fragment, {
+        children: [/*#__PURE__*/_jsxs("div", {
+          className: "text-xs text-slate-500 mb-2",
+          children: [quarter, " · ", fmt(snap.total_trips), " total ", direction, " trips"]
+        }), /*#__PURE__*/_jsx("div", {
+          className: "space-y-2",
+          children: snap.destinations.map((d, i) => {
+            const maxTrips = snap.destinations[0].trips;
+            return /*#__PURE__*/_jsxs("div", {
+              className: "text-xs",
+              children: [/*#__PURE__*/_jsxs("div", {
+                className: "flex justify-between mb-0.5",
+                children: [/*#__PURE__*/_jsxs("span", {
+                  className: "text-slate-300",
+                  children: [d.dest, AIRPORT_REGISTRY[d.dest] ? ` \u2014 ${AIRPORT_REGISTRY[d.dest].name}` : ""]
+                }), /*#__PURE__*/_jsxs("span", {
+                  className: "text-slate-400 font-mono",
+                  children: [fmtPct(d.share), " · ", fmt(d.trips), " trips · ", fmt(d.unique_devices), " devices"]
+                })]
+              }), /*#__PURE__*/_jsx("div", {
+                className: "h-1.5 bg-slate-800 rounded-full overflow-hidden",
+                children: /*#__PURE__*/_jsx("div", {
+                  className: "h-full rounded-full bg-amber-400",
+                  style: {
+                    width: `${d.trips / maxTrips * 100}%`
+                  }
+                })
+              })]
+            }, d.dest + i);
+          })
+        })]
+      })]
+    }), quarters.length > 1 && /*#__PURE__*/_jsxs("div", {
+      className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
+      children: [/*#__PURE__*/_jsx("h3", {
+        className: "text-sm font-semibold text-slate-200 mb-3",
+        children: "Trip Volume Trend"
+      }), /*#__PURE__*/_jsx("div", {
+        style: {
+          width: "100%",
+          height: 180
+        },
+        children: /*#__PURE__*/_jsx(ResponsiveContainer, {
+          children: /*#__PURE__*/_jsxs(LineChart, {
+            data: trend,
+            margin: {
+              top: 5,
+              right: 20,
+              bottom: 0,
+              left: 0
+            },
+            children: [/*#__PURE__*/_jsx(CartesianGrid, {
+              stroke: "#1e293b",
+              vertical: false
+            }), /*#__PURE__*/_jsx(XAxis, {
+              dataKey: "quarter",
+              tick: {
+                fill: "#64748b",
+                fontSize: 10
+              },
+              interval: 1
+            }), /*#__PURE__*/_jsx(YAxis, {
+              tick: {
+                fill: "#64748b",
+                fontSize: 10
+              },
+              tickFormatter: fmt
+            }), /*#__PURE__*/_jsx(Tooltip, {
+              contentStyle: {
+                background: "#0f172a",
+                border: "1px solid #334155",
+                borderRadius: 6,
+                fontSize: 12
+              },
+              labelStyle: {
+                color: "#e2e8f0"
+              }
+            }), /*#__PURE__*/_jsx(Line, {
+              type: "monotone",
+              dataKey: "outbound",
+              stroke: "#facc15",
+              strokeWidth: 2,
+              dot: {
+                r: 2
+              }
+            }), /*#__PURE__*/_jsx(Line, {
+              type: "monotone",
+              dataKey: "inbound",
+              stroke: "#2dd4bf",
+              strokeWidth: 2,
+              dot: {
+                r: 2
+              }
+            })]
+          })
+        })
+      }), /*#__PURE__*/_jsxs("div", {
+        className: "flex gap-4 mt-2 text-[11px] text-slate-500",
+        children: [/*#__PURE__*/_jsxs("span", {
+          className: "flex items-center gap-1",
+          children: [/*#__PURE__*/_jsx("span", {
+            className: "w-2 h-2 rounded-full inline-block bg-amber-400"
+          }), "Outbound trips"]
+        }), /*#__PURE__*/_jsxs("span", {
+          className: "flex items-center gap-1",
+          children: [/*#__PURE__*/_jsx("span", {
+            className: "w-2 h-2 rounded-full inline-block bg-teal-400"
+          }), "Inbound trips"]
+        })]
+      })]
+    }), /*#__PURE__*/_jsxs("p", {
+      className: "text-[11px] text-slate-600 leading-relaxed px-1",
+      children: ["Methodology: trips are deduplicated from raw device pings (multiple pings from the same visit collapse into one trip), and same-polygon self-references are excluded. A minimum time-separation threshold filters out sightings too close to the origin visit to represent a genuinely distinct destination. See", " ", /*#__PURE__*/_jsx("code", {
+        className: "text-amber-400",
+        children: "analyze_destinations.py"
+      }), " for exact thresholds used."]
     })]
   });
 }
