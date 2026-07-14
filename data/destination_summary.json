@@ -1,0 +1,3820 @@
+{
+  "HRL": {
+    "2025-Q4": {
+      "outbound": {
+        "total_trips": 653,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 530,
+            "unique_devices": 467,
+            "share": 0.8116
+          },
+          {
+            "dest": "AUS",
+            "trips": 107,
+            "unique_devices": 97,
+            "share": 0.1639
+          },
+          {
+            "dest": "SAT",
+            "trips": 16,
+            "unique_devices": 13,
+            "share": 0.0245
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 435,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 343,
+            "unique_devices": 307,
+            "share": 0.7885
+          },
+          {
+            "dest": "AUS",
+            "trips": 88,
+            "unique_devices": 82,
+            "share": 0.2023
+          },
+          {
+            "dest": "SAT",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.0092
+          }
+        ]
+      }
+    },
+    "2025-Q3": {
+      "outbound": {
+        "total_trips": 309,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 262,
+            "unique_devices": 243,
+            "share": 0.8479
+          },
+          {
+            "dest": "AUS",
+            "trips": 42,
+            "unique_devices": 39,
+            "share": 0.1359
+          },
+          {
+            "dest": "SAT",
+            "trips": 4,
+            "unique_devices": 3,
+            "share": 0.0129
+          },
+          {
+            "dest": "ELP",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0032
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 235,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 188,
+            "unique_devices": 181,
+            "share": 0.8
+          },
+          {
+            "dest": "AUS",
+            "trips": 40,
+            "unique_devices": 39,
+            "share": 0.1702
+          },
+          {
+            "dest": "SAT",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.0298
+          }
+        ]
+      }
+    },
+    "2024-Q4": {
+      "outbound": {
+        "total_trips": 202,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 167,
+            "unique_devices": 121,
+            "share": 0.8267
+          },
+          {
+            "dest": "AUS",
+            "trips": 32,
+            "unique_devices": 29,
+            "share": 0.1584
+          },
+          {
+            "dest": "SAT",
+            "trips": 3,
+            "unique_devices": 1,
+            "share": 0.0149
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 132,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 109,
+            "unique_devices": 82,
+            "share": 0.8258
+          },
+          {
+            "dest": "AUS",
+            "trips": 22,
+            "unique_devices": 19,
+            "share": 0.1667
+          },
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0076
+          }
+        ]
+      }
+    },
+    "2025-Q1": {
+      "outbound": {
+        "total_trips": 105,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 82,
+            "unique_devices": 73,
+            "share": 0.781
+          },
+          {
+            "dest": "AUS",
+            "trips": 23,
+            "unique_devices": 23,
+            "share": 0.219
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 67,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 52,
+            "unique_devices": 46,
+            "share": 0.7761
+          },
+          {
+            "dest": "AUS",
+            "trips": 15,
+            "unique_devices": 15,
+            "share": 0.2239
+          }
+        ]
+      }
+    },
+    "2025-Q2": {
+      "inbound": {
+        "total_trips": 92,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 77,
+            "unique_devices": 73,
+            "share": 0.837
+          },
+          {
+            "dest": "AUS",
+            "trips": 15,
+            "unique_devices": 14,
+            "share": 0.163
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 133,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 101,
+            "unique_devices": 93,
+            "share": 0.7594
+          },
+          {
+            "dest": "AUS",
+            "trips": 29,
+            "unique_devices": 29,
+            "share": 0.218
+          },
+          {
+            "dest": "SAT",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0226
+          }
+        ]
+      }
+    },
+    "2024-Q3": {
+      "outbound": {
+        "total_trips": 39,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 32,
+            "unique_devices": 31,
+            "share": 0.8205
+          },
+          {
+            "dest": "AUS",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.1795
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 27,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 21,
+            "unique_devices": 20,
+            "share": 0.7778
+          },
+          {
+            "dest": "AUS",
+            "trips": 6,
+            "unique_devices": 5,
+            "share": 0.2222
+          }
+        ]
+      }
+    },
+    "2026-Q2": {
+      "outbound": {
+        "total_trips": 274,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 237,
+            "unique_devices": 223,
+            "share": 0.865
+          },
+          {
+            "dest": "AUS",
+            "trips": 32,
+            "unique_devices": 31,
+            "share": 0.1168
+          },
+          {
+            "dest": "SAT",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.0146
+          },
+          {
+            "dest": "LBB",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0036
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 189,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 174,
+            "unique_devices": 162,
+            "share": 0.9206
+          },
+          {
+            "dest": "AUS",
+            "trips": 10,
+            "unique_devices": 10,
+            "share": 0.0529
+          },
+          {
+            "dest": "SAT",
+            "trips": 3,
+            "unique_devices": 2,
+            "share": 0.0159
+          },
+          {
+            "dest": "DAL",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0106
+          }
+        ]
+      }
+    },
+    "2026-Q1": {
+      "outbound": {
+        "total_trips": 100,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 89,
+            "unique_devices": 87,
+            "share": 0.89
+          },
+          {
+            "dest": "AUS",
+            "trips": 11,
+            "unique_devices": 9,
+            "share": 0.11
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 76,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 61,
+            "unique_devices": 57,
+            "share": 0.8026
+          },
+          {
+            "dest": "AUS",
+            "trips": 13,
+            "unique_devices": 11,
+            "share": 0.1711
+          },
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0132
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0132
+          }
+        ]
+      }
+    }
+  },
+  "DAL": {
+    "2025-Q4": {
+      "inbound": {
+        "total_trips": 4771,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 2204,
+            "unique_devices": 1850,
+            "share": 0.462
+          },
+          {
+            "dest": "SAT",
+            "trips": 1330,
+            "unique_devices": 1129,
+            "share": 0.2788
+          },
+          {
+            "dest": "AUS",
+            "trips": 1237,
+            "unique_devices": 1017,
+            "share": 0.2593
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 3274,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 1805,
+            "unique_devices": 1512,
+            "share": 0.5513
+          },
+          {
+            "dest": "SAT",
+            "trips": 796,
+            "unique_devices": 677,
+            "share": 0.2431
+          },
+          {
+            "dest": "AUS",
+            "trips": 671,
+            "unique_devices": 562,
+            "share": 0.2049
+          },
+          {
+            "dest": "CRP",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0003
+          },
+          {
+            "dest": "ELP",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0003
+          }
+        ]
+      }
+    },
+    "2026-Q1": {
+      "inbound": {
+        "total_trips": 901,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 445,
+            "unique_devices": 390,
+            "share": 0.4939
+          },
+          {
+            "dest": "SAT",
+            "trips": 235,
+            "unique_devices": 215,
+            "share": 0.2608
+          },
+          {
+            "dest": "AUS",
+            "trips": 221,
+            "unique_devices": 195,
+            "share": 0.2453
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 620,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 382,
+            "unique_devices": 332,
+            "share": 0.6161
+          },
+          {
+            "dest": "SAT",
+            "trips": 134,
+            "unique_devices": 119,
+            "share": 0.2161
+          },
+          {
+            "dest": "AUS",
+            "trips": 104,
+            "unique_devices": 92,
+            "share": 0.1677
+          }
+        ]
+      }
+    },
+    "2025-Q3": {
+      "outbound": {
+        "total_trips": 2192,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 1183,
+            "unique_devices": 1068,
+            "share": 0.5397
+          },
+          {
+            "dest": "SAT",
+            "trips": 553,
+            "unique_devices": 508,
+            "share": 0.2523
+          },
+          {
+            "dest": "AUS",
+            "trips": 452,
+            "unique_devices": 415,
+            "share": 0.2062
+          },
+          {
+            "dest": "LBB",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0009
+          },
+          {
+            "dest": "AMA",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0005
+          },
+          {
+            "dest": "CRP",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0005
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 2984,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 1461,
+            "unique_devices": 1318,
+            "share": 0.4896
+          },
+          {
+            "dest": "SAT",
+            "trips": 876,
+            "unique_devices": 812,
+            "share": 0.2936
+          },
+          {
+            "dest": "AUS",
+            "trips": 639,
+            "unique_devices": 584,
+            "share": 0.2141
+          },
+          {
+            "dest": "MAF",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.0013
+          },
+          {
+            "dest": "ABQ",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0007
+          },
+          {
+            "dest": "ELP",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0003
+          },
+          {
+            "dest": "LBB",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0003
+          }
+        ]
+      }
+    },
+    "2025-Q1": {
+      "outbound": {
+        "total_trips": 461,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 270,
+            "unique_devices": 226,
+            "share": 0.5857
+          },
+          {
+            "dest": "SAT",
+            "trips": 120,
+            "unique_devices": 107,
+            "share": 0.2603
+          },
+          {
+            "dest": "AUS",
+            "trips": 70,
+            "unique_devices": 64,
+            "share": 0.1518
+          },
+          {
+            "dest": "ELP",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0022
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 661,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 299,
+            "unique_devices": 255,
+            "share": 0.4523
+          },
+          {
+            "dest": "SAT",
+            "trips": 215,
+            "unique_devices": 181,
+            "share": 0.3253
+          },
+          {
+            "dest": "AUS",
+            "trips": 144,
+            "unique_devices": 129,
+            "share": 0.2179
+          },
+          {
+            "dest": "LBB",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.003
+          },
+          {
+            "dest": "MAF",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0015
+          }
+        ]
+      }
+    },
+    "2025-Q2": {
+      "inbound": {
+        "total_trips": 2098,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 961,
+            "unique_devices": 935,
+            "share": 0.4581
+          },
+          {
+            "dest": "SAT",
+            "trips": 617,
+            "unique_devices": 601,
+            "share": 0.2941
+          },
+          {
+            "dest": "AUS",
+            "trips": 508,
+            "unique_devices": 493,
+            "share": 0.2421
+          },
+          {
+            "dest": "ELP",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.0029
+          },
+          {
+            "dest": "AMA",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.0019
+          },
+          {
+            "dest": "LBB",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0005
+          },
+          {
+            "dest": "MAF",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0005
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 1669,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 945,
+            "unique_devices": 920,
+            "share": 0.5662
+          },
+          {
+            "dest": "SAT",
+            "trips": 370,
+            "unique_devices": 366,
+            "share": 0.2217
+          },
+          {
+            "dest": "AUS",
+            "trips": 352,
+            "unique_devices": 343,
+            "share": 0.2109
+          },
+          {
+            "dest": "MAF",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0006
+          },
+          {
+            "dest": "ELP",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0006
+          }
+        ]
+      }
+    },
+    "2024-Q4": {
+      "outbound": {
+        "total_trips": 527,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 315,
+            "unique_devices": 235,
+            "share": 0.5977
+          },
+          {
+            "dest": "SAT",
+            "trips": 118,
+            "unique_devices": 94,
+            "share": 0.2239
+          },
+          {
+            "dest": "AUS",
+            "trips": 94,
+            "unique_devices": 75,
+            "share": 0.1784
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 819,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 384,
+            "unique_devices": 281,
+            "share": 0.4689
+          },
+          {
+            "dest": "SAT",
+            "trips": 280,
+            "unique_devices": 198,
+            "share": 0.3419
+          },
+          {
+            "dest": "AUS",
+            "trips": 155,
+            "unique_devices": 120,
+            "share": 0.1893
+          }
+        ]
+      }
+    },
+    "2024-Q3": {
+      "inbound": {
+        "total_trips": 272,
+        "destinations": [
+          {
+            "dest": "SAT",
+            "trips": 103,
+            "unique_devices": 79,
+            "share": 0.3787
+          },
+          {
+            "dest": "HOU",
+            "trips": 101,
+            "unique_devices": 96,
+            "share": 0.3713
+          },
+          {
+            "dest": "AUS",
+            "trips": 65,
+            "unique_devices": 56,
+            "share": 0.239
+          },
+          {
+            "dest": "MAF",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0074
+          },
+          {
+            "dest": "ABQ",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0037
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 182,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 89,
+            "unique_devices": 84,
+            "share": 0.489
+          },
+          {
+            "dest": "AUS",
+            "trips": 49,
+            "unique_devices": 37,
+            "share": 0.2692
+          },
+          {
+            "dest": "SAT",
+            "trips": 44,
+            "unique_devices": 37,
+            "share": 0.2418
+          }
+        ]
+      }
+    },
+    "2026-Q2": {
+      "inbound": {
+        "total_trips": 1637,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 822,
+            "unique_devices": 682,
+            "share": 0.5021
+          },
+          {
+            "dest": "SAT",
+            "trips": 480,
+            "unique_devices": 396,
+            "share": 0.2932
+          },
+          {
+            "dest": "AUS",
+            "trips": 327,
+            "unique_devices": 280,
+            "share": 0.1998
+          },
+          {
+            "dest": "LBB",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0018
+          },
+          {
+            "dest": "ELP",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0012
+          },
+          {
+            "dest": "HRL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0006
+          },
+          {
+            "dest": "AMA",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0006
+          },
+          {
+            "dest": "MAF",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0006
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 1148,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 643,
+            "unique_devices": 544,
+            "share": 0.5601
+          },
+          {
+            "dest": "SAT",
+            "trips": 303,
+            "unique_devices": 261,
+            "share": 0.2639
+          },
+          {
+            "dest": "AUS",
+            "trips": 201,
+            "unique_devices": 173,
+            "share": 0.1751
+          },
+          {
+            "dest": "ELP",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0009
+          }
+        ]
+      }
+    },
+    "2026-Q3": {
+      "outbound": {
+        "total_trips": 1,
+        "destinations": [
+          {
+            "dest": "MAF",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 1.0
+          }
+        ]
+      }
+    }
+  },
+  "ELP": {
+    "2025-Q3": {
+      "outbound": {
+        "total_trips": 371,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 177,
+            "unique_devices": 165,
+            "share": 0.4771
+          },
+          {
+            "dest": "AUS",
+            "trips": 111,
+            "unique_devices": 100,
+            "share": 0.2992
+          },
+          {
+            "dest": "SAT",
+            "trips": 82,
+            "unique_devices": 72,
+            "share": 0.221
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0027
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 318,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 140,
+            "unique_devices": 132,
+            "share": 0.4403
+          },
+          {
+            "dest": "AUS",
+            "trips": 96,
+            "unique_devices": 89,
+            "share": 0.3019
+          },
+          {
+            "dest": "SAT",
+            "trips": 81,
+            "unique_devices": 72,
+            "share": 0.2547
+          },
+          {
+            "dest": "HRL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0031
+          }
+        ]
+      }
+    },
+    "2025-Q1": {
+      "inbound": {
+        "total_trips": 67,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 32,
+            "unique_devices": 30,
+            "share": 0.4776
+          },
+          {
+            "dest": "AUS",
+            "trips": 24,
+            "unique_devices": 23,
+            "share": 0.3582
+          },
+          {
+            "dest": "SAT",
+            "trips": 10,
+            "unique_devices": 10,
+            "share": 0.1493
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0149
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 94,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 57,
+            "unique_devices": 55,
+            "share": 0.6064
+          },
+          {
+            "dest": "AUS",
+            "trips": 27,
+            "unique_devices": 22,
+            "share": 0.2872
+          },
+          {
+            "dest": "SAT",
+            "trips": 10,
+            "unique_devices": 10,
+            "share": 0.1064
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "outbound": {
+        "total_trips": 627,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 286,
+            "unique_devices": 257,
+            "share": 0.4561
+          },
+          {
+            "dest": "AUS",
+            "trips": 218,
+            "unique_devices": 193,
+            "share": 0.3477
+          },
+          {
+            "dest": "SAT",
+            "trips": 123,
+            "unique_devices": 107,
+            "share": 0.1962
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 491,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 204,
+            "unique_devices": 176,
+            "share": 0.4155
+          },
+          {
+            "dest": "AUS",
+            "trips": 192,
+            "unique_devices": 168,
+            "share": 0.391
+          },
+          {
+            "dest": "SAT",
+            "trips": 94,
+            "unique_devices": 87,
+            "share": 0.1914
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.002
+          }
+        ]
+      }
+    },
+    "2026-Q1": {
+      "inbound": {
+        "total_trips": 54,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 25,
+            "unique_devices": 23,
+            "share": 0.463
+          },
+          {
+            "dest": "AUS",
+            "trips": 18,
+            "unique_devices": 17,
+            "share": 0.3333
+          },
+          {
+            "dest": "SAT",
+            "trips": 11,
+            "unique_devices": 10,
+            "share": 0.2037
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 111,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 70,
+            "unique_devices": 67,
+            "share": 0.6306
+          },
+          {
+            "dest": "AUS",
+            "trips": 25,
+            "unique_devices": 24,
+            "share": 0.2252
+          },
+          {
+            "dest": "SAT",
+            "trips": 12,
+            "unique_devices": 12,
+            "share": 0.1081
+          },
+          {
+            "dest": "DAL",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.036
+          }
+        ]
+      }
+    },
+    "2025-Q2": {
+      "inbound": {
+        "total_trips": 180,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 80,
+            "unique_devices": 78,
+            "share": 0.4444
+          },
+          {
+            "dest": "AUS",
+            "trips": 70,
+            "unique_devices": 69,
+            "share": 0.3889
+          },
+          {
+            "dest": "SAT",
+            "trips": 29,
+            "unique_devices": 29,
+            "share": 0.1611
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0056
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 275,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 123,
+            "unique_devices": 118,
+            "share": 0.4473
+          },
+          {
+            "dest": "HOU",
+            "trips": 115,
+            "unique_devices": 115,
+            "share": 0.4182
+          },
+          {
+            "dest": "SAT",
+            "trips": 37,
+            "unique_devices": 37,
+            "share": 0.1345
+          }
+        ]
+      }
+    },
+    "2024-Q4": {
+      "outbound": {
+        "total_trips": 131,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 58,
+            "unique_devices": 51,
+            "share": 0.4427
+          },
+          {
+            "dest": "AUS",
+            "trips": 56,
+            "unique_devices": 41,
+            "share": 0.4275
+          },
+          {
+            "dest": "SAT",
+            "trips": 17,
+            "unique_devices": 17,
+            "share": 0.1298
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 85,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 31,
+            "unique_devices": 31,
+            "share": 0.3647
+          },
+          {
+            "dest": "HOU",
+            "trips": 28,
+            "unique_devices": 27,
+            "share": 0.3294
+          },
+          {
+            "dest": "SAT",
+            "trips": 26,
+            "unique_devices": 23,
+            "share": 0.3059
+          }
+        ]
+      }
+    },
+    "2026-Q2": {
+      "inbound": {
+        "total_trips": 160,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 50,
+            "unique_devices": 49,
+            "share": 0.3125
+          },
+          {
+            "dest": "SAT",
+            "trips": 39,
+            "unique_devices": 33,
+            "share": 0.2437
+          },
+          {
+            "dest": "AUS",
+            "trips": 37,
+            "unique_devices": 34,
+            "share": 0.2313
+          },
+          {
+            "dest": "DAL",
+            "trips": 34,
+            "unique_devices": 34,
+            "share": 0.2125
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 269,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 140,
+            "unique_devices": 126,
+            "share": 0.5204
+          },
+          {
+            "dest": "AUS",
+            "trips": 56,
+            "unique_devices": 54,
+            "share": 0.2082
+          },
+          {
+            "dest": "SAT",
+            "trips": 44,
+            "unique_devices": 34,
+            "share": 0.1636
+          },
+          {
+            "dest": "DAL",
+            "trips": 29,
+            "unique_devices": 27,
+            "share": 0.1078
+          }
+        ]
+      }
+    },
+    "2024-Q3": {
+      "outbound": {
+        "total_trips": 41,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 22,
+            "unique_devices": 21,
+            "share": 0.5366
+          },
+          {
+            "dest": "AUS",
+            "trips": 12,
+            "unique_devices": 12,
+            "share": 0.2927
+          },
+          {
+            "dest": "SAT",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.1707
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 26,
+        "destinations": [
+          {
+            "dest": "SAT",
+            "trips": 10,
+            "unique_devices": 8,
+            "share": 0.3846
+          },
+          {
+            "dest": "HOU",
+            "trips": 8,
+            "unique_devices": 7,
+            "share": 0.3077
+          },
+          {
+            "dest": "AUS",
+            "trips": 8,
+            "unique_devices": 8,
+            "share": 0.3077
+          }
+        ]
+      }
+    },
+    "2026-Q3": {
+      "outbound": {
+        "total_trips": 1,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 1.0
+          }
+        ]
+      }
+    }
+  },
+  "CRP": {
+    "2025-Q3": {
+      "inbound": {
+        "total_trips": 82,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 80,
+            "unique_devices": 72,
+            "share": 0.9756
+          },
+          {
+            "dest": "AUS",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0122
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0122
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 161,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 160,
+            "unique_devices": 148,
+            "share": 0.9938
+          },
+          {
+            "dest": "AUS",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0062
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "outbound": {
+        "total_trips": 340,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 333,
+            "unique_devices": 320,
+            "share": 0.9794
+          },
+          {
+            "dest": "SAT",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.0147
+          },
+          {
+            "dest": "AUS",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0059
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 140,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 133,
+            "unique_devices": 128,
+            "share": 0.95
+          },
+          {
+            "dest": "AUS",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0214
+          },
+          {
+            "dest": "SAT",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0214
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0071
+          }
+        ]
+      }
+    },
+    "2026-Q1": {
+      "outbound": {
+        "total_trips": 50,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 49,
+            "unique_devices": 47,
+            "share": 0.98
+          },
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.02
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 30,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 30,
+            "unique_devices": 28,
+            "share": 1.0
+          }
+        ]
+      }
+    },
+    "2025-Q1": {
+      "inbound": {
+        "total_trips": 32,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 30,
+            "unique_devices": 29,
+            "share": 0.9375
+          },
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0312
+          },
+          {
+            "dest": "AUS",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0312
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 62,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 61,
+            "unique_devices": 53,
+            "share": 0.9839
+          },
+          {
+            "dest": "AUS",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0161
+          }
+        ]
+      }
+    },
+    "2025-Q2": {
+      "inbound": {
+        "total_trips": 21,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 21,
+            "unique_devices": 17,
+            "share": 1.0
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 64,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 61,
+            "unique_devices": 54,
+            "share": 0.9531
+          },
+          {
+            "dest": "AUS",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0469
+          }
+        ]
+      }
+    },
+    "2024-Q4": {
+      "inbound": {
+        "total_trips": 41,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 39,
+            "unique_devices": 32,
+            "share": 0.9512
+          },
+          {
+            "dest": "AUS",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0244
+          },
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0244
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 127,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 122,
+            "unique_devices": 88,
+            "share": 0.9606
+          },
+          {
+            "dest": "AUS",
+            "trips": 5,
+            "unique_devices": 3,
+            "share": 0.0394
+          }
+        ]
+      }
+    },
+    "2024-Q3": {
+      "outbound": {
+        "total_trips": 47,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 45,
+            "unique_devices": 40,
+            "share": 0.9574
+          },
+          {
+            "dest": "AUS",
+            "trips": 2,
+            "unique_devices": 1,
+            "share": 0.0426
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 21,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 18,
+            "unique_devices": 15,
+            "share": 0.8571
+          },
+          {
+            "dest": "AUS",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0952
+          },
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0476
+          }
+        ]
+      }
+    },
+    "2026-Q2": {
+      "outbound": {
+        "total_trips": 171,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 162,
+            "unique_devices": 148,
+            "share": 0.9474
+          },
+          {
+            "dest": "DAL",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.0292
+          },
+          {
+            "dest": "SAT",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.0234
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 123,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 115,
+            "unique_devices": 105,
+            "share": 0.935
+          },
+          {
+            "dest": "DAL",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.0407
+          },
+          {
+            "dest": "SAT",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0244
+          }
+        ]
+      }
+    },
+    "2026-Q3": {
+      "outbound": {
+        "total_trips": 1,
+        "destinations": [
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 1.0
+          }
+        ]
+      }
+    }
+  },
+  "ABQ": {
+    "2025-Q4": {
+      "inbound": {
+        "total_trips": 374,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 214,
+            "unique_devices": 184,
+            "share": 0.5722
+          },
+          {
+            "dest": "AUS",
+            "trips": 105,
+            "unique_devices": 93,
+            "share": 0.2807
+          },
+          {
+            "dest": "SAT",
+            "trips": 52,
+            "unique_devices": 47,
+            "share": 0.139
+          },
+          {
+            "dest": "DAL",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0053
+          },
+          {
+            "dest": "LBB",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0027
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 406,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 255,
+            "unique_devices": 223,
+            "share": 0.6281
+          },
+          {
+            "dest": "AUS",
+            "trips": 102,
+            "unique_devices": 88,
+            "share": 0.2512
+          },
+          {
+            "dest": "SAT",
+            "trips": 47,
+            "unique_devices": 43,
+            "share": 0.1158
+          },
+          {
+            "dest": "DAL",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0049
+          }
+        ]
+      }
+    },
+    "2025-Q3": {
+      "inbound": {
+        "total_trips": 219,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 111,
+            "unique_devices": 103,
+            "share": 0.5068
+          },
+          {
+            "dest": "AUS",
+            "trips": 68,
+            "unique_devices": 65,
+            "share": 0.3105
+          },
+          {
+            "dest": "SAT",
+            "trips": 38,
+            "unique_devices": 36,
+            "share": 0.1735
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0046
+          },
+          {
+            "dest": "CRP",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0046
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 270,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 172,
+            "unique_devices": 156,
+            "share": 0.637
+          },
+          {
+            "dest": "AUS",
+            "trips": 65,
+            "unique_devices": 62,
+            "share": 0.2407
+          },
+          {
+            "dest": "SAT",
+            "trips": 30,
+            "unique_devices": 28,
+            "share": 0.1111
+          },
+          {
+            "dest": "DAL",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0111
+          }
+        ]
+      }
+    },
+    "2024-Q4": {
+      "outbound": {
+        "total_trips": 67,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 35,
+            "unique_devices": 30,
+            "share": 0.5224
+          },
+          {
+            "dest": "AUS",
+            "trips": 22,
+            "unique_devices": 20,
+            "share": 0.3284
+          },
+          {
+            "dest": "SAT",
+            "trips": 10,
+            "unique_devices": 7,
+            "share": 0.1493
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 59,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 28,
+            "unique_devices": 25,
+            "share": 0.4746
+          },
+          {
+            "dest": "AUS",
+            "trips": 18,
+            "unique_devices": 15,
+            "share": 0.3051
+          },
+          {
+            "dest": "SAT",
+            "trips": 13,
+            "unique_devices": 8,
+            "share": 0.2203
+          }
+        ]
+      }
+    },
+    "2025-Q1": {
+      "outbound": {
+        "total_trips": 46,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 31,
+            "unique_devices": 29,
+            "share": 0.6739
+          },
+          {
+            "dest": "AUS",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.2391
+          },
+          {
+            "dest": "SAT",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.087
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 45,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 30,
+            "unique_devices": 26,
+            "share": 0.6667
+          },
+          {
+            "dest": "AUS",
+            "trips": 11,
+            "unique_devices": 10,
+            "share": 0.2444
+          },
+          {
+            "dest": "SAT",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.0889
+          }
+        ]
+      }
+    },
+    "2025-Q2": {
+      "outbound": {
+        "total_trips": 203,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 127,
+            "unique_devices": 125,
+            "share": 0.6256
+          },
+          {
+            "dest": "AUS",
+            "trips": 56,
+            "unique_devices": 55,
+            "share": 0.2759
+          },
+          {
+            "dest": "SAT",
+            "trips": 14,
+            "unique_devices": 14,
+            "share": 0.069
+          },
+          {
+            "dest": "DAL",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.0296
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 160,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 90,
+            "unique_devices": 89,
+            "share": 0.5625
+          },
+          {
+            "dest": "AUS",
+            "trips": 48,
+            "unique_devices": 45,
+            "share": 0.3
+          },
+          {
+            "dest": "SAT",
+            "trips": 17,
+            "unique_devices": 17,
+            "share": 0.1062
+          },
+          {
+            "dest": "DAL",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.0312
+          }
+        ]
+      }
+    },
+    "2026-Q2": {
+      "inbound": {
+        "total_trips": 104,
+        "destinations": [
+          {
+            "dest": "DAL",
+            "trips": 42,
+            "unique_devices": 42,
+            "share": 0.4038
+          },
+          {
+            "dest": "HOU",
+            "trips": 33,
+            "unique_devices": 30,
+            "share": 0.3173
+          },
+          {
+            "dest": "AUS",
+            "trips": 16,
+            "unique_devices": 16,
+            "share": 0.1538
+          },
+          {
+            "dest": "SAT",
+            "trips": 13,
+            "unique_devices": 11,
+            "share": 0.125
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 126,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 49,
+            "unique_devices": 42,
+            "share": 0.3889
+          },
+          {
+            "dest": "DAL",
+            "trips": 43,
+            "unique_devices": 42,
+            "share": 0.3413
+          },
+          {
+            "dest": "AUS",
+            "trips": 18,
+            "unique_devices": 16,
+            "share": 0.1429
+          },
+          {
+            "dest": "SAT",
+            "trips": 16,
+            "unique_devices": 13,
+            "share": 0.127
+          }
+        ]
+      }
+    },
+    "2026-Q1": {
+      "outbound": {
+        "total_trips": 78,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 53,
+            "unique_devices": 51,
+            "share": 0.6795
+          },
+          {
+            "dest": "AUS",
+            "trips": 13,
+            "unique_devices": 12,
+            "share": 0.1667
+          },
+          {
+            "dest": "DAL",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.0769
+          },
+          {
+            "dest": "SAT",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.0769
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 60,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 33,
+            "unique_devices": 32,
+            "share": 0.55
+          },
+          {
+            "dest": "AUS",
+            "trips": 17,
+            "unique_devices": 15,
+            "share": 0.2833
+          },
+          {
+            "dest": "SAT",
+            "trips": 9,
+            "unique_devices": 9,
+            "share": 0.15
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0167
+          }
+        ]
+      }
+    },
+    "2024-Q3": {
+      "inbound": {
+        "total_trips": 19,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 9,
+            "unique_devices": 8,
+            "share": 0.4737
+          },
+          {
+            "dest": "AUS",
+            "trips": 8,
+            "unique_devices": 7,
+            "share": 0.4211
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.1053
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 14,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 8,
+            "unique_devices": 8,
+            "share": 0.5714
+          },
+          {
+            "dest": "AUS",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.3571
+          },
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0714
+          }
+        ]
+      }
+    }
+  },
+  "MAF": {
+    "2025-Q4": {
+      "inbound": {
+        "total_trips": 248,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 228,
+            "unique_devices": 206,
+            "share": 0.9194
+          },
+          {
+            "dest": "AUS",
+            "trips": 18,
+            "unique_devices": 18,
+            "share": 0.0726
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0081
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 344,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 306,
+            "unique_devices": 259,
+            "share": 0.8895
+          },
+          {
+            "dest": "AUS",
+            "trips": 26,
+            "unique_devices": 25,
+            "share": 0.0756
+          },
+          {
+            "dest": "SAT",
+            "trips": 9,
+            "unique_devices": 9,
+            "share": 0.0262
+          },
+          {
+            "dest": "DAL",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0087
+          }
+        ]
+      }
+    },
+    "2025-Q1": {
+      "outbound": {
+        "total_trips": 89,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 65,
+            "unique_devices": 56,
+            "share": 0.7303
+          },
+          {
+            "dest": "AUS",
+            "trips": 23,
+            "unique_devices": 20,
+            "share": 0.2584
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0112
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 60,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 37,
+            "unique_devices": 35,
+            "share": 0.6167
+          },
+          {
+            "dest": "AUS",
+            "trips": 19,
+            "unique_devices": 15,
+            "share": 0.3167
+          },
+          {
+            "dest": "SAT",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.0667
+          }
+        ]
+      }
+    },
+    "2025-Q2": {
+      "inbound": {
+        "total_trips": 94,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 74,
+            "unique_devices": 74,
+            "share": 0.7872
+          },
+          {
+            "dest": "AUS",
+            "trips": 16,
+            "unique_devices": 13,
+            "share": 0.1702
+          },
+          {
+            "dest": "SAT",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0319
+          },
+          {
+            "dest": "ABQ",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0106
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 164,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 130,
+            "unique_devices": 124,
+            "share": 0.7927
+          },
+          {
+            "dest": "AUS",
+            "trips": 27,
+            "unique_devices": 24,
+            "share": 0.1646
+          },
+          {
+            "dest": "SAT",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.0427
+          }
+        ]
+      }
+    },
+    "2026-Q2": {
+      "inbound": {
+        "total_trips": 214,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 175,
+            "unique_devices": 139,
+            "share": 0.8178
+          },
+          {
+            "dest": "AUS",
+            "trips": 17,
+            "unique_devices": 16,
+            "share": 0.0794
+          },
+          {
+            "dest": "DAL",
+            "trips": 15,
+            "unique_devices": 15,
+            "share": 0.0701
+          },
+          {
+            "dest": "SAT",
+            "trips": 7,
+            "unique_devices": 6,
+            "share": 0.0327
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 210,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 158,
+            "unique_devices": 139,
+            "share": 0.7524
+          },
+          {
+            "dest": "DAL",
+            "trips": 28,
+            "unique_devices": 28,
+            "share": 0.1333
+          },
+          {
+            "dest": "AUS",
+            "trips": 20,
+            "unique_devices": 19,
+            "share": 0.0952
+          },
+          {
+            "dest": "HRL",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0095
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0095
+          }
+        ]
+      }
+    },
+    "2025-Q3": {
+      "outbound": {
+        "total_trips": 241,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 210,
+            "unique_devices": 195,
+            "share": 0.8714
+          },
+          {
+            "dest": "AUS",
+            "trips": 21,
+            "unique_devices": 18,
+            "share": 0.0871
+          },
+          {
+            "dest": "SAT",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.0249
+          },
+          {
+            "dest": "DAL",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.0166
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 176,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 146,
+            "unique_devices": 135,
+            "share": 0.8295
+          },
+          {
+            "dest": "AUS",
+            "trips": 22,
+            "unique_devices": 20,
+            "share": 0.125
+          },
+          {
+            "dest": "SAT",
+            "trips": 6,
+            "unique_devices": 5,
+            "share": 0.0341
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0057
+          },
+          {
+            "dest": "MFE",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0057
+          }
+        ]
+      }
+    },
+    "2026-Q1": {
+      "outbound": {
+        "total_trips": 102,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 91,
+            "unique_devices": 79,
+            "share": 0.8922
+          },
+          {
+            "dest": "AUS",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.0392
+          },
+          {
+            "dest": "DAL",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.0392
+          },
+          {
+            "dest": "SAT",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0294
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 69,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 57,
+            "unique_devices": 55,
+            "share": 0.8261
+          },
+          {
+            "dest": "SAT",
+            "trips": 5,
+            "unique_devices": 4,
+            "share": 0.0725
+          },
+          {
+            "dest": "AUS",
+            "trips": 5,
+            "unique_devices": 4,
+            "share": 0.0725
+          },
+          {
+            "dest": "DAL",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.029
+          }
+        ]
+      }
+    },
+    "2024-Q4": {
+      "inbound": {
+        "total_trips": 79,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 68,
+            "unique_devices": 57,
+            "share": 0.8608
+          },
+          {
+            "dest": "AUS",
+            "trips": 10,
+            "unique_devices": 9,
+            "share": 0.1266
+          },
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0127
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 113,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 90,
+            "unique_devices": 70,
+            "share": 0.7965
+          },
+          {
+            "dest": "AUS",
+            "trips": 21,
+            "unique_devices": 15,
+            "share": 0.1858
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0177
+          }
+        ]
+      }
+    },
+    "2024-Q3": {
+      "outbound": {
+        "total_trips": 42,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 29,
+            "unique_devices": 28,
+            "share": 0.6905
+          },
+          {
+            "dest": "AUS",
+            "trips": 13,
+            "unique_devices": 13,
+            "share": 0.3095
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 36,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 20,
+            "unique_devices": 19,
+            "share": 0.5556
+          },
+          {
+            "dest": "AUS",
+            "trips": 14,
+            "unique_devices": 13,
+            "share": 0.3889
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0556
+          }
+        ]
+      }
+    }
+  },
+  "LBB": {
+    "2025-Q4": {
+      "inbound": {
+        "total_trips": 108,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 55,
+            "unique_devices": 51,
+            "share": 0.5093
+          },
+          {
+            "dest": "HOU",
+            "trips": 37,
+            "unique_devices": 35,
+            "share": 0.3426
+          },
+          {
+            "dest": "SAT",
+            "trips": 16,
+            "unique_devices": 15,
+            "share": 0.1481
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 158,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 93,
+            "unique_devices": 84,
+            "share": 0.5886
+          },
+          {
+            "dest": "HOU",
+            "trips": 49,
+            "unique_devices": 43,
+            "share": 0.3101
+          },
+          {
+            "dest": "SAT",
+            "trips": 11,
+            "unique_devices": 9,
+            "share": 0.0696
+          },
+          {
+            "dest": "DAL",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.0316
+          }
+        ]
+      }
+    },
+    "2025-Q1": {
+      "inbound": {
+        "total_trips": 16,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 9,
+            "unique_devices": 9,
+            "share": 0.5625
+          },
+          {
+            "dest": "HOU",
+            "trips": 5,
+            "unique_devices": 4,
+            "share": 0.3125
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.125
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 34,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 20,
+            "unique_devices": 13,
+            "share": 0.5882
+          },
+          {
+            "dest": "HOU",
+            "trips": 13,
+            "unique_devices": 12,
+            "share": 0.3824
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0294
+          }
+        ]
+      }
+    },
+    "2024-Q4": {
+      "inbound": {
+        "total_trips": 20,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 9,
+            "unique_devices": 8,
+            "share": 0.45
+          },
+          {
+            "dest": "AUS",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.35
+          },
+          {
+            "dest": "SAT",
+            "trips": 4,
+            "unique_devices": 3,
+            "share": 0.2
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 41,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 28,
+            "unique_devices": 22,
+            "share": 0.6829
+          },
+          {
+            "dest": "HOU",
+            "trips": 10,
+            "unique_devices": 10,
+            "share": 0.2439
+          },
+          {
+            "dest": "SAT",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0732
+          }
+        ]
+      }
+    },
+    "2025-Q2": {
+      "inbound": {
+        "total_trips": 55,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 34,
+            "unique_devices": 34,
+            "share": 0.6182
+          },
+          {
+            "dest": "HOU",
+            "trips": 16,
+            "unique_devices": 16,
+            "share": 0.2909
+          },
+          {
+            "dest": "SAT",
+            "trips": 5,
+            "unique_devices": 4,
+            "share": 0.0909
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 63,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 37,
+            "unique_devices": 37,
+            "share": 0.5873
+          },
+          {
+            "dest": "HOU",
+            "trips": 21,
+            "unique_devices": 21,
+            "share": 0.3333
+          },
+          {
+            "dest": "SAT",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.0635
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0159
+          }
+        ]
+      }
+    },
+    "2026-Q1": {
+      "inbound": {
+        "total_trips": 21,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.5238
+          },
+          {
+            "dest": "HOU",
+            "trips": 8,
+            "unique_devices": 8,
+            "share": 0.381
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0952
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 19,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 8,
+            "unique_devices": 8,
+            "share": 0.4211
+          },
+          {
+            "dest": "AUS",
+            "trips": 7,
+            "unique_devices": 6,
+            "share": 0.3684
+          },
+          {
+            "dest": "SAT",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.1579
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0526
+          }
+        ]
+      }
+    },
+    "2026-Q2": {
+      "outbound": {
+        "total_trips": 134,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 59,
+            "unique_devices": 55,
+            "share": 0.4403
+          },
+          {
+            "dest": "DAL",
+            "trips": 51,
+            "unique_devices": 51,
+            "share": 0.3806
+          },
+          {
+            "dest": "AUS",
+            "trips": 18,
+            "unique_devices": 17,
+            "share": 0.1343
+          },
+          {
+            "dest": "SAT",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.0448
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 99,
+        "destinations": [
+          {
+            "dest": "DAL",
+            "trips": 48,
+            "unique_devices": 47,
+            "share": 0.4848
+          },
+          {
+            "dest": "HOU",
+            "trips": 39,
+            "unique_devices": 38,
+            "share": 0.3939
+          },
+          {
+            "dest": "AUS",
+            "trips": 9,
+            "unique_devices": 8,
+            "share": 0.0909
+          },
+          {
+            "dest": "SAT",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0303
+          }
+        ]
+      }
+    },
+    "2025-Q3": {
+      "inbound": {
+        "total_trips": 87,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 50,
+            "unique_devices": 43,
+            "share": 0.5747
+          },
+          {
+            "dest": "HOU",
+            "trips": 24,
+            "unique_devices": 23,
+            "share": 0.2759
+          },
+          {
+            "dest": "SAT",
+            "trips": 10,
+            "unique_devices": 9,
+            "share": 0.1149
+          },
+          {
+            "dest": "DAL",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.023
+          },
+          {
+            "dest": "HRL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0115
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 74,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 45,
+            "unique_devices": 42,
+            "share": 0.6081
+          },
+          {
+            "dest": "HOU",
+            "trips": 18,
+            "unique_devices": 17,
+            "share": 0.2432
+          },
+          {
+            "dest": "SAT",
+            "trips": 11,
+            "unique_devices": 10,
+            "share": 0.1486
+          }
+        ]
+      }
+    },
+    "2024-Q3": {
+      "outbound": {
+        "total_trips": 18,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 8,
+            "unique_devices": 8,
+            "share": 0.4444
+          },
+          {
+            "dest": "HOU",
+            "trips": 8,
+            "unique_devices": 8,
+            "share": 0.4444
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 1,
+            "share": 0.1111
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 9,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.6667
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.2222
+          },
+          {
+            "dest": "AUS",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.1111
+          }
+        ]
+      }
+    },
+    "2026-Q3": {
+      "outbound": {
+        "total_trips": 1,
+        "destinations": [
+          {
+            "dest": "ABQ",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 1.0
+          }
+        ]
+      }
+    }
+  },
+  "AMA": {
+    "2025-Q4": {
+      "outbound": {
+        "total_trips": 62,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 31,
+            "unique_devices": 27,
+            "share": 0.5
+          },
+          {
+            "dest": "HOU",
+            "trips": 22,
+            "unique_devices": 21,
+            "share": 0.3548
+          },
+          {
+            "dest": "SAT",
+            "trips": 8,
+            "unique_devices": 7,
+            "share": 0.129
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0161
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 58,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 26,
+            "unique_devices": 24,
+            "share": 0.4483
+          },
+          {
+            "dest": "HOU",
+            "trips": 19,
+            "unique_devices": 19,
+            "share": 0.3276
+          },
+          {
+            "dest": "SAT",
+            "trips": 13,
+            "unique_devices": 11,
+            "share": 0.2241
+          }
+        ]
+      }
+    },
+    "2026-Q2": {
+      "outbound": {
+        "total_trips": 101,
+        "destinations": [
+          {
+            "dest": "DAL",
+            "trips": 58,
+            "unique_devices": 58,
+            "share": 0.5743
+          },
+          {
+            "dest": "HOU",
+            "trips": 27,
+            "unique_devices": 26,
+            "share": 0.2673
+          },
+          {
+            "dest": "AUS",
+            "trips": 13,
+            "unique_devices": 13,
+            "share": 0.1287
+          },
+          {
+            "dest": "SAT",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0297
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 69,
+        "destinations": [
+          {
+            "dest": "DAL",
+            "trips": 37,
+            "unique_devices": 37,
+            "share": 0.5362
+          },
+          {
+            "dest": "AUS",
+            "trips": 14,
+            "unique_devices": 13,
+            "share": 0.2029
+          },
+          {
+            "dest": "HOU",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.1594
+          },
+          {
+            "dest": "SAT",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.1014
+          }
+        ]
+      }
+    },
+    "2025-Q1": {
+      "inbound": {
+        "total_trips": 7,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.7143
+          },
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.1429
+          },
+          {
+            "dest": "AUS",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.1429
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 14,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 10,
+            "unique_devices": 7,
+            "share": 0.7143
+          },
+          {
+            "dest": "AUS",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.2143
+          },
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0714
+          }
+        ]
+      }
+    },
+    "2024-Q3": {
+      "outbound": {
+        "total_trips": 7,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.7143
+          },
+          {
+            "dest": "AUS",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.2857
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 12,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.4167
+          },
+          {
+            "dest": "SAT",
+            "trips": 4,
+            "unique_devices": 3,
+            "share": 0.3333
+          },
+          {
+            "dest": "HOU",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.25
+          }
+        ]
+      }
+    },
+    "2024-Q4": {
+      "outbound": {
+        "total_trips": 24,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 19,
+            "unique_devices": 8,
+            "share": 0.7917
+          },
+          {
+            "dest": "AUS",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.1667
+          },
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0417
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 27,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 15,
+            "unique_devices": 13,
+            "share": 0.5556
+          },
+          {
+            "dest": "AUS",
+            "trips": 8,
+            "unique_devices": 7,
+            "share": 0.2963
+          },
+          {
+            "dest": "SAT",
+            "trips": 4,
+            "unique_devices": 2,
+            "share": 0.1481
+          }
+        ]
+      }
+    },
+    "2025-Q2": {
+      "outbound": {
+        "total_trips": 28,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 12,
+            "unique_devices": 10,
+            "share": 0.4286
+          },
+          {
+            "dest": "AUS",
+            "trips": 9,
+            "unique_devices": 9,
+            "share": 0.3214
+          },
+          {
+            "dest": "SAT",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.1786
+          },
+          {
+            "dest": "DAL",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0714
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 22,
+        "destinations": [
+          {
+            "dest": "SAT",
+            "trips": 10,
+            "unique_devices": 10,
+            "share": 0.4545
+          },
+          {
+            "dest": "HOU",
+            "trips": 10,
+            "unique_devices": 9,
+            "share": 0.4545
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0455
+          },
+          {
+            "dest": "AUS",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0455
+          }
+        ]
+      }
+    },
+    "2026-Q1": {
+      "inbound": {
+        "total_trips": 15,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 7,
+            "unique_devices": 6,
+            "share": 0.4667
+          },
+          {
+            "dest": "HOU",
+            "trips": 7,
+            "unique_devices": 5,
+            "share": 0.4667
+          },
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0667
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 20,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 11,
+            "unique_devices": 8,
+            "share": 0.55
+          },
+          {
+            "dest": "SAT",
+            "trips": 6,
+            "unique_devices": 5,
+            "share": 0.3
+          },
+          {
+            "dest": "DAL",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.15
+          }
+        ]
+      }
+    },
+    "2025-Q3": {
+      "inbound": {
+        "total_trips": 34,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 14,
+            "unique_devices": 14,
+            "share": 0.4118
+          },
+          {
+            "dest": "HOU",
+            "trips": 9,
+            "unique_devices": 8,
+            "share": 0.2647
+          },
+          {
+            "dest": "SAT",
+            "trips": 9,
+            "unique_devices": 8,
+            "share": 0.2647
+          },
+          {
+            "dest": "DAL",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0588
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 26,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 13,
+            "unique_devices": 13,
+            "share": 0.5
+          },
+          {
+            "dest": "HOU",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.2692
+          },
+          {
+            "dest": "SAT",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.2308
+          }
+        ]
+      }
+    }
+  },
+  "MFE": {
+    "2025-Q4": {
+      "outbound": {
+        "total_trips": 19,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 14,
+            "unique_devices": 13,
+            "share": 0.7368
+          },
+          {
+            "dest": "HOU",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.1579
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.1053
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 31,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 20,
+            "unique_devices": 20,
+            "share": 0.6452
+          },
+          {
+            "dest": "SAT",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.2258
+          },
+          {
+            "dest": "HOU",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.129
+          }
+        ]
+      }
+    },
+    "2025-Q3": {
+      "outbound": {
+        "total_trips": 18,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.6111
+          },
+          {
+            "dest": "SAT",
+            "trips": 5,
+            "unique_devices": 4,
+            "share": 0.2778
+          },
+          {
+            "dest": "HOU",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0556
+          },
+          {
+            "dest": "MAF",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0556
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 16,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 12,
+            "unique_devices": 11,
+            "share": 0.75
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.125
+          },
+          {
+            "dest": "HOU",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.125
+          }
+        ]
+      }
+    },
+    "2026-Q1": {
+      "inbound": {
+        "total_trips": 7,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.8571
+          },
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.1429
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 12,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 9,
+            "unique_devices": 9,
+            "share": 0.75
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.1667
+          },
+          {
+            "dest": "HOU",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0833
+          }
+        ]
+      }
+    },
+    "2025-Q1": {
+      "outbound": {
+        "total_trips": 9,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 8,
+            "unique_devices": 8,
+            "share": 0.8889
+          },
+          {
+            "dest": "HOU",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.1111
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 7,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 1.0
+          }
+        ]
+      }
+    },
+    "2024-Q3": {
+      "outbound": {
+        "total_trips": 9,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.7778
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.2222
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 4,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 1.0
+          }
+        ]
+      }
+    },
+    "2025-Q2": {
+      "outbound": {
+        "total_trips": 18,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 17,
+            "unique_devices": 16,
+            "share": 0.9444
+          },
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0556
+          }
+        ]
+      },
+      "inbound": {
+        "total_trips": 13,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.8462
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.1538
+          }
+        ]
+      }
+    },
+    "2024-Q4": {
+      "inbound": {
+        "total_trips": 7,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.8571
+          },
+          {
+            "dest": "HOU",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.1429
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 16,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 16,
+            "unique_devices": 14,
+            "share": 1.0
+          }
+        ]
+      }
+    },
+    "2026-Q2": {
+      "inbound": {
+        "total_trips": 10,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 8,
+            "unique_devices": 7,
+            "share": 0.8
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.2
+          }
+        ]
+      },
+      "outbound": {
+        "total_trips": 15,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.7333
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.1333
+          },
+          {
+            "dest": "HOU",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.1333
+          }
+        ]
+      }
+    }
+  },
+  "CJS": {
+    "2025-Q1": {
+      "outbound": {
+        "total_trips": 1,
+        "destinations": [
+          {
+            "dest": "AUS",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 1.0
+          }
+        ]
+      }
+    },
+    "2024-Q4": {
+      "inbound": {
+        "total_trips": 1,
+        "destinations": [
+          {
+            "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 1.0
+          }
+        ]
+      }
+    }
+  }
+}
