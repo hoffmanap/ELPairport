@@ -126,6 +126,173 @@ function computeNearestAirports(geometry, DATA, airportCodes) {
   }
   return result;
 }
+
+// Combines multiple quarters' snapshots into one synthetic snapshot with
+// the SAME shape as a single quarter, so every existing chart/panel can
+// consume it unchanged. IMPORTANT CAVEAT, surfaced in the UI wherever this
+// is used: this SUMS counts across quarters rather than deduplicating
+// devices seen in more than one quarter -- the underlying data here is
+// pre-aggregated per-quarter counts, not device ID sets, so there's no way
+// to know from this data alone whether the same device was counted in two
+// different quarters. A repeat traveler across the combined period is
+// counted once per quarter they appeared in, not once overall.
+//
+// tx_counties and by_state/by_country are combined EXACTLY (they're full,
+// untruncated per-quarter rollups). top_counties is combined on a
+// best-effort basis: each quarter's list is already truncated to the
+// national top 15, so a county that was e.g. 18th in every quarter but
+// would rank in the combined top 15 can be invisibly missing. This
+// doesn't affect the county MAP (which uses the untruncated tx_counties),
+// only the ranked "Top Origin Counties" list and national scatter chart.
+function combineQuarterSnapshots(quartersData, quarterList) {
+  let total_devices = 0;
+  let total_pings = 0;
+  const tx_counties = {};
+  const topCountyAgg = {};
+  const stateAgg = {};
+  const countryAgg = {};
+  for (const q of quarterList) {
+    const snap = quartersData[q];
+    if (!snap) continue;
+    total_devices += snap.total_devices || 0;
+    total_pings += snap.total_pings || 0;
+    for (const [fips, d] of Object.entries(snap.tx_counties || {})) {
+      tx_counties[fips] = (tx_counties[fips] || 0) + d;
+    }
+    for (const c of snap.top_counties || []) {
+      const key = c.fips || c.label;
+      if (!topCountyAgg[key]) topCountyAgg[key] = {
+        ...c,
+        devices: 0,
+        _distSum: 0,
+        _distN: 0
+      };
+      topCountyAgg[key].devices += c.devices;
+      if (c.avg_distance_mi != null) {
+        topCountyAgg[key]._distSum += c.avg_distance_mi * c.devices;
+        topCountyAgg[key]._distN += c.devices;
+      }
+    }
+    for (const s of snap.by_state || []) {
+      stateAgg[s.state] = (stateAgg[s.state] || 0) + s.devices;
+    }
+    for (const c of snap.by_country || []) {
+      countryAgg[c.country] = (countryAgg[c.country] || 0) + c.devices;
+    }
+  }
+  const tx_counties_share = {};
+  for (const [fips, d] of Object.entries(tx_counties)) {
+    tx_counties_share[fips] = total_devices ? d / total_devices : 0;
+  }
+  const top_counties = Object.values(topCountyAgg).map(c => ({
+    ...c,
+    share: total_devices ? c.devices / total_devices : 0,
+    avg_distance_mi: c._distN ? Math.round(c._distSum / c._distN * 10) / 10 : c.avg_distance_mi
+  })).sort((a, b) => b.devices - a.devices).slice(0, 15);
+  const by_state = Object.entries(stateAgg).map(([state, devices]) => ({
+    state,
+    devices,
+    share: total_devices ? devices / total_devices : 0
+  })).sort((a, b) => b.devices - a.devices);
+  const by_country = Object.entries(countryAgg).map(([country, devices]) => ({
+    country,
+    devices,
+    share: total_devices ? devices / total_devices : 0
+  })).sort((a, b) => b.devices - a.devices);
+  return {
+    total_devices,
+    total_pings,
+    county_count: Object.keys(tx_counties).length,
+    tx_counties,
+    tx_counties_share,
+    top_counties,
+    by_state,
+    by_country,
+    _combinedFrom: quarterList
+  };
+}
+
+// Reusable quarter-selection control: single quarter (year/quarter
+// buttons), all quarters combined, or a hand-picked custom set.
+function QuarterPicker({
+  quarters,
+  mode,
+  setMode,
+  single,
+  setSingle,
+  custom,
+  setCustom
+}) {
+  const years = useMemo(() => Array.from(new Set(quarters.map(q => q.split("-")[0]))).sort(), [quarters]);
+  function toggleCustom(q) {
+    setCustom(prev => {
+      const next = new Set(prev);
+      if (next.has(q)) next.delete(q);else next.add(q);
+      return next;
+    });
+  }
+  return /*#__PURE__*/_jsxs("div", {
+    className: "mb-4 bg-slate-900/60 border border-slate-800 rounded-lg px-4 py-3",
+    children: [/*#__PURE__*/_jsxs("div", {
+      className: "flex items-center justify-between mb-2 flex-wrap gap-2",
+      children: [/*#__PURE__*/_jsx("span", {
+        className: "text-xs uppercase tracking-wider text-slate-500",
+        children: "Period"
+      }), /*#__PURE__*/_jsx("div", {
+        className: "flex gap-1",
+        children: [["single", "Single Quarter"], ["all", "All Quarters"], ["custom", "Custom Selection"]].map(([m, label]) => /*#__PURE__*/_jsx("button", {
+          onClick: () => setMode(m),
+          className: `px-2.5 py-1 rounded text-xs border transition-colors ${mode === m ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400"}`,
+          children: label
+        }, m))
+      })]
+    }), mode === "single" && /*#__PURE__*/_jsxs(_Fragment, {
+      children: [/*#__PURE__*/_jsx("div", {
+        className: "flex gap-1.5 flex-wrap mb-2",
+        children: years.map(y => /*#__PURE__*/_jsx("button", {
+          onClick: () => {
+            const candidates = quarters.filter(q => q.startsWith(String(y)));
+            if (candidates.length) setSingle(candidates[candidates.length - 1]);
+          },
+          className: `px-2.5 py-1 rounded text-xs font-mono border transition-colors ${single?.startsWith(String(y)) ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400 hover:border-slate-500"}`,
+          children: y
+        }, y))
+      }), /*#__PURE__*/_jsx("div", {
+        className: "flex gap-1.5 flex-wrap",
+        children: ["Q1", "Q2", "Q3", "Q4"].map(qLabel => {
+          const year = single ? single.split("-")[0] : years[years.length - 1];
+          const candidate = `${year}-${qLabel}`;
+          const exists = quarters.includes(candidate);
+          const active = candidate === single;
+          return /*#__PURE__*/_jsx("button", {
+            disabled: !exists,
+            onClick: () => setSingle(candidate),
+            className: `px-3 py-1 rounded text-xs border transition-colors ${active ? "border-amber-400 bg-amber-400/10 text-amber-300" : exists ? "border-slate-700 text-slate-300 hover:border-slate-500" : "border-slate-850 text-slate-700 cursor-not-allowed"}`,
+            children: qLabel
+          }, qLabel);
+        })
+      })]
+    }), mode === "all" && /*#__PURE__*/_jsxs("p", {
+      className: "text-xs text-slate-500",
+      children: ["Combining all ", quarters.length, " available quarters (", quarters[0], " – ", quarters[quarters.length - 1], "). Counts are summed, not deduplicated across quarters — see note below."]
+    }), mode === "custom" && /*#__PURE__*/_jsxs(_Fragment, {
+      children: [/*#__PURE__*/_jsx("div", {
+        className: "flex gap-1.5 flex-wrap mb-2",
+        children: quarters.map(q => {
+          const active = custom.has(q);
+          return /*#__PURE__*/_jsx("button", {
+            onClick: () => toggleCustom(q),
+            className: `px-2 py-1 rounded text-xs font-mono border transition-colors ${active ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-500 hover:border-slate-500"}`,
+            children: q
+          }, q);
+        })
+      }), /*#__PURE__*/_jsxs("p", {
+        className: "text-xs text-slate-500",
+        children: [custom.size, " quarter", custom.size === 1 ? "" : "s", " selected."]
+      })]
+    })]
+  });
+}
 function distanceBucket(mi) {
   if (mi == null) return {
     key: "unknown",
@@ -195,34 +362,30 @@ export default function CatchmentDashboard() {
   const [tab, setTab] = useState("catchment");
   const hasData = Boolean(DATA && DATA[airport]);
   const quarters = useMemo(() => hasData ? Object.keys(DATA[airport].quarters).sort(sortQuarters) : [], [airport, hasData]);
-  // -1 is a sentinel meaning "not set yet" -- this happens on first mount,
-  // before the fetch() in the top-level useEffect has resolved, when
-  // quarters is still []. The effect below snaps it to the latest quarter
-  // as soon as real data shows up, so this never stays -1 once loaded.
-  const [qIdx, setQIdx] = useState(-1);
+  const [periodMode, setPeriodMode] = useState("single"); // "single" | "all" | "custom"
+  const [singleQuarter, setSingleQuarter] = useState(null);
+  const [customQuarters, setCustomQuarters] = useState(new Set());
   useEffect(() => {
-    if (quarters.length && qIdx === -1) {
-      setQIdx(quarters.length - 1);
-    }
-  }, [quarters, qIdx]);
+    if (quarters.length && !singleQuarter) setSingleQuarter(quarters[quarters.length - 1]);
+  }, [quarters, singleQuarter]);
+  const selectedQuarters = useMemo(() => {
+    if (periodMode === "all") return quarters;
+    if (periodMode === "custom") return quarters.filter(q => customQuarters.has(q));
+    return singleQuarter ? [singleQuarter] : [];
+  }, [periodMode, quarters, singleQuarter, customQuarters]);
+  const quarter = periodMode === "single" ? singleQuarter : null;
+  const snap = useMemo(() => {
+    if (!hasData || !selectedQuarters.length) return null;
+    if (selectedQuarters.length === 1) return DATA[airport].quarters[selectedQuarters[0]];
+    return combineQuarterSnapshots(DATA[airport].quarters, selectedQuarters);
+  }, [hasData, airport, DATA, selectedQuarters]);
 
-  // clamp qIdx into range; if quarters is empty (still loading, or genuinely
-  // no data), fall back to 0 rather than a negative index.
-  const safeQIdx = quarters.length ? Math.min(Math.max(qIdx, 0), quarters.length - 1) : 0;
-  const quarter = quarters[safeQIdx];
-  const snap = hasData && quarter ? DATA[airport].quarters[quarter] : null;
-  const prevQuarter = safeQIdx > 0 ? quarters[safeQIdx - 1] : null;
+  // Quarter-over-quarter change only makes sense comparing exactly one
+  // quarter to the one before it -- not meaningful once multiple quarters
+  // are combined, so it's simply not shown in that case (see KPI render).
+  const prevQuarter = periodMode === "single" && quarter ? quarters[quarters.indexOf(quarter) - 1] : null;
   const prevSnap = prevQuarter && hasData ? DATA[airport].quarters[prevQuarter] : null;
   const qoq = snap && prevSnap ? (snap.total_devices - prevSnap.total_devices) / prevSnap.total_devices * 100 : null;
-  const years = useMemo(() => {
-    const set = new Set(quarters.map(q => q.split("-")[0]));
-    return Array.from(set).sort();
-  }, [quarters]);
-  function jumpToYear(year) {
-    // land on the latest quarter available within that year
-    const candidates = quarters.filter(q => q && q.startsWith(String(year)));
-    if (candidates.length) setQIdx(quarters.indexOf(candidates[candidates.length - 1]));
-  }
   const [trendMode, setTrendMode] = useState("indexed"); // "raw" | "indexed"
   const trend = useMemo(() => {
     if (!hasData) return [];
@@ -246,10 +409,12 @@ export default function CatchmentDashboard() {
     const core = snap.top_counties.filter(c => c.avg_distance_mi != null && c.avg_distance_mi <= 60).reduce((s, c) => s + c.share, 0);
     return Math.round(core * 1000) / 10;
   }, [snap]);
+  const periodLabel = periodMode === "single" ? quarter : periodMode === "all" ? "all quarters combined" : `${selectedQuarters.length} selected quarters`;
   function handleAirportChange(code) {
     setAirport(code);
-    const q = DATA && DATA[code] ? Object.keys(DATA[code].quarters).sort(sortQuarters) : [];
-    setQIdx(Math.max(q.length - 1, 0));
+    setSingleQuarter(null); // re-derived to that airport's latest quarter by the effect above
+    setPeriodMode("single");
+    setCustomQuarters(new Set());
   }
   if (loadError) {
     return /*#__PURE__*/_jsx("div", {
@@ -376,401 +541,384 @@ export default function CatchmentDashboard() {
           }), " (single-file mode or add it to your manifest.json) to populate this view. Every other airport's data stays untouched when you do."]
         })]
       }), tab === "catchment" && hasData && /*#__PURE__*/_jsxs(_Fragment, {
-        children: [/*#__PURE__*/_jsxs("div", {
-          className: "mb-6 bg-slate-900/60 border border-slate-800 rounded-lg px-4 py-3",
+        children: [/*#__PURE__*/_jsx(QuarterPicker, {
+          quarters: quarters,
+          mode: periodMode,
+          setMode: setPeriodMode,
+          single: singleQuarter,
+          setSingle: setSingleQuarter,
+          custom: customQuarters,
+          setCustom: setCustomQuarters
+        }), !snap ? /*#__PURE__*/_jsx("div", {
+          className: "bg-slate-900/60 border border-slate-800 border-dashed rounded-lg p-8 text-center",
+          children: /*#__PURE__*/_jsx("p", {
+            className: "text-xs text-slate-500",
+            children: "No quarters selected. Pick at least one above to see data."
+          })
+        }) : /*#__PURE__*/_jsxs(_Fragment, {
           children: [/*#__PURE__*/_jsxs("div", {
-            className: "flex items-center justify-between mb-3",
-            children: [/*#__PURE__*/_jsx("span", {
-              className: "text-xs uppercase tracking-wider text-slate-500",
-              children: "Period"
-            }), /*#__PURE__*/_jsx("span", {
-              className: "text-sm font-semibold text-amber-400",
-              children: quarter
+            className: "grid grid-cols-2 md:grid-cols-4 gap-3 mb-6",
+            children: [/*#__PURE__*/_jsx(KPI, {
+              label: "Sample Size (devices)",
+              value: fmt(snap.total_devices),
+              sub: periodMode !== "single" ? `summed across ${selectedQuarters.length} quarters, not deduped` : qoq !== null ? `${qoq >= 0 ? "+" : ""}${qoq.toFixed(1)}% QoQ (sample, not visitation)` : "no prior Q",
+              subColor: qoq >= 0 ? "text-teal-400" : "text-rose-400"
+            }), /*#__PURE__*/_jsx(KPI, {
+              label: "Total Pings",
+              value: fmt(snap.total_pings),
+              sub: `${(snap.total_pings / snap.total_devices).toFixed(1)} pings / device`
+            }), /*#__PURE__*/_jsx(KPI, {
+              label: "Origin Counties",
+              value: fmt(snap.county_count),
+              sub: "distinct home locations"
+            }), /*#__PURE__*/_jsx(KPI, {
+              label: "Core Catchment Share",
+              value: `${localShare}%`,
+              sub: `home ≤ 60 mi from ${airport}`
             })]
-          }), /*#__PURE__*/_jsx("div", {
-            className: "flex gap-1.5 flex-wrap mb-2",
-            children: years.map(y => /*#__PURE__*/_jsx("button", {
-              onClick: () => jumpToYear(y),
-              className: `px-2.5 py-1 rounded text-xs font-mono border transition-colors ${quarter?.startsWith(String(y)) ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400 hover:border-slate-500"}`,
-              children: y
-            }, y))
-          }), /*#__PURE__*/_jsx("div", {
-            className: "flex gap-1.5 flex-wrap",
-            children: ["Q1", "Q2", "Q3", "Q4"].map(qLabel => {
-              const year = quarter?.split("-")[0] || "";
-              const candidate = `${year}-${qLabel}`;
-              const exists = quarters.includes(candidate);
-              const active = candidate === quarter;
-              return /*#__PURE__*/_jsx("button", {
-                disabled: !exists,
-                onClick: () => setQIdx(quarters.indexOf(candidate)),
-                className: `px-3 py-1 rounded text-xs border transition-colors ${active ? "border-amber-400 bg-amber-400/10 text-amber-300" : exists ? "border-slate-700 text-slate-300 hover:border-slate-500" : "border-slate-850 text-slate-700 cursor-not-allowed"}`,
-                children: qLabel
-              }, qLabel);
-            })
-          })]
-        }), /*#__PURE__*/_jsxs("div", {
-          className: "grid grid-cols-2 md:grid-cols-4 gap-3 mb-6",
-          children: [/*#__PURE__*/_jsx(KPI, {
-            label: "Sample Size (devices)",
-            value: fmt(snap.total_devices),
-            sub: qoq !== null ? `${qoq >= 0 ? "+" : ""}${qoq.toFixed(1)}% QoQ (sample, not visitation)` : "no prior Q",
-            subColor: qoq >= 0 ? "text-teal-400" : "text-rose-400"
-          }), /*#__PURE__*/_jsx(KPI, {
-            label: "Total Pings",
-            value: fmt(snap.total_pings),
-            sub: `${(snap.total_pings / snap.total_devices).toFixed(1)} pings / device`
-          }), /*#__PURE__*/_jsx(KPI, {
-            label: "Origin Counties",
-            value: fmt(snap.county_count),
-            sub: "distinct home locations"
-          }), /*#__PURE__*/_jsx(KPI, {
-            label: "Core Catchment Share",
-            value: `${localShare}%`,
-            sub: `home ≤ 60 mi from ${airport}`
-          })]
-        }), /*#__PURE__*/_jsxs("div", {
-          className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4 mb-6",
-          children: [/*#__PURE__*/_jsxs("div", {
-            className: "flex items-center justify-between mb-1",
-            children: [/*#__PURE__*/_jsx("h3", {
-              className: "text-sm font-semibold text-slate-200",
-              children: "Texas Catchment by County"
-            }), /*#__PURE__*/_jsx(Info, {
-              className: "w-3.5 h-3.5 text-slate-600"
-            })]
-          }), /*#__PURE__*/_jsxs("p", {
-            className: "text-xs text-slate-500 mb-3",
-            children: ["All 254 TX counties · shaded by share of the ", quarter, " device sample (n=", fmt(snap.total_devices), "), not raw counts"]
-          }), /*#__PURE__*/_jsx(TexasCountyMap, {
-            countyShares: snap.tx_counties_share || {},
-            countyDevices: snap.tx_counties || {},
-            geometry: TX_COUNTY_GEOMETRY
           }), /*#__PURE__*/_jsxs("div", {
-            className: "flex flex-wrap gap-3 mt-3 text-[11px] text-slate-500",
-            children: [/*#__PURE__*/_jsxs("span", {
-              className: "flex items-center gap-1",
-              children: [/*#__PURE__*/_jsx("span", {
-                className: "w-2.5 h-2.5 rounded-sm inline-block",
-                style: {
-                  background: "#1e293b"
-                }
-              }), "No sample"]
-            }), /*#__PURE__*/_jsxs("span", {
-              className: "flex items-center gap-1",
-              children: [/*#__PURE__*/_jsx("span", {
-                className: "w-2.5 h-2.5 rounded-sm inline-block",
-                style: {
-                  background: "#0f766e"
-                }
-              }), "<0.05%"]
-            }), /*#__PURE__*/_jsxs("span", {
-              className: "flex items-center gap-1",
-              children: [/*#__PURE__*/_jsx("span", {
-                className: "w-2.5 h-2.5 rounded-sm inline-block",
-                style: {
-                  background: "#2dd4bf"
-                }
-              }), "0.05–0.2%"]
-            }), /*#__PURE__*/_jsxs("span", {
-              className: "flex items-center gap-1",
-              children: [/*#__PURE__*/_jsx("span", {
-                className: "w-2.5 h-2.5 rounded-sm inline-block",
-                style: {
-                  background: "#facc15"
-                }
-              }), "0.2–1%"]
-            }), /*#__PURE__*/_jsxs("span", {
-              className: "flex items-center gap-1",
-              children: [/*#__PURE__*/_jsx("span", {
-                className: "w-2.5 h-2.5 rounded-sm inline-block",
-                style: {
-                  background: "#f59e0b"
-                }
-              }), "1–5%"]
-            }), /*#__PURE__*/_jsxs("span", {
-              className: "flex items-center gap-1",
-              children: [/*#__PURE__*/_jsx("span", {
-                className: "w-2.5 h-2.5 rounded-sm inline-block",
-                style: {
-                  background: "#fb7185"
-                }
-              }), "5%+"]
-            })]
-          })]
-        }), /*#__PURE__*/_jsxs("div", {
-          className: "grid lg:grid-cols-3 gap-4 mb-6",
-          children: [/*#__PURE__*/_jsxs("div", {
-            className: "lg:col-span-2 bg-slate-900/60 border border-slate-800 rounded-lg p-4",
+            className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4 mb-6",
             children: [/*#__PURE__*/_jsxs("div", {
               className: "flex items-center justify-between mb-1",
               children: [/*#__PURE__*/_jsx("h3", {
                 className: "text-sm font-semibold text-slate-200",
-                children: "Home Location of Airport Visitors"
+                children: "Texas Catchment by County"
               }), /*#__PURE__*/_jsx(Info, {
                 className: "w-3.5 h-3.5 text-slate-600"
               })]
             }), /*#__PURE__*/_jsxs("p", {
               className: "text-xs text-slate-500 mb-3",
-              children: ["Bubble size = share of ", quarter, " sample · color = distance band"]
-            }), /*#__PURE__*/_jsx("div", {
-              style: {
-                width: "100%",
-                height: 320
-              },
-              children: /*#__PURE__*/_jsx(ResponsiveContainer, {
-                children: /*#__PURE__*/_jsxs(ScatterChart, {
-                  margin: {
-                    top: 10,
-                    right: 20,
-                    bottom: 10,
-                    left: 0
-                  },
-                  children: [/*#__PURE__*/_jsx(CartesianGrid, {
-                    stroke: "#1e293b"
-                  }), /*#__PURE__*/_jsx(XAxis, {
-                    type: "number",
-                    dataKey: "lon",
-                    domain: [-125, -70],
-                    tick: {
-                      fill: "#64748b",
-                      fontSize: 10
-                    },
-                    tickFormatter: v => `${v}°`,
-                    name: "Longitude"
-                  }), /*#__PURE__*/_jsx(YAxis, {
-                    type: "number",
-                    dataKey: "lat",
-                    domain: [24, 50],
-                    tick: {
-                      fill: "#64748b",
-                      fontSize: 10
-                    },
-                    tickFormatter: v => `${v}°`,
-                    name: "Latitude"
-                  }), /*#__PURE__*/_jsx(ZAxis, {
-                    type: "number",
-                    dataKey: "share",
-                    range: [40, 900],
-                    name: "Share"
-                  }), /*#__PURE__*/_jsx(Tooltip, {
-                    cursor: {
-                      strokeDasharray: "3 3"
-                    },
-                    content: ({
-                      active,
-                      payload
-                    }) => {
-                      if (!active || !payload?.length) return null;
-                      const d = payload[0].payload;
-                      return /*#__PURE__*/_jsxs("div", {
-                        className: "bg-slate-900 border border-slate-700 rounded-md px-3 py-2 text-xs",
-                        children: [/*#__PURE__*/_jsxs("div", {
-                          className: "font-semibold text-slate-100",
-                          children: [d.label, d.state ? `, home state ${d.state}` : ""]
-                        }), /*#__PURE__*/_jsxs("div", {
-                          className: "text-slate-400",
-                          children: ["Share of sample: ", /*#__PURE__*/_jsx("span", {
-                            className: "text-slate-200",
-                            children: fmtPct(d.share)
-                          })]
-                        }), /*#__PURE__*/_jsxs("div", {
-                          className: "text-slate-500",
-                          children: ["(", fmt(d.devices), " devices)"]
-                        }), /*#__PURE__*/_jsxs("div", {
-                          className: "text-slate-400",
-                          children: ["Avg. distance: ", /*#__PURE__*/_jsxs("span", {
-                            className: "text-slate-200",
-                            children: [d.avg_distance_mi, " mi"]
-                          })]
-                        }), /*#__PURE__*/_jsx("div", {
-                          style: {
-                            color: d.bucket.color
-                          },
-                          children: d.bucket.label
-                        })]
-                      });
-                    }
-                  }), /*#__PURE__*/_jsx(Scatter, {
-                    data: scatterData,
-                    children: scatterData.map((d, i) => /*#__PURE__*/_jsx(Cell, {
-                      fill: d.bucket.color
-                    }, i))
-                  })]
-                })
-              })
+              children: ["All 254 TX counties · shaded by share of the ", periodLabel, " device sample (n=", fmt(snap.total_devices), "), not raw counts"]
+            }), /*#__PURE__*/_jsx(TexasCountyMap, {
+              countyShares: snap.tx_counties_share || {},
+              countyDevices: snap.tx_counties || {},
+              geometry: TX_COUNTY_GEOMETRY
             }), /*#__PURE__*/_jsxs("div", {
-              className: "flex gap-4 mt-2 text-[11px] text-slate-500",
+              className: "flex flex-wrap gap-3 mt-3 text-[11px] text-slate-500",
               children: [/*#__PURE__*/_jsxs("span", {
                 className: "flex items-center gap-1",
                 children: [/*#__PURE__*/_jsx("span", {
-                  className: "w-2 h-2 rounded-full inline-block",
+                  className: "w-2.5 h-2.5 rounded-sm inline-block",
+                  style: {
+                    background: "#1e293b"
+                  }
+                }), "No sample"]
+              }), /*#__PURE__*/_jsxs("span", {
+                className: "flex items-center gap-1",
+                children: [/*#__PURE__*/_jsx("span", {
+                  className: "w-2.5 h-2.5 rounded-sm inline-block",
+                  style: {
+                    background: "#0f766e"
+                  }
+                }), "<0.05%"]
+              }), /*#__PURE__*/_jsxs("span", {
+                className: "flex items-center gap-1",
+                children: [/*#__PURE__*/_jsx("span", {
+                  className: "w-2.5 h-2.5 rounded-sm inline-block",
                   style: {
                     background: "#2dd4bf"
                   }
-                }), "Core"]
+                }), "0.05–0.2%"]
               }), /*#__PURE__*/_jsxs("span", {
                 className: "flex items-center gap-1",
                 children: [/*#__PURE__*/_jsx("span", {
-                  className: "w-2 h-2 rounded-full inline-block",
+                  className: "w-2.5 h-2.5 rounded-sm inline-block",
                   style: {
                     background: "#facc15"
                   }
-                }), "Extended"]
+                }), "0.2–1%"]
               }), /*#__PURE__*/_jsxs("span", {
                 className: "flex items-center gap-1",
                 children: [/*#__PURE__*/_jsx("span", {
-                  className: "w-2 h-2 rounded-full inline-block",
+                  className: "w-2.5 h-2.5 rounded-sm inline-block",
+                  style: {
+                    background: "#f59e0b"
+                  }
+                }), "1–5%"]
+              }), /*#__PURE__*/_jsxs("span", {
+                className: "flex items-center gap-1",
+                children: [/*#__PURE__*/_jsx("span", {
+                  className: "w-2.5 h-2.5 rounded-sm inline-block",
                   style: {
                     background: "#fb7185"
                   }
-                }), "Long-haul"]
+                }), "5%+"]
               })]
             })]
           }), /*#__PURE__*/_jsxs("div", {
-            className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
-            children: [/*#__PURE__*/_jsx("h3", {
-              className: "text-sm font-semibold text-slate-200 mb-3",
-              children: "Top Origin Counties"
-            }), /*#__PURE__*/_jsxs("p", {
-              className: "text-[11px] text-slate-500 mb-3",
-              children: ["% share of ", quarter, "'s device sample (n=", fmt(snap.total_devices), ")"]
-            }), /*#__PURE__*/_jsx("div", {
-              className: "space-y-2",
-              children: snap.top_counties.slice(0, 12).map((c, i) => {
-                const maxShare = snap.top_counties[0].share;
-                const pct = c.share / maxShare * 100;
-                const bucket = distanceBucket(c.avg_distance_mi);
-                return /*#__PURE__*/_jsxs("div", {
-                  className: "text-xs",
-                  children: [/*#__PURE__*/_jsxs("div", {
-                    className: "flex justify-between mb-0.5",
-                    children: [/*#__PURE__*/_jsx("span", {
-                      className: "text-slate-300 truncate",
-                      children: c.label
-                    }), /*#__PURE__*/_jsx("span", {
-                      className: "text-slate-400 font-mono",
-                      children: fmtPct(c.share)
-                    })]
-                  }), /*#__PURE__*/_jsx("div", {
-                    className: "h-1.5 bg-slate-800 rounded-full overflow-hidden",
-                    children: /*#__PURE__*/_jsx("div", {
-                      className: "h-full rounded-full",
-                      style: {
-                        width: `${pct}%`,
-                        background: bucket.color
-                      }
-                    })
-                  })]
-                }, (c.fips || c.label) + i);
-              })
-            })]
-          })]
-        }), /*#__PURE__*/_jsxs("div", {
-          className: "grid md:grid-cols-2 gap-4 mb-6",
-          children: [/*#__PURE__*/_jsx(BreakdownPanel, {
-            title: "By State",
-            rows: snap.by_state,
-            rowKey: "state",
-            total: snap.total_devices
-          }), /*#__PURE__*/_jsx(BreakdownPanel, {
-            title: "By Country",
-            rows: snap.by_country,
-            rowKey: "country",
-            total: snap.total_devices
-          })]
-        }), /*#__PURE__*/_jsxs("div", {
-          className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
-          children: [/*#__PURE__*/_jsxs("div", {
-            className: "flex items-center justify-between mb-3 flex-wrap gap-2",
+            className: "grid lg:grid-cols-3 gap-4 mb-6",
             children: [/*#__PURE__*/_jsxs("div", {
-              className: "flex items-center gap-1.5",
-              children: [/*#__PURE__*/_jsx(TrendingUp, {
-                className: "w-3.5 h-3.5 text-cyan-400"
-              }), /*#__PURE__*/_jsx("h3", {
-                className: "text-sm font-semibold text-slate-200",
-                children: "Quarterly Trend"
+              className: "lg:col-span-2 bg-slate-900/60 border border-slate-800 rounded-lg p-4",
+              children: [/*#__PURE__*/_jsxs("div", {
+                className: "flex items-center justify-between mb-1",
+                children: [/*#__PURE__*/_jsx("h3", {
+                  className: "text-sm font-semibold text-slate-200",
+                  children: "Home Location of Airport Visitors"
+                }), /*#__PURE__*/_jsx(Info, {
+                  className: "w-3.5 h-3.5 text-slate-600"
+                })]
+              }), /*#__PURE__*/_jsxs("p", {
+                className: "text-xs text-slate-500 mb-3",
+                children: ["Bubble size = share of ", periodLabel, " sample · color = distance band"]
+              }), /*#__PURE__*/_jsx("div", {
+                style: {
+                  width: "100%",
+                  height: 320
+                },
+                children: /*#__PURE__*/_jsx(ResponsiveContainer, {
+                  children: /*#__PURE__*/_jsxs(ScatterChart, {
+                    margin: {
+                      top: 10,
+                      right: 20,
+                      bottom: 10,
+                      left: 0
+                    },
+                    children: [/*#__PURE__*/_jsx(CartesianGrid, {
+                      stroke: "#1e293b"
+                    }), /*#__PURE__*/_jsx(XAxis, {
+                      type: "number",
+                      dataKey: "lon",
+                      domain: [-125, -70],
+                      tick: {
+                        fill: "#64748b",
+                        fontSize: 10
+                      },
+                      tickFormatter: v => `${v}°`,
+                      name: "Longitude"
+                    }), /*#__PURE__*/_jsx(YAxis, {
+                      type: "number",
+                      dataKey: "lat",
+                      domain: [24, 50],
+                      tick: {
+                        fill: "#64748b",
+                        fontSize: 10
+                      },
+                      tickFormatter: v => `${v}°`,
+                      name: "Latitude"
+                    }), /*#__PURE__*/_jsx(ZAxis, {
+                      type: "number",
+                      dataKey: "share",
+                      range: [40, 900],
+                      name: "Share"
+                    }), /*#__PURE__*/_jsx(Tooltip, {
+                      cursor: {
+                        strokeDasharray: "3 3"
+                      },
+                      content: ({
+                        active,
+                        payload
+                      }) => {
+                        if (!active || !payload?.length) return null;
+                        const d = payload[0].payload;
+                        return /*#__PURE__*/_jsxs("div", {
+                          className: "bg-slate-900 border border-slate-700 rounded-md px-3 py-2 text-xs",
+                          children: [/*#__PURE__*/_jsxs("div", {
+                            className: "font-semibold text-slate-100",
+                            children: [d.label, d.state ? `, home state ${d.state}` : ""]
+                          }), /*#__PURE__*/_jsxs("div", {
+                            className: "text-slate-400",
+                            children: ["Share of sample: ", /*#__PURE__*/_jsx("span", {
+                              className: "text-slate-200",
+                              children: fmtPct(d.share)
+                            })]
+                          }), /*#__PURE__*/_jsxs("div", {
+                            className: "text-slate-500",
+                            children: ["(", fmt(d.devices), " devices)"]
+                          }), /*#__PURE__*/_jsxs("div", {
+                            className: "text-slate-400",
+                            children: ["Avg. distance: ", /*#__PURE__*/_jsxs("span", {
+                              className: "text-slate-200",
+                              children: [d.avg_distance_mi, " mi"]
+                            })]
+                          }), /*#__PURE__*/_jsx("div", {
+                            style: {
+                              color: d.bucket.color
+                            },
+                            children: d.bucket.label
+                          })]
+                        });
+                      }
+                    }), /*#__PURE__*/_jsx(Scatter, {
+                      data: scatterData,
+                      children: scatterData.map((d, i) => /*#__PURE__*/_jsx(Cell, {
+                        fill: d.bucket.color
+                      }, i))
+                    })]
+                  })
+                })
+              }), /*#__PURE__*/_jsxs("div", {
+                className: "flex gap-4 mt-2 text-[11px] text-slate-500",
+                children: [/*#__PURE__*/_jsxs("span", {
+                  className: "flex items-center gap-1",
+                  children: [/*#__PURE__*/_jsx("span", {
+                    className: "w-2 h-2 rounded-full inline-block",
+                    style: {
+                      background: "#2dd4bf"
+                    }
+                  }), "Core"]
+                }), /*#__PURE__*/_jsxs("span", {
+                  className: "flex items-center gap-1",
+                  children: [/*#__PURE__*/_jsx("span", {
+                    className: "w-2 h-2 rounded-full inline-block",
+                    style: {
+                      background: "#facc15"
+                    }
+                  }), "Extended"]
+                }), /*#__PURE__*/_jsxs("span", {
+                  className: "flex items-center gap-1",
+                  children: [/*#__PURE__*/_jsx("span", {
+                    className: "w-2 h-2 rounded-full inline-block",
+                    style: {
+                      background: "#fb7185"
+                    }
+                  }), "Long-haul"]
+                })]
               })]
             }), /*#__PURE__*/_jsxs("div", {
-              className: "flex gap-1 text-xs",
-              children: [/*#__PURE__*/_jsxs("button", {
-                onClick: () => setTrendMode("indexed"),
-                className: `px-2.5 py-1 rounded border ${trendMode === "indexed" ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400"}`,
-                children: ["Indexed (", quarters[0], "=100)"]
-              }), /*#__PURE__*/_jsx("button", {
-                onClick: () => setTrendMode("raw"),
-                className: `px-2.5 py-1 rounded border ${trendMode === "raw" ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400"}`,
-                children: "Raw sample count"
+              className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
+              children: [/*#__PURE__*/_jsx("h3", {
+                className: "text-sm font-semibold text-slate-200 mb-3",
+                children: "Top Origin Counties"
+              }), /*#__PURE__*/_jsxs("p", {
+                className: "text-[11px] text-slate-500 mb-3",
+                children: ["% share of ", periodLabel, "'s device sample (n=", fmt(snap.total_devices), ")"]
+              }), /*#__PURE__*/_jsx("div", {
+                className: "space-y-2",
+                children: snap.top_counties.slice(0, 12).map((c, i) => {
+                  const maxShare = snap.top_counties[0].share;
+                  const pct = c.share / maxShare * 100;
+                  const bucket = distanceBucket(c.avg_distance_mi);
+                  return /*#__PURE__*/_jsxs("div", {
+                    className: "text-xs",
+                    children: [/*#__PURE__*/_jsxs("div", {
+                      className: "flex justify-between mb-0.5",
+                      children: [/*#__PURE__*/_jsx("span", {
+                        className: "text-slate-300 truncate",
+                        children: c.label
+                      }), /*#__PURE__*/_jsx("span", {
+                        className: "text-slate-400 font-mono",
+                        children: fmtPct(c.share)
+                      })]
+                    }), /*#__PURE__*/_jsx("div", {
+                      className: "h-1.5 bg-slate-800 rounded-full overflow-hidden",
+                      children: /*#__PURE__*/_jsx("div", {
+                        className: "h-full rounded-full",
+                        style: {
+                          width: `${pct}%`,
+                          background: bucket.color
+                        }
+                      })
+                    })]
+                  }, (c.fips || c.label) + i);
+                })
               })]
             })]
-          }), /*#__PURE__*/_jsx("div", {
-            style: {
-              width: "100%",
-              height: 200
-            },
-            children: /*#__PURE__*/_jsx(ResponsiveContainer, {
-              children: /*#__PURE__*/_jsxs(LineChart, {
-                data: trend,
-                margin: {
-                  top: 5,
-                  right: 20,
-                  bottom: 0,
-                  left: 0
-                },
-                children: [/*#__PURE__*/_jsx(CartesianGrid, {
-                  stroke: "#1e293b",
-                  vertical: false
-                }), /*#__PURE__*/_jsx(XAxis, {
-                  dataKey: "quarter",
-                  tick: {
-                    fill: "#64748b",
-                    fontSize: 10
-                  },
-                  interval: 1
-                }), /*#__PURE__*/_jsx(YAxis, {
-                  tick: {
-                    fill: "#64748b",
-                    fontSize: 10
-                  },
-                  tickFormatter: trendMode === "indexed" ? v => v : fmt
-                }), /*#__PURE__*/_jsx(Tooltip, {
-                  contentStyle: {
-                    background: "#0f172a",
-                    border: "1px solid #334155",
-                    borderRadius: 6,
-                    fontSize: 12
-                  },
-                  labelStyle: {
-                    color: "#e2e8f0"
-                  },
-                  formatter: v => trendMode === "indexed" ? [v, `Index (${quarters[0]}=100)`] : [fmt(v), "Devices (sample)"]
-                }), /*#__PURE__*/_jsx(ReferenceLine, {
-                  x: quarter,
-                  stroke: "#facc15",
-                  strokeDasharray: "4 4"
-                }), trendMode === "indexed" && /*#__PURE__*/_jsx(ReferenceLine, {
-                  y: 100,
-                  stroke: "#475569",
-                  strokeDasharray: "2 2"
-                }), /*#__PURE__*/_jsx(Line, {
-                  type: "monotone",
-                  dataKey: "devices",
-                  stroke: "#2dd4bf",
-                  strokeWidth: 2,
-                  dot: {
-                    r: 2,
-                    fill: "#2dd4bf"
-                  }
+          }), /*#__PURE__*/_jsxs("div", {
+            className: "grid md:grid-cols-2 gap-4 mb-6",
+            children: [/*#__PURE__*/_jsx(BreakdownPanel, {
+              title: "By State",
+              rows: snap.by_state,
+              rowKey: "state",
+              total: snap.total_devices
+            }), /*#__PURE__*/_jsx(BreakdownPanel, {
+              title: "By Country",
+              rows: snap.by_country,
+              rowKey: "country",
+              total: snap.total_devices
+            })]
+          }), /*#__PURE__*/_jsxs("div", {
+            className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
+            children: [/*#__PURE__*/_jsxs("div", {
+              className: "flex items-center justify-between mb-3 flex-wrap gap-2",
+              children: [/*#__PURE__*/_jsxs("div", {
+                className: "flex items-center gap-1.5",
+                children: [/*#__PURE__*/_jsx(TrendingUp, {
+                  className: "w-3.5 h-3.5 text-cyan-400"
+                }), /*#__PURE__*/_jsx("h3", {
+                  className: "text-sm font-semibold text-slate-200",
+                  children: "Quarterly Trend"
                 })]
+              }), /*#__PURE__*/_jsxs("div", {
+                className: "flex gap-1 text-xs",
+                children: [/*#__PURE__*/_jsxs("button", {
+                  onClick: () => setTrendMode("indexed"),
+                  className: `px-2.5 py-1 rounded border ${trendMode === "indexed" ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400"}`,
+                  children: ["Indexed (", quarters[0], "=100)"]
+                }), /*#__PURE__*/_jsx("button", {
+                  onClick: () => setTrendMode("raw"),
+                  className: `px-2.5 py-1 rounded border ${trendMode === "raw" ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400"}`,
+                  children: "Raw sample count"
+                })]
+              })]
+            }), /*#__PURE__*/_jsx("div", {
+              style: {
+                width: "100%",
+                height: 200
+              },
+              children: /*#__PURE__*/_jsx(ResponsiveContainer, {
+                children: /*#__PURE__*/_jsxs(LineChart, {
+                  data: trend,
+                  margin: {
+                    top: 5,
+                    right: 20,
+                    bottom: 0,
+                    left: 0
+                  },
+                  children: [/*#__PURE__*/_jsx(CartesianGrid, {
+                    stroke: "#1e293b",
+                    vertical: false
+                  }), /*#__PURE__*/_jsx(XAxis, {
+                    dataKey: "quarter",
+                    tick: {
+                      fill: "#64748b",
+                      fontSize: 10
+                    },
+                    interval: 1
+                  }), /*#__PURE__*/_jsx(YAxis, {
+                    tick: {
+                      fill: "#64748b",
+                      fontSize: 10
+                    },
+                    tickFormatter: trendMode === "indexed" ? v => v : fmt
+                  }), /*#__PURE__*/_jsx(Tooltip, {
+                    contentStyle: {
+                      background: "#0f172a",
+                      border: "1px solid #334155",
+                      borderRadius: 6,
+                      fontSize: 12
+                    },
+                    labelStyle: {
+                      color: "#e2e8f0"
+                    },
+                    formatter: v => trendMode === "indexed" ? [v, `Index (${quarters[0]}=100)`] : [fmt(v), "Devices (sample)"]
+                  }), /*#__PURE__*/_jsx(ReferenceLine, {
+                    x: quarter,
+                    stroke: "#facc15",
+                    strokeDasharray: "4 4"
+                  }), trendMode === "indexed" && /*#__PURE__*/_jsx(ReferenceLine, {
+                    y: 100,
+                    stroke: "#475569",
+                    strokeDasharray: "2 2"
+                  }), /*#__PURE__*/_jsx(Line, {
+                    type: "monotone",
+                    dataKey: "devices",
+                    stroke: "#2dd4bf",
+                    strokeWidth: 2,
+                    dot: {
+                      r: 2,
+                      fill: "#2dd4bf"
+                    }
+                  })]
+                })
               })
-            })
-          }), /*#__PURE__*/_jsx("p", {
-            className: "text-[11px] text-slate-500 mt-2 leading-relaxed",
-            children: trendMode === "indexed" ? `Indexed to ${quarters[0]} = 100 so relative movement is easier to read. This does not correct for the mobility panel's own size changing over time — it only rescales this airport's own sample against its own starting point. A true panel-normalized trend needs an independent panel-size index from the data vendor (see note below).` : "Raw sample counts. These reflect both real travel patterns and the mobility panel's size that quarter — not directly comparable across quarters without a panel-size adjustment."
+            }), /*#__PURE__*/_jsx("p", {
+              className: "text-[11px] text-slate-500 mt-2 leading-relaxed",
+              children: trendMode === "indexed" ? `Indexed to ${quarters[0]} = 100 so relative movement is easier to read. This does not correct for the mobility panel's own size changing over time — it only rescales this airport's own sample against its own starting point. A true panel-normalized trend needs an independent panel-size index from the data vendor (see note below).` : "Raw sample counts. These reflect both real travel patterns and the mobility panel's size that quarter — not directly comparable across quarters without a panel-size adjustment."
+            })]
+          }), /*#__PURE__*/_jsxs("p", {
+            className: "text-[11px] text-slate-600 mt-4 leading-relaxed",
+            children: ["Methodology: aggregated from hashed-device evening-location pings matched against a drawn facility polygon. No device-level data is displayed. Figures are shown as share of each quarter's device sample, not raw visitation counts, since the underlying panel is a sample of true travel volume and its size varies by period. County names use Census county boundaries rather than the raw feed's metro/CBSA labels, so distinct counties (e.g. Dallas vs. Tarrant) no longer render as duplicate-looking entries. International locations (e.g. Ciudad Juárez, MX) are kept in a separate namespace from US county FIPS to avoid incidental code collisions. Normalizing the trend for panel-size drift over time requires an independent panel index from the mobility vendor, which isn't part of this extract — happy to wire that in as soon as it's available.", periodMode !== "single" && " Combined-period figures are SUMMED across the selected quarters, not deduplicated across them -- a device active in more than one selected quarter is counted once per quarter, not once overall."]
           })]
-        }), /*#__PURE__*/_jsx("p", {
-          className: "text-[11px] text-slate-600 mt-4 leading-relaxed",
-          children: "Methodology: aggregated from hashed-device evening-location pings matched against a drawn facility polygon. No device-level data is displayed. Figures are shown as share of each quarter's device sample, not raw visitation counts, since the underlying panel is a sample of true travel volume and its size varies by period. County names use Census county boundaries rather than the raw feed's metro/CBSA labels, so distinct counties (e.g. Dallas vs. Tarrant) no longer render as duplicate-looking entries. International locations (e.g. Ciudad Juárez, MX) are kept in a separate namespace from US county FIPS to avoid incidental code collisions. Normalizing the trend for panel-size drift over time requires an independent panel index from the mobility vendor, which isn't part of this extract — happy to wire that in as soon as it's available."
         })]
       }), tab === "leakage" && /*#__PURE__*/_jsxs("div", {
         className: "space-y-4",
@@ -807,19 +955,21 @@ function LeakageOverlapMap({
   const airportCodes = useMemo(() => DATA ? Object.keys(DATA) : [], [DATA]);
   const colorFor = code => airportColor(code, airportCodes);
   const allQuarters = useMemo(() => multiAirportQuarters(DATA, airportCodes), [DATA, airportCodes]);
-  const [qIdx, setQIdx] = useState(-1);
+  const [periodMode, setPeriodMode] = useState("single");
+  const [singleQuarter, setSingleQuarter] = useState(null);
+  const [customQuarters, setCustomQuarters] = useState(new Set());
   useEffect(() => {
-    if (allQuarters.length && qIdx === -1) setQIdx(allQuarters.length - 1);
-  }, [allQuarters, qIdx]);
-  const safeQIdx = allQuarters.length ? Math.min(Math.max(qIdx, 0), allQuarters.length - 1) : 0;
-  const quarter = allQuarters[safeQIdx];
+    if (allQuarters.length && !singleQuarter) setSingleQuarter(allQuarters[allQuarters.length - 1]);
+  }, [allQuarters, singleQuarter]);
+  const selectedQuarters = useMemo(() => {
+    if (periodMode === "all") return allQuarters;
+    if (periodMode === "custom") return allQuarters.filter(q => customQuarters.has(q));
+    return singleQuarter ? [singleQuarter] : [];
+  }, [periodMode, allQuarters, singleQuarter, customQuarters]);
+  const quarter = periodMode === "single" ? singleQuarter : null;
+  const periodLabel = periodMode === "single" ? quarter : periodMode === "all" ? "all quarters combined" : `${selectedQuarters.length} selected quarters`;
   const [hovered, setHovered] = useState(null);
   const [overlapOnly, setOverlapOnly] = useState(false);
-  const [mousePos, setMousePos] = useState({
-    x: 0,
-    y: 0
-  });
-  const containerRef = useRef(null);
 
   // Which airports participate in the pooled comparison. Defaults to all,
   // once the airport list is known -- lets you isolate a head-to-head
@@ -840,38 +990,36 @@ function LeakageOverlapMap({
       return next;
     });
   }
-  function handleMouseMove(e) {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    setMousePos({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    });
-  }
 
   // For every TX county, pool RAW device counts across every SELECTED
-  // airport that has data for that county this quarter, then rank airports
-  // by their share of that county's own combined total -- NOT their share
-  // of the airport's own overall sample. This is what makes it a fair "who
-  // actually wins this county" comparison instead of an artifact of one
-  // airport's panel being bigger than another's.
+  // airport that has data for that county, SUMMED across every SELECTED
+  // quarter, then rank airports by their share of that county's own
+  // combined total -- NOT their share of the airport's own overall
+  // sample. This is what makes it a fair "who actually wins this county"
+  // comparison instead of an artifact of one airport's panel being bigger
+  // than another's. (Summing quarters, not deduplicating -- same caveat
+  // as the Catchment tab's multi-quarter view.)
   const countyRankings = useMemo(() => {
-    if (!DATA || !quarter) return {};
-    const pooled = {}; // fips -> [{code, devices}]
+    if (!DATA || !selectedQuarters.length) return {};
+    const pooled = {}; // fips -> {code: devices}
     for (const code of airportCodes) {
       if (!activeCodes.has(code)) continue;
-      const snap = DATA[code].quarters[quarter];
-      if (!snap || !snap.tx_counties) continue;
-      for (const [fips, devices] of Object.entries(snap.tx_counties)) {
-        if (!devices) continue;
-        (pooled[fips] = pooled[fips] || []).push({
-          code,
-          devices
-        });
+      for (const q of selectedQuarters) {
+        const snap = DATA[code].quarters[q];
+        if (!snap || !snap.tx_counties) continue;
+        for (const [fips, devices] of Object.entries(snap.tx_counties)) {
+          if (!devices) continue;
+          pooled[fips] = pooled[fips] || {};
+          pooled[fips][code] = (pooled[fips][code] || 0) + devices;
+        }
       }
     }
     const rankings = {};
-    for (const [fips, entries] of Object.entries(pooled)) {
+    for (const [fips, byCode] of Object.entries(pooled)) {
+      const entries = Object.entries(byCode).map(([code, devices]) => ({
+        code,
+        devices
+      }));
       const total = entries.reduce((s, e) => s + e.devices, 0);
       const ranked = entries.map(e => ({
         ...e,
@@ -885,7 +1033,7 @@ function LeakageOverlapMap({
       };
     }
     return rankings;
-  }, [DATA, quarter, airportCodes, activeCodes]);
+  }, [DATA, selectedQuarters, airportCodes, activeCodes]);
   const nearestAirports = useMemo(() => computeNearestAirports(geometry, DATA, airportCodes.filter(c => activeCodes.has(c))), [geometry, DATA, airportCodes, activeCodes]);
   const [showMismatch, setShowMismatch] = useState(false);
   const mismatchCount = Object.entries(countyRankings).filter(([fips, r]) => nearestAirports[fips] && r.ranked[0].code !== nearestAirports[fips].code).length;
@@ -984,133 +1132,125 @@ function LeakageOverlapMap({
       })]
     }), /*#__PURE__*/_jsxs("p", {
       className: "text-xs text-slate-500 mb-3",
-      children: [quarter, " · ", activeCodes.size, " of ", airportCodes.length, " airports selected ·", " ", activeCodes.size < 2 ? "select at least 2 to see contested counties" : `${contestedCount} of ${Object.keys(countyRankings).length} counties with any data are contested`, " ", "· hover any county for the full breakdown"]
+      children: [periodLabel, " · ", activeCodes.size, " of ", airportCodes.length, " airports selected ·", " ", activeCodes.size < 2 ? "select at least 2 to see contested counties" : `${contestedCount} of ${Object.keys(countyRankings).length} counties with any data are contested`, " ", "· hover any county for the full breakdown"]
+    }), /*#__PURE__*/_jsx(QuarterPicker, {
+      quarters: allQuarters,
+      mode: periodMode,
+      setMode: setPeriodMode,
+      single: singleQuarter,
+      setSingle: setSingleQuarter,
+      custom: customQuarters,
+      setCustom: setCustomQuarters
     }), /*#__PURE__*/_jsxs("div", {
-      className: "flex items-center gap-2 mb-2",
-      children: [/*#__PURE__*/_jsx("span", {
-        className: "text-[11px] text-slate-500",
-        children: "Quarter:"
-      }), /*#__PURE__*/_jsx("input", {
-        type: "range",
-        min: 0,
-        max: Math.max(allQuarters.length - 1, 0),
-        value: safeQIdx,
-        onChange: e => setQIdx(Number(e.target.value)),
-        className: "flex-1 accent-amber-400"
-      }), /*#__PURE__*/_jsx("span", {
-        className: "text-xs font-mono text-amber-400 w-16 text-right",
-        children: quarter
-      })]
-    }), /*#__PURE__*/_jsxs("div", {
-      className: "relative",
-      ref: containerRef,
-      onMouseMove: handleMouseMove,
-      children: [/*#__PURE__*/_jsxs("svg", {
-        viewBox: "0 0 760 620",
-        className: "w-full h-auto",
-        children: [/*#__PURE__*/_jsx("defs", {
-          children: /*#__PURE__*/_jsx("pattern", {
-            id: "contested-hatch",
-            patternUnits: "userSpaceOnUse",
-            width: "6",
-            height: "6",
-            patternTransform: "rotate(45)",
-            children: /*#__PURE__*/_jsx("line", {
-              x1: "0",
-              y1: "0",
-              x2: "0",
-              y2: "6",
-              stroke: "#0f172a",
-              strokeWidth: "2"
+      className: "flex flex-col lg:flex-row gap-3 items-start",
+      children: [/*#__PURE__*/_jsx("div", {
+        className: "w-full lg:flex-1 min-w-0",
+        style: {
+          maxWidth: 620
+        },
+        children: /*#__PURE__*/_jsxs("svg", {
+          viewBox: "0 0 760 620",
+          className: "w-full h-auto",
+          children: [/*#__PURE__*/_jsx("defs", {
+            children: /*#__PURE__*/_jsx("pattern", {
+              id: "contested-hatch",
+              patternUnits: "userSpaceOnUse",
+              width: "6",
+              height: "6",
+              patternTransform: "rotate(45)",
+              children: /*#__PURE__*/_jsx("line", {
+                x1: "0",
+                y1: "0",
+                x2: "0",
+                y2: "6",
+                stroke: "#0f172a",
+                strokeWidth: "2"
+              })
             })
-          })
-        }), features.map(f => {
-          const r = countyRankings[f.properties.fips];
-          const nearest = nearestAirports[f.properties.fips];
-          const isMismatch = r && nearest && r.ranked[0].code !== nearest.code;
-          const isHovered = hovered && hovered.fips === f.properties.fips;
-          const dim = overlapOnly && r && !r.contested || showMismatch && !isMismatch;
-          const fill = r ? colorFor(r.ranked[0].code) : "#1e293b";
-          return /*#__PURE__*/_jsxs("g", {
-            opacity: dim ? 0.12 : 1,
-            children: [/*#__PURE__*/_jsx("path", {
-              d: pathFor(f),
-              fill: fill,
-              stroke: isHovered ? "#facc15" : showMismatch && isMismatch ? "#22d3ee" : "#0f172a",
-              strokeWidth: isHovered ? 1.5 : showMismatch && isMismatch ? 1.4 : 0.6,
-              onMouseEnter: () => setHovered({
-                fips: f.properties.fips,
-                name: f.properties.name,
-                ranking: r,
-                nearest
-              }),
-              onMouseLeave: () => setHovered(null),
-              style: {
-                cursor: r ? "pointer" : "default",
-                transition: "opacity 0.15s"
-              }
-            }), r?.contested && !dim && /*#__PURE__*/_jsx("path", {
-              d: pathFor(f),
-              fill: "url(#contested-hatch)",
-              opacity: 0.55,
-              style: {
-                pointerEvents: "none"
-              }
-            })]
-          }, f.properties.fips);
-        })]
-      }), hovered?.ranking && /*#__PURE__*/_jsxs("div", {
-        className: "absolute bg-slate-900 border border-slate-700 rounded-md px-3 py-2 text-xs max-w-[220px] pointer-events-none z-10",
-        style: {
-          left: Math.min(mousePos.x + 14, 560),
-          top: Math.max(mousePos.y - 10, 0)
-        },
-        children: [/*#__PURE__*/_jsxs("div", {
-          className: "font-semibold text-slate-100 mb-1",
-          children: [hovered.name, " County, TX"]
-        }), hovered.ranking.ranked.slice(0, 4).map((e, i) => /*#__PURE__*/_jsxs("div", {
-          className: "flex justify-between gap-3",
-          children: [/*#__PURE__*/_jsxs("span", {
-            className: "flex items-center gap-1",
-            style: {
-              color: i === 0 ? colorFor(e.code) : "#94a3b8"
-            },
-            children: [/*#__PURE__*/_jsx("span", {
-              className: "w-2 h-2 rounded-full inline-block",
-              style: {
-                background: colorFor(e.code)
-              }
-            }), e.code]
-          }), /*#__PURE__*/_jsx("span", {
-            className: "font-mono text-slate-300",
-            children: fmtPct(e.share)
+          }), features.map(f => {
+            const r = countyRankings[f.properties.fips];
+            const nearest = nearestAirports[f.properties.fips];
+            const isMismatch = r && nearest && r.ranked[0].code !== nearest.code;
+            const isHovered = hovered && hovered.fips === f.properties.fips;
+            const dim = overlapOnly && r && !r.contested || showMismatch && !isMismatch;
+            const fill = r ? colorFor(r.ranked[0].code) : "#1e293b";
+            return /*#__PURE__*/_jsxs("g", {
+              opacity: dim ? 0.12 : 1,
+              children: [/*#__PURE__*/_jsx("path", {
+                d: pathFor(f),
+                fill: fill,
+                stroke: isHovered ? "#facc15" : showMismatch && isMismatch ? "#22d3ee" : "#0f172a",
+                strokeWidth: isHovered ? 1.5 : showMismatch && isMismatch ? 1.4 : 0.6,
+                onMouseEnter: () => setHovered({
+                  fips: f.properties.fips,
+                  name: f.properties.name,
+                  ranking: r,
+                  nearest
+                }),
+                onMouseLeave: () => setHovered(null),
+                style: {
+                  cursor: r ? "pointer" : "default",
+                  transition: "opacity 0.15s"
+                }
+              }), r?.contested && !dim && /*#__PURE__*/_jsx("path", {
+                d: pathFor(f),
+                fill: "url(#contested-hatch)",
+                opacity: 0.55,
+                style: {
+                  pointerEvents: "none"
+                }
+              })]
+            }, f.properties.fips);
           })]
-        }, e.code)), hovered.nearest && /*#__PURE__*/_jsxs("div", {
-          className: "text-slate-500 mt-1.5 pt-1.5 border-t border-slate-800",
-          children: ["Nearest airport: ", /*#__PURE__*/_jsx("span", {
-            className: "text-slate-300",
-            children: hovered.nearest.code
-          }), " (", hovered.nearest.dist.toFixed(0), " mi)"]
-        }), hovered.ranking.ranked[0].code !== hovered.nearest?.code && hovered.nearest && /*#__PURE__*/_jsx("div", {
-          className: "text-cyan-400 text-[10px]",
-          children: "Bypasses nearest airport"
-        }), hovered.ranking.contested && /*#__PURE__*/_jsx("div", {
-          className: "text-amber-400 mt-1 text-[10px]",
-          children: "Contested — runner-up holds ≥25% here"
-        })]
-      }), hovered && !hovered.ranking && /*#__PURE__*/_jsxs("div", {
-        className: "absolute bg-slate-900 border border-slate-700 rounded-md px-3 py-2 text-xs pointer-events-none z-10",
-        style: {
-          left: Math.min(mousePos.x + 14, 560),
-          top: Math.max(mousePos.y - 10, 0)
-        },
-        children: [/*#__PURE__*/_jsxs("div", {
-          className: "font-semibold text-slate-100",
-          children: [hovered.name, " County, TX"]
-        }), /*#__PURE__*/_jsx("div", {
+        })
+      }), /*#__PURE__*/_jsx("div", {
+        className: "w-full lg:w-60 shrink-0 bg-slate-800/40 border border-slate-700 rounded-md p-3 lg:sticky lg:top-3 text-xs",
+        children: hovered?.ranking ? /*#__PURE__*/_jsxs(_Fragment, {
+          children: [/*#__PURE__*/_jsxs("div", {
+            className: "font-semibold text-slate-100 mb-2",
+            children: [hovered.name, " County, TX"]
+          }), hovered.ranking.ranked.slice(0, 5).map((e, i) => /*#__PURE__*/_jsxs("div", {
+            className: "flex justify-between gap-3 mb-1",
+            children: [/*#__PURE__*/_jsxs("span", {
+              className: "flex items-center gap-1",
+              style: {
+                color: i === 0 ? colorFor(e.code) : "#94a3b8"
+              },
+              children: [/*#__PURE__*/_jsx("span", {
+                className: "w-2 h-2 rounded-full inline-block",
+                style: {
+                  background: colorFor(e.code)
+                }
+              }), e.code]
+            }), /*#__PURE__*/_jsx("span", {
+              className: "font-mono text-slate-300",
+              children: fmtPct(e.share)
+            })]
+          }, e.code)), hovered.nearest && /*#__PURE__*/_jsxs("div", {
+            className: "text-slate-500 mt-2 pt-2 border-t border-slate-700",
+            children: ["Nearest airport: ", /*#__PURE__*/_jsx("span", {
+              className: "text-slate-300",
+              children: hovered.nearest.code
+            }), " (", hovered.nearest.dist.toFixed(0), " mi)"]
+          }), hovered.ranking.ranked[0].code !== hovered.nearest?.code && hovered.nearest && /*#__PURE__*/_jsx("div", {
+            className: "text-cyan-400 text-[10px] mt-1",
+            children: "Bypasses nearest airport"
+          }), hovered.ranking.contested && /*#__PURE__*/_jsx("div", {
+            className: "text-amber-400 mt-1 text-[10px]",
+            children: "Contested — runner-up holds ≥25% here"
+          })]
+        }) : hovered && !hovered.ranking ? /*#__PURE__*/_jsxs(_Fragment, {
+          children: [/*#__PURE__*/_jsxs("div", {
+            className: "font-semibold text-slate-100 mb-1",
+            children: [hovered.name, " County, TX"]
+          }), /*#__PURE__*/_jsx("div", {
+            className: "text-slate-500",
+            children: "No tracked airport has sample data from this county."
+          })]
+        }) : /*#__PURE__*/_jsx("div", {
           className: "text-slate-500",
-          children: "No tracked airport has sample data from this county."
-        })]
+          children: "Hover a county to see its airport breakdown here."
+        })
       })]
     }), /*#__PURE__*/_jsxs("div", {
       className: "flex items-center justify-between mt-3 mb-1.5",
@@ -1179,7 +1319,7 @@ function LeakageOverlapMap({
       className: "mt-4 pt-3 border-t border-slate-800",
       children: [/*#__PURE__*/_jsxs("div", {
         className: "text-xs font-semibold text-slate-300 mb-2",
-        children: ["Counties bypassing their nearest airport, ", quarter, " — ranked by how far people are going out of their way"]
+        children: ["Counties bypassing their nearest airport, ", periodLabel, " — ranked by how far people are going out of their way"]
       }), mismatchCount === 0 ? /*#__PURE__*/_jsx("p", {
         className: "text-xs text-slate-600",
         children: "None this quarter — every county with data uses its nearest tracked airport."
@@ -1243,8 +1383,8 @@ function TexasCountyMap({
   countyShares,
   countyDevices,
   geometry,
-  width = 760,
-  height = 620
+  width = 700,
+  height = 580
 }) {
   const [hovered, setHovered] = useState(null);
   const {
@@ -1273,47 +1413,58 @@ function TexasCountyMap({
     };
   }, [width, height, geometry]);
   return /*#__PURE__*/_jsxs("div", {
-    className: "relative",
-    children: [/*#__PURE__*/_jsx("svg", {
-      viewBox: `0 0 ${width} ${height}`,
-      className: "w-full h-auto",
-      children: features.map(f => {
-        const share = countyShares[f.properties.fips] || 0;
-        const devices = countyDevices[f.properties.fips] || 0;
-        const isHovered = hovered && hovered.fips === f.properties.fips;
-        return /*#__PURE__*/_jsx("path", {
-          d: pathFor(f),
-          fill: countyColor(share),
-          stroke: isHovered ? "#facc15" : "#0f172a",
-          strokeWidth: isHovered ? 1.5 : 0.6,
-          onMouseEnter: () => setHovered({
-            fips: f.properties.fips,
-            name: f.properties.name,
-            share,
-            devices
-          }),
-          onMouseLeave: () => setHovered(null),
-          style: {
-            cursor: "pointer",
-            transition: "stroke 0.1s"
-          }
-        }, f.properties.fips);
+    className: "flex flex-col lg:flex-row gap-3 items-start",
+    children: [/*#__PURE__*/_jsx("div", {
+      className: "w-full lg:flex-1 min-w-0",
+      style: {
+        maxWidth: 620
+      },
+      children: /*#__PURE__*/_jsx("svg", {
+        viewBox: `0 0 ${width} ${height}`,
+        className: "w-full h-auto",
+        children: features.map(f => {
+          const share = countyShares[f.properties.fips] || 0;
+          const devices = countyDevices[f.properties.fips] || 0;
+          const isHovered = hovered && hovered.fips === f.properties.fips;
+          return /*#__PURE__*/_jsx("path", {
+            d: pathFor(f),
+            fill: countyColor(share),
+            stroke: isHovered ? "#facc15" : "#0f172a",
+            strokeWidth: isHovered ? 1.5 : 0.6,
+            onMouseEnter: () => setHovered({
+              fips: f.properties.fips,
+              name: f.properties.name,
+              share,
+              devices
+            }),
+            onMouseLeave: () => setHovered(null),
+            style: {
+              cursor: "pointer",
+              transition: "stroke 0.1s"
+            }
+          }, f.properties.fips);
+        })
       })
-    }), hovered && /*#__PURE__*/_jsxs("div", {
-      className: "absolute top-2 left-2 bg-slate-900 border border-slate-700 rounded-md px-3 py-2 text-xs pointer-events-none",
-      children: [/*#__PURE__*/_jsxs("div", {
-        className: "font-semibold text-slate-100",
-        children: [hovered.name, " County, TX"]
-      }), /*#__PURE__*/_jsxs("div", {
-        className: "text-slate-400",
-        children: ["Share of sample: ", /*#__PURE__*/_jsx("span", {
-          className: "text-slate-200 font-mono",
+    }), /*#__PURE__*/_jsx("div", {
+      className: "w-full lg:w-52 shrink-0 bg-slate-800/40 border border-slate-700 rounded-md p-3 lg:sticky lg:top-3",
+      children: hovered ? /*#__PURE__*/_jsxs(_Fragment, {
+        children: [/*#__PURE__*/_jsxs("div", {
+          className: "text-sm font-semibold text-slate-100 mb-2",
+          children: [hovered.name, " County, TX"]
+        }), /*#__PURE__*/_jsx("div", {
+          className: "text-[11px] text-slate-500",
+          children: "Share of sample"
+        }), /*#__PURE__*/_jsx("div", {
+          className: "text-xl font-mono text-slate-200 mb-2",
           children: fmtPct(hovered.share)
+        }), /*#__PURE__*/_jsxs("div", {
+          className: "text-[11px] text-slate-500",
+          children: [fmt(hovered.devices), " devices in sample"]
         })]
-      }), /*#__PURE__*/_jsxs("div", {
-        className: "text-slate-500",
-        children: ["(", fmt(hovered.devices), " devices in sample)"]
-      })]
+      }) : /*#__PURE__*/_jsx("div", {
+        className: "text-xs text-slate-500",
+        children: "Hover a county to see its share of the sample here."
+      })
     })]
   });
 }
@@ -1611,37 +1762,77 @@ const DIRECTION_LABELS = {
     color: "#a78bfa"
   }
 };
+function combineDestinationQuarters(byQuarter, quarterList, direction) {
+  const totals = {}; // dest -> {trips, unique_devices}
+  let total_trips = 0;
+  for (const q of quarterList) {
+    const snap = byQuarter[q]?.[direction];
+    if (!snap) continue;
+    total_trips += snap.total_trips || 0;
+    for (const d of snap.destinations || []) {
+      if (!totals[d.dest]) totals[d.dest] = {
+        dest: d.dest,
+        trips: 0,
+        unique_devices: 0
+      };
+      totals[d.dest].trips += d.trips;
+      totals[d.dest].unique_devices += d.unique_devices;
+    }
+  }
+  const destinations = Object.values(totals).map(d => ({
+    ...d,
+    share: total_trips ? d.trips / total_trips : 0
+  })).sort((a, b) => b.trips - a.trips);
+  return {
+    total_trips,
+    destinations
+  };
+}
 function DestinationsPanel({
   DESTINATIONS,
   airport,
   airportCodes
 }) {
   const [direction, setDirection] = useState(null);
-  const [qIdx, setQIdx] = useState(-1);
+  const [periodMode, setPeriodMode] = useState("single");
+  const [singleQuarter, setSingleQuarter] = useState(null);
+  const [customQuarters, setCustomQuarters] = useState(new Set());
   const hasAny = Boolean(DESTINATIONS);
   const hasAirport = Boolean(DESTINATIONS && DESTINATIONS[airport]);
   const quarters = useMemo(() => hasAirport ? Object.keys(DESTINATIONS[airport]).sort(sortQuarters) : [], [DESTINATIONS, airport, hasAirport]);
   useEffect(() => {
-    if (quarters.length) setQIdx(quarters.length - 1);
+    if (quarters.length) setSingleQuarter(quarters[quarters.length - 1]);
   }, [quarters.length, airport]);
-  const safeQIdx = quarters.length ? Math.min(Math.max(qIdx, 0), quarters.length - 1) : 0;
-  const quarter = quarters[safeQIdx];
+  const selectedQuarters = useMemo(() => {
+    if (periodMode === "all") return quarters;
+    if (periodMode === "custom") return quarters.filter(q => customQuarters.has(q));
+    return singleQuarter ? [singleQuarter] : [];
+  }, [periodMode, quarters, singleQuarter, customQuarters]);
+  const quarter = periodMode === "single" ? singleQuarter : null;
+  const periodLabel = periodMode === "single" ? quarter : periodMode === "all" ? "all quarters combined" : `${selectedQuarters.length} selected quarters`;
 
-  // Which direction keys actually exist for this airport/quarter -- varies
-  // by which script produced the data: analyze_destinations.py (ping-level
-  // trajectories) yields outbound/inbound; analyze_cross_visits.py (the
-  // pre-aggregated device-count matrix) yields a single cross_visit bucket,
-  // since that format has no time-ordering to derive direction from.
+  // Which direction keys actually exist across the selected quarters --
+  // varies by which script produced the data: analyze_destinations.py
+  // (ping-level trajectories) yields outbound/inbound; analyze_cross_visits.py
+  // (the pre-aggregated device-count matrix) yields a single cross_visit
+  // bucket, since that format has no time-ordering to derive direction from.
   const availableDirections = useMemo(() => {
-    if (!quarter || !DESTINATIONS[airport]?.[quarter]) return [];
-    return Object.keys(DESTINATIONS[airport][quarter]);
-  }, [DESTINATIONS, airport, quarter]);
+    const set = new Set();
+    for (const q of selectedQuarters) {
+      Object.keys(DESTINATIONS?.[airport]?.[q] || {}).forEach(d => set.add(d));
+    }
+    return Array.from(set);
+  }, [DESTINATIONS, airport, selectedQuarters]);
   useEffect(() => {
     if (availableDirections.length && !availableDirections.includes(direction)) {
       setDirection(availableDirections[0]);
     }
   }, [availableDirections, direction]);
-  const snap = quarter && direction ? DESTINATIONS[airport][quarter]?.[direction] : null;
+  const snap = useMemo(() => {
+    if (!hasAirport || !direction || !selectedQuarters.length) return null;
+    if (selectedQuarters.length === 1) return DESTINATIONS[airport][selectedQuarters[0]]?.[direction] || null;
+    return combineDestinationQuarters(DESTINATIONS[airport], selectedQuarters, direction);
+  }, [DESTINATIONS, airport, selectedQuarters, direction, hasAirport]);
   const trend = useMemo(() => {
     if (!hasAirport) return [];
     return quarters.map(q => {
@@ -1716,30 +1907,22 @@ function DestinationsPanel({
         })]
       }), /*#__PURE__*/_jsxs("p", {
         className: "text-xs text-slate-500 mb-3",
-        children: [direction === "outbound" && `Devices seen at ${airport}, then later seen at another tracked polygon \u2014 i.e. where they flew to. Deduplicated to trips (not raw pings).`, direction === "inbound" && `Devices seen at another tracked polygon, then later seen at ${airport} \u2014 i.e. where they flew in from. Deduplicated to trips (not raw pings).`, isCrossVisit && `Devices seen at ${airport} at ANY point that were also seen at another tracked polygon at any point in the same quarter. This has no direction or trip count \u2014 it's shared population, not a sequence of travel.`]
-      }), quarters.length > 1 && /*#__PURE__*/_jsxs("div", {
-        className: "flex items-center gap-2 mb-4",
-        children: [/*#__PURE__*/_jsx("span", {
-          className: "text-[11px] text-slate-500",
-          children: "Quarter:"
-        }), /*#__PURE__*/_jsx("input", {
-          type: "range",
-          min: 0,
-          max: quarters.length - 1,
-          value: safeQIdx,
-          onChange: e => setQIdx(Number(e.target.value)),
-          className: "flex-1 accent-amber-400"
-        }), /*#__PURE__*/_jsx("span", {
-          className: "text-xs font-mono text-amber-400 w-16 text-right",
-          children: quarter
-        })]
+        children: [direction === "outbound" && `Devices seen at ${airport}, then later seen at another tracked polygon — i.e. where they flew to. Deduplicated to trips (not raw pings).`, direction === "inbound" && `Devices seen at another tracked polygon, then later seen at ${airport} — i.e. where they flew in from. Deduplicated to trips (not raw pings).`, isCrossVisit && `Devices seen at ${airport} at ANY point that were also seen at another tracked polygon at any point in the same quarter. This has no direction or trip count — it's shared population, not a sequence of travel.`]
+      }), quarters.length > 1 && /*#__PURE__*/_jsx(QuarterPicker, {
+        quarters: quarters,
+        mode: periodMode,
+        setMode: setPeriodMode,
+        single: singleQuarter,
+        setSingle: setSingleQuarter,
+        custom: customQuarters,
+        setCustom: setCustomQuarters
       }), !snap || !snap.destinations.length ? /*#__PURE__*/_jsxs("p", {
         className: "text-xs text-slate-600",
-        children: ["No data found for ", quarter, "."]
+        children: ["No data found for ", periodLabel, "."]
       }) : /*#__PURE__*/_jsxs(_Fragment, {
         children: [/*#__PURE__*/_jsxs("div", {
           className: "text-xs text-slate-500 mb-2",
-          children: [quarter, " · ", fmt(snap.total_trips), " total ", isCrossVisit ? `devices at ${airport}` : `${direction} trips`]
+          children: [periodLabel, " · ", fmt(snap.total_trips), " total ", isCrossVisit ? `devices at ${airport}` : `${direction} trips`]
         }), /*#__PURE__*/_jsx("div", {
           className: "space-y-2",
           children: snap.destinations.map((d, i) => {
