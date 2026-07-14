@@ -60,7 +60,7 @@ const AIRPORT_REGISTRY = {
     name: "McAllen Miller International"
   },
   CJS: {
-    name: "Abraham Gonz\u00e1lez International (Ciudad Ju\u00e1rez)"
+    name: "Abraham González International (Ciudad Juárez)"
   }
 };
 function sortQuarters(a, b) {
@@ -94,12 +94,12 @@ function distanceBucket(mi) {
   };
   if (mi <= 60) return {
     key: "core",
-    label: "Core catchment (\u226460 mi)",
+    label: "Core catchment (≤60 mi)",
     color: "#2dd4bf"
   };
   if (mi <= 300) return {
     key: "extended",
-    label: "Extended catchment (60\u2013300 mi)",
+    label: "Extended catchment (60–300 mi)",
     color: "#facc15"
   };
   return {
@@ -118,12 +118,12 @@ function countyColor(share) {
   return "#fb7185"; // rose-400 -- 5%+, usually the airport's own county
 }
 function fmt(n) {
-  if (n == null) return "\u2014";
+  if (n == null) return "—";
   if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "k";
   return String(n);
 }
 function fmtPct(share) {
-  if (share == null) return "\u2014";
+  if (share == null) return "—";
   if (share < 0.001) return "<0.1%";
   return `${(share * 100).toFixed(1)}%`;
 }
@@ -235,7 +235,7 @@ export default function CatchmentDashboard() {
       className: "min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center",
       children: /*#__PURE__*/_jsx("div", {
         className: "text-sm text-slate-500",
-        children: "Loading catchment data\\u2026"
+        children: "Loading catchment data…"
       })
     });
   }
@@ -382,7 +382,7 @@ export default function CatchmentDashboard() {
           }), /*#__PURE__*/_jsx(KPI, {
             label: "Core Catchment Share",
             value: `${localShare}%`,
-            sub: `home \u2264 60 mi from ${airport}`
+            sub: `home ≤ 60 mi from ${airport}`
           })]
         }), /*#__PURE__*/_jsxs("div", {
           className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4 mb-6",
@@ -491,7 +491,7 @@ export default function CatchmentDashboard() {
                       fill: "#64748b",
                       fontSize: 10
                     },
-                    tickFormatter: v => `${v}\u00b0`,
+                    tickFormatter: v => `${v}°`,
                     name: "Longitude"
                   }), /*#__PURE__*/_jsx(YAxis, {
                     type: "number",
@@ -501,7 +501,7 @@ export default function CatchmentDashboard() {
                       fill: "#64748b",
                       fontSize: 10
                     },
-                    tickFormatter: v => `${v}\u00b0`,
+                    tickFormatter: v => `${v}°`,
                     name: "Latitude"
                   }), /*#__PURE__*/_jsx(ZAxis, {
                     type: "number",
@@ -721,11 +721,11 @@ export default function CatchmentDashboard() {
             })
           }), /*#__PURE__*/_jsx("p", {
             className: "text-[11px] text-slate-500 mt-2 leading-relaxed",
-            children: trendMode === "indexed" ? `Indexed to ${quarters[0]} = 100 so relative movement is easier to read. This does not correct for the mobility panel's own size changing over time \u2014 it only rescales this airport's own sample against its own starting point. A true panel-normalized trend needs an independent panel-size index from the data vendor (see note below).` : "Raw sample counts. These reflect both real travel patterns and the mobility panel's size that quarter \u2014 not directly comparable across quarters without a panel-size adjustment."
+            children: trendMode === "indexed" ? `Indexed to ${quarters[0]} = 100 so relative movement is easier to read. This does not correct for the mobility panel's own size changing over time — it only rescales this airport's own sample against its own starting point. A true panel-normalized trend needs an independent panel-size index from the data vendor (see note below).` : "Raw sample counts. These reflect both real travel patterns and the mobility panel's size that quarter — not directly comparable across quarters without a panel-size adjustment."
           })]
         }), /*#__PURE__*/_jsx("p", {
           className: "text-[11px] text-slate-600 mt-4 leading-relaxed",
-          children: "Methodology: aggregated from hashed-device evening-location pings matched against a drawn facility polygon. No device-level data is displayed. Figures are shown as share of each quarter's device sample, not raw visitation counts, since the underlying panel is a sample of true travel volume and its size varies by period. County names use Census county boundaries rather than the raw feed's metro/CBSA labels, so distinct counties (e.g. Dallas vs. Tarrant) no longer render as duplicate-looking entries. International locations (e.g. Ciudad Ju\\u00e1rez, MX) are kept in a separate namespace from US county FIPS to avoid incidental code collisions. Normalizing the trend for panel-size drift over time requires an independent panel index from the mobility vendor, which isn't part of this extract \\u2014 happy to wire that in as soon as it's available."
+          children: "Methodology: aggregated from hashed-device evening-location pings matched against a drawn facility polygon. No device-level data is displayed. Figures are shown as share of each quarter's device sample, not raw visitation counts, since the underlying panel is a sample of true travel volume and its size varies by period. County names use Census county boundaries rather than the raw feed's metro/CBSA labels, so distinct counties (e.g. Dallas vs. Tarrant) no longer render as duplicate-looking entries. International locations (e.g. Ciudad Juárez, MX) are kept in a separate namespace from US county FIPS to avoid incidental code collisions. Normalizing the trend for panel-size drift over time requires an independent panel index from the mobility vendor, which isn't part of this extract — happy to wire that in as soon as it's available."
         })]
       }), tab === "leakage" && /*#__PURE__*/_jsxs("div", {
         className: "space-y-4",
@@ -773,6 +773,26 @@ function LeakageOverlapMap({
     y: 0
   });
   const containerRef = useRef(null);
+
+  // Which airports participate in the pooled comparison. Defaults to all,
+  // once the airport list is known -- lets you isolate a head-to-head
+  // (e.g. just ELP vs ABQ) by deselecting everyone else, instead of always
+  // seeing the full 10-airport picture.
+  const [activeCodes, setActiveCodes] = useState(new Set());
+  const [initialized, setInitialized] = useState(false);
+  useEffect(() => {
+    if (airportCodes.length && !initialized) {
+      setActiveCodes(new Set(airportCodes));
+      setInitialized(true);
+    }
+  }, [airportCodes, initialized]);
+  function toggleAirport(code) {
+    setActiveCodes(prev => {
+      const next = new Set(prev);
+      if (next.has(code)) next.delete(code);else next.add(code);
+      return next;
+    });
+  }
   function handleMouseMove(e) {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
@@ -782,16 +802,17 @@ function LeakageOverlapMap({
     });
   }
 
-  // For every TX county, pool RAW device counts across every airport that
-  // has data for that county this quarter, then rank airports by their
-  // share of that county's own combined total -- NOT their share of the
-  // airport's own overall sample. This is what makes it a fair "who
+  // For every TX county, pool RAW device counts across every SELECTED
+  // airport that has data for that county this quarter, then rank airports
+  // by their share of that county's own combined total -- NOT their share
+  // of the airport's own overall sample. This is what makes it a fair "who
   // actually wins this county" comparison instead of an artifact of one
   // airport's panel being bigger than another's.
   const countyRankings = useMemo(() => {
     if (!DATA || !quarter) return {};
     const pooled = {}; // fips -> [{code, devices}]
     for (const code of airportCodes) {
+      if (!activeCodes.has(code)) continue;
       const snap = DATA[code].quarters[quarter];
       if (!snap || !snap.tx_counties) continue;
       for (const [fips, devices] of Object.entries(snap.tx_counties)) {
@@ -817,7 +838,7 @@ function LeakageOverlapMap({
       };
     }
     return rankings;
-  }, [DATA, quarter, airportCodes]);
+  }, [DATA, quarter, airportCodes, activeCodes]);
   const contestedCount = Object.values(countyRankings).filter(r => r.contested).length;
   const {
     features,
@@ -863,10 +884,10 @@ function LeakageOverlapMap({
       })]
     }), /*#__PURE__*/_jsx("p", {
       className: "text-xs text-slate-500 mb-1",
-      children: "Each county colored by whichever tracked airport has the largest share of that county's pooled device sample this quarter \\u2014 this is the actual leakage picture, not a distance estimate."
+      children: "Each county colored by whichever tracked airport has the largest share of that county's pooled device sample this quarter — this is the actual leakage picture, not a distance estimate."
     }), /*#__PURE__*/_jsxs("p", {
       className: "text-xs text-slate-500 mb-3",
-      children: [quarter, " · ", contestedCount, " of ", Object.keys(countyRankings).length, " counties with any data are contested · hover any county for the full breakdown"]
+      children: [quarter, " · ", activeCodes.size, " of ", airportCodes.length, " airports selected ·", " ", activeCodes.size < 2 ? "select at least 2 to see contested counties" : `${contestedCount} of ${Object.keys(countyRankings).length} counties with any data are contested`, " ", "· hover any county for the full breakdown"]
     }), /*#__PURE__*/_jsxs("div", {
       className: "flex items-center gap-2 mb-2",
       children: [/*#__PURE__*/_jsx("span", {
@@ -966,7 +987,7 @@ function LeakageOverlapMap({
           })]
         }, e.code)), hovered.ranking.contested && /*#__PURE__*/_jsx("div", {
           className: "text-amber-400 mt-1 text-[10px]",
-          children: "Contested \\u2014 runner-up holds \\u226525% here"
+          children: "Contested — runner-up holds ≥25% here"
         })]
       }), hovered && !hovered.ranking && /*#__PURE__*/_jsxs("div", {
         className: "absolute bg-slate-900 border border-slate-700 rounded-md px-3 py-2 text-xs pointer-events-none z-10",
@@ -983,16 +1004,43 @@ function LeakageOverlapMap({
         })]
       })]
     }), /*#__PURE__*/_jsxs("div", {
-      className: "flex flex-wrap gap-3 mt-3 text-[11px] text-slate-500 items-center",
-      children: [airportCodes.map(code => /*#__PURE__*/_jsxs("span", {
-        className: "flex items-center gap-1",
-        children: [/*#__PURE__*/_jsx("span", {
-          className: "w-2.5 h-2.5 rounded-sm inline-block",
-          style: {
-            background: colorFor(code)
-          }
-        }), code]
-      }, code)), /*#__PURE__*/_jsxs("span", {
+      className: "flex items-center justify-between mt-3 mb-1.5",
+      children: [/*#__PURE__*/_jsx("span", {
+        className: "text-[11px] text-slate-500",
+        children: "Tap an airport to include/exclude it from the comparison:"
+      }), /*#__PURE__*/_jsxs("div", {
+        className: "flex gap-1.5",
+        children: [/*#__PURE__*/_jsx("button", {
+          onClick: () => setActiveCodes(new Set(airportCodes)),
+          className: "text-[11px] px-2 py-0.5 rounded border border-slate-700 text-slate-400 hover:border-slate-500",
+          children: "All"
+        }), /*#__PURE__*/_jsx("button", {
+          onClick: () => setActiveCodes(new Set()),
+          className: "text-[11px] px-2 py-0.5 rounded border border-slate-700 text-slate-400 hover:border-slate-500",
+          children: "None"
+        })]
+      })]
+    }), /*#__PURE__*/_jsx("div", {
+      className: "flex flex-wrap gap-1.5 text-[11px] items-center",
+      children: airportCodes.map(code => {
+        const active = activeCodes.has(code);
+        return /*#__PURE__*/_jsxs("button", {
+          onClick: () => toggleAirport(code),
+          className: `flex items-center gap-1 px-2 py-1 rounded border transition-opacity ${active ? "border-slate-600" : "border-slate-800 opacity-40"}`,
+          children: [/*#__PURE__*/_jsx("span", {
+            className: "w-2.5 h-2.5 rounded-sm inline-block",
+            style: {
+              background: colorFor(code)
+            }
+          }), /*#__PURE__*/_jsx("span", {
+            className: active ? "text-slate-300" : "text-slate-600",
+            children: code
+          })]
+        }, code);
+      })
+    }), /*#__PURE__*/_jsxs("div", {
+      className: "flex flex-wrap gap-3 mt-2 text-[11px] text-slate-500 items-center",
+      children: [/*#__PURE__*/_jsxs("span", {
         className: "flex items-center gap-1",
         children: [/*#__PURE__*/_jsx("span", {
           className: "w-2.5 h-2.5 rounded-sm inline-block",
@@ -1016,11 +1064,11 @@ function LeakageOverlapMap({
             fill: "url(#contested-hatch)",
             opacity: 0.55
           })]
-        }), "Hatched = contested (2nd airport \\u226525% share)"]
+        }), "Hatched = contested (2nd airport ≥25% share)"]
       })]
     }), /*#__PURE__*/_jsx("p", {
       className: "text-[11px] text-slate-600 mt-3 leading-relaxed",
-      children: "Methodology: for each county, every tracked airport's device count from that county (same quarter) is pooled, then each airport's share is computed against that county-specific pool \\u2014 not against the airport's own overall sample size. A county is \"contested\" when a non-dominant airport still holds at least 25% of the pooled total. Airports with no processed extract yet simply don't appear in the pool, so this map fills in automatically as more extracts are added, with no code changes needed."
+      children: "Methodology: for each county, every SELECTED airport's device count from that county (same quarter) is pooled, then each airport's share is computed against that county-specific pool — not against the airport's own overall sample size. A county is \"contested\" when a non-dominant airport still holds at least 25% of the pooled total. Airports with no processed extract yet simply don't appear in the pool, so this map fills in automatically as more extracts are added, with no code changes needed."
     })]
   });
 }
@@ -1245,7 +1293,7 @@ function AirportLeakageTrend({
       className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
       children: [/*#__PURE__*/_jsxs("h3", {
         className: "text-sm font-semibold text-slate-200 mb-1",
-        children: ["Leakage Trend \\u2014 ", airport]
+        children: ["Leakage Trend — ", airport]
       }), /*#__PURE__*/_jsxs("p", {
         className: "text-xs text-slate-500",
         children: ["Not enough overlapping data yet. This needs at least one quarter where ", airport, " AND at least one other tracked airport both have processed extracts."]
@@ -1271,13 +1319,13 @@ function AirportLeakageTrend({
       className: "flex items-center justify-between mb-1",
       children: [/*#__PURE__*/_jsxs("h3", {
         className: "text-sm font-semibold text-slate-200",
-        children: ["Leakage Trend \\u2014 ", airport, "'s Catchment"]
+        children: ["Leakage Trend — ", airport, "'s Catchment"]
       }), /*#__PURE__*/_jsx(Info, {
         className: "w-3.5 h-3.5 text-slate-600"
       })]
     }), /*#__PURE__*/_jsxs("p", {
       className: "text-xs text-slate-500 mb-4",
-      children: ["Region = TX counties where ", airport, " holds \\u226510% of that county's cross-airport sample as of the latest quarter (", catchmentFips.size, " counties). Shows what share of that combined pool each airport actually captures, ", latest.quarter, "."]
+      children: ["Region = TX counties where ", airport, " holds ≥10% of that county's cross-airport sample as of the latest quarter (", catchmentFips.size, " counties). Shows what share of that combined pool each airport actually captures, ", latest.quarter, "."]
     }), /*#__PURE__*/_jsxs("div", {
       className: "flex gap-3 mb-4 flex-wrap items-stretch",
       children: [/*#__PURE__*/_jsxs("div", {
@@ -1310,7 +1358,7 @@ function AirportLeakageTrend({
       }, code))]
     }), /*#__PURE__*/_jsxs("p", {
       className: "text-[11px] text-slate-500 mb-1",
-      children: ["Competitor share over time \\u2014 ", airport, " itself is excluded from this chart (shown as the badge above instead) so the y-axis isn't squashed flat by its much larger share."]
+      children: ["Competitor share over time — ", airport, " itself is excluded from this chart (shown as the badge above instead) so the y-axis isn't squashed flat by its much larger share."]
     }), /*#__PURE__*/_jsx("div", {
       style: {
         width: "100%",
@@ -1378,7 +1426,7 @@ function AirportLeakageTrend({
       }, code))
     }), /*#__PURE__*/_jsx("p", {
       className: "text-[11px] text-slate-600 mt-3 leading-relaxed",
-      children: "Switch airports using the selector at the top of the page \\u2014 this panel recomputes for whichever airport is currently selected, using only quarters where a real comparison is possible (2+ airports with processed extracts)."
+      children: "Switch airports using the selector at the top of the page — this panel recomputes for whichever airport is currently selected, using only quarters where a real comparison is possible (2+ airports with processed extracts)."
     })]
   });
 }
@@ -1387,14 +1435,14 @@ function RoadmapPanel({
 }) {
   const content = type === "leakage" ? {
     title: "Extending Leakage Coverage",
-    desc: "The map above IS the leakage analysis, live with your 10 small-airport extracts. It gets more complete as the remaining large airports (AUS, DFW, IAH, HOU, SAT) are processed \u2014 counties currently shown as one airport's uncontested territory may turn out to be contested once a nearby large airport's data is in.",
-    needs: ["Process the large-airport batch (manifest_large.json) through aggregate.py the same way the small batch was", "Re-upload the resulting data/summary.json \u2014 no code or dashboard changes needed, the map above already loops over however many airports are present", "Optionally: a distance-to-nearest-airport lookup per county, to distinguish \u201ccontested because genuinely equidistant\u201d from \u201ccontested because of a real preference/leakage pattern\u201d"],
-    math: "Per-county share = that airport's devices from the county \u00f7 total devices from the county across every tracked airport this quarter. \u226525% for the runner-up = contested."
+    desc: "The map above IS the leakage analysis, live with your 10 small-airport extracts. It gets more complete as the remaining large airports (AUS, DFW, IAH, HOU, SAT) are processed — counties currently shown as one airport's uncontested territory may turn out to be contested once a nearby large airport's data is in.",
+    needs: ["Process the large-airport batch (manifest_large.json) through aggregate.py the same way the small batch was", "Re-upload the resulting data/summary.json — no code or dashboard changes needed, the map above already loops over however many airports are present", "Optionally: a distance-to-nearest-airport lookup per county, to distinguish “contested because genuinely equidistant” from “contested because of a real preference/leakage pattern”"],
+    math: "Per-county share = that airport's devices from the county ÷ total devices from the county across every tracked airport this quarter. ≥25% for the runner-up = contested."
   } : {
     title: "Top Destination Airports by Origin Airport",
-    desc: "Show where travelers actually fly to \u2014 not just where they live.",
-    needs: ["Device trajectory linkage: the same hashed device seen at an origin polygon and later at a destination-airport polygon within a plausible travel window", "Polygons drawn at each candidate destination airport (or a vendor-provided \u201cpolygon A \u2192 polygon B\u201d linkage feed)", "A window rule (e.g. departure polygon ping \u2192 arrival polygon ping within 0\u201324 hrs) to avoid false links from unrelated trips"],
-    math: "None of the home-location extracts (this one included) contain destination pings \u2014 this is the next data request to make of your mobility vendor."
+    desc: "Show where travelers actually fly to — not just where they live.",
+    needs: ["Device trajectory linkage: the same hashed device seen at an origin polygon and later at a destination-airport polygon within a plausible travel window", "Polygons drawn at each candidate destination airport (or a vendor-provided “polygon A → polygon B” linkage feed)", "A window rule (e.g. departure polygon ping → arrival polygon ping within 0–24 hrs) to avoid false links from unrelated trips"],
+    math: "None of the home-location extracts (this one included) contain destination pings — this is the next data request to make of your mobility vendor."
   };
   return /*#__PURE__*/_jsxs("div", {
     className: "bg-slate-900/60 border border-slate-800 rounded-lg p-6 max-w-2xl",
