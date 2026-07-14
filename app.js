@@ -915,6 +915,15 @@ function LeakageOverlapMap({
     };
   }, [geometry]);
   if (!DATA || !quarter) return null;
+  const exampleMismatch = Object.entries(countyRankings).map(([fips, r]) => ({
+    fips,
+    r,
+    nearest: nearestAirports[fips]
+  })).find(({
+    r,
+    nearest
+  }) => nearest && r.ranked[0].code !== nearest.code);
+  const exampleName = exampleMismatch ? geometry.find(g => g.fips === exampleMismatch.fips)?.name : null;
   return /*#__PURE__*/_jsxs("div", {
     className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
     children: [/*#__PURE__*/_jsxs("div", {
@@ -925,10 +934,6 @@ function LeakageOverlapMap({
       }), /*#__PURE__*/_jsxs("div", {
         className: "flex items-center gap-2 flex-wrap",
         children: [/*#__PURE__*/_jsx("button", {
-          onClick: () => setShowMismatch(v => !v),
-          className: `px-2.5 py-1 rounded text-xs border transition-colors ${showMismatch ? "border-cyan-400 bg-cyan-400/10 text-cyan-300" : "border-slate-700 text-slate-400"}`,
-          children: showMismatch ? `Showing: bypasses nearest airport (${mismatchCount})` : "Show geographic bypass"
-        }), /*#__PURE__*/_jsx("button", {
           onClick: () => setOverlapOnly(v => !v),
           className: `px-2.5 py-1 rounded text-xs border transition-colors ${overlapOnly ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400"}`,
           children: overlapOnly ? "Showing: contested counties only" : "Show all counties"
@@ -936,9 +941,47 @@ function LeakageOverlapMap({
           className: "w-3.5 h-3.5 text-slate-600"
         })]
       })]
-    }), /*#__PURE__*/_jsxs("p", {
-      className: "text-xs text-slate-500 mb-1",
-      children: ["Each county colored by whichever tracked airport has the largest share of that county's pooled device sample this quarter — this is the actual leakage picture, not a distance estimate.", showMismatch && " Ring-outlined counties: the airport that WINS the county's device sample isn't the geographically nearest one \u2014 real bypass behavior, not just a data artifact."]
+    }), /*#__PURE__*/_jsx("p", {
+      className: "text-xs text-slate-500 mb-3",
+      children: "Each county colored by whichever tracked airport has the largest share of that county's pooled device sample this quarter — this is the actual leakage picture, not a distance estimate."
+    }), /*#__PURE__*/_jsxs("div", {
+      className: "bg-slate-800/40 border border-slate-700 rounded-md p-3 mb-3",
+      children: [/*#__PURE__*/_jsxs("div", {
+        className: "flex items-center justify-between flex-wrap gap-2 mb-1.5",
+        children: [/*#__PURE__*/_jsx("div", {
+          className: "text-xs font-semibold text-slate-300",
+          children: "Is the airport people actually use their closest one?"
+        }), /*#__PURE__*/_jsx("button", {
+          onClick: () => setShowMismatch(v => !v),
+          className: `px-2.5 py-1 rounded text-xs border shrink-0 transition-colors ${showMismatch ? "border-cyan-400 bg-cyan-400/10 text-cyan-300" : "border-slate-700 text-slate-400"}`,
+          children: showMismatch ? "Outline them on the map ✓" : "Outline them on the map"
+        })]
+      }), /*#__PURE__*/_jsxs("p", {
+        className: "text-[11px] text-slate-500 leading-relaxed",
+        children: ["For every county, two separate things are calculated: (1) which airport people from that county", " ", /*#__PURE__*/_jsx("em", {
+          children: "actually fly from"
+        }), ", from the device data, and (2) which airport is ", /*#__PURE__*/_jsx("em", {
+          children: "physically closest"
+        }), " ", "to that county, using straight-line distance — nothing to do with device data, just geography. Most of the time these agree; people fly from whatever's nearest. When they don't agree, that's a county worth a second look — people there are driving past a closer airport to use a farther one.", exampleMismatch && exampleName && /*#__PURE__*/_jsxs(_Fragment, {
+          children: [" ", "For example: ", /*#__PURE__*/_jsxs("strong", {
+            className: "text-slate-300",
+            children: [exampleName, " County"]
+          }), " is closest to", " ", /*#__PURE__*/_jsx("strong", {
+            style: {
+              color: colorFor(exampleMismatch.nearest.code)
+            },
+            children: exampleMismatch.nearest.code
+          }), " ", "(", exampleMismatch.nearest.dist.toFixed(0), " mi away), but most of that county's device sample actually flies from ", /*#__PURE__*/_jsx("strong", {
+            style: {
+              color: colorFor(exampleMismatch.r.ranked[0].code)
+            },
+            children: exampleMismatch.r.ranked[0].code
+          }), " instead."]
+        })]
+      }), showMismatch && /*#__PURE__*/_jsxs("p", {
+        className: "text-[11px] text-cyan-400 mt-2",
+        children: [mismatchCount, " of ", Object.keys(countyRankings).length, " counties bypass their nearest airport this quarter — outlined in cyan on the map below."]
+      })]
     }), /*#__PURE__*/_jsxs("p", {
       className: "text-xs text-slate-500 mb-3",
       children: [quarter, " · ", activeCodes.size, " of ", airportCodes.length, " airports selected ·", " ", activeCodes.size < 2 ? "select at least 2 to see contested counties" : `${contestedCount} of ${Object.keys(countyRankings).length} counties with any data are contested`, " ", "· hover any county for the full breakdown"]
@@ -1131,6 +1174,64 @@ function LeakageOverlapMap({
             opacity: 0.55
           })]
         }), "Hatched = contested (2nd airport ≥25% share)"]
+      })]
+    }), showMismatch && /*#__PURE__*/_jsxs("div", {
+      className: "mt-4 pt-3 border-t border-slate-800",
+      children: [/*#__PURE__*/_jsxs("div", {
+        className: "text-xs font-semibold text-slate-300 mb-2",
+        children: ["Counties bypassing their nearest airport, ", quarter, " — ranked by how far people are going out of their way"]
+      }), mismatchCount === 0 ? /*#__PURE__*/_jsx("p", {
+        className: "text-xs text-slate-600",
+        children: "None this quarter — every county with data uses its nearest tracked airport."
+      }) : /*#__PURE__*/_jsx("div", {
+        className: "space-y-1.5",
+        children: Object.entries(countyRankings).map(([fips, r]) => ({
+          fips,
+          r,
+          nearest: nearestAirports[fips]
+        })).filter(({
+          r,
+          nearest
+        }) => nearest && r.ranked[0].code !== nearest.code).map(({
+          fips,
+          r,
+          nearest
+        }) => ({
+          fips,
+          r,
+          nearest,
+          winner: r.ranked[0]
+        })).sort((a, b) => b.winner.share - a.winner.share).slice(0, 8).map(({
+          fips,
+          r,
+          nearest,
+          winner
+        }) => {
+          const name = geometry.find(g => g.fips === fips)?.name || fips;
+          return /*#__PURE__*/_jsxs("div", {
+            className: "flex items-center justify-between text-xs bg-slate-800/30 rounded px-2.5 py-1.5",
+            children: [/*#__PURE__*/_jsxs("span", {
+              className: "text-slate-300",
+              children: [name, " County"]
+            }), /*#__PURE__*/_jsxs("span", {
+              className: "text-slate-500",
+              children: ["closest: ", /*#__PURE__*/_jsx("span", {
+                style: {
+                  color: colorFor(nearest.code)
+                },
+                children: nearest.code
+              }), " (", nearest.dist.toFixed(0), " mi)", /*#__PURE__*/_jsx("span", {
+                className: "mx-1.5 text-slate-700",
+                children: "→"
+              }), "actually flies: ", /*#__PURE__*/_jsx("span", {
+                style: {
+                  color: colorFor(winner.code)
+                },
+                children: winner.code
+              }), " (", fmtPct(winner.share), ")"]
+            })]
+          }, fips);
+        })
       })]
     }), /*#__PURE__*/_jsx("p", {
       className: "text-[11px] text-slate-600 mt-3 leading-relaxed",
@@ -1496,12 +1597,26 @@ function AirportLeakageTrend({
     })]
   });
 }
+const DIRECTION_LABELS = {
+  outbound: {
+    label: "Outbound",
+    color: "#facc15"
+  },
+  inbound: {
+    label: "Inbound",
+    color: "#2dd4bf"
+  },
+  cross_visit: {
+    label: "Co-visited",
+    color: "#a78bfa"
+  }
+};
 function DestinationsPanel({
   DESTINATIONS,
   airport,
   airportCodes
 }) {
-  const [direction, setDirection] = useState("outbound");
+  const [direction, setDirection] = useState(null);
   const [qIdx, setQIdx] = useState(-1);
   const hasAny = Boolean(DESTINATIONS);
   const hasAirport = Boolean(DESTINATIONS && DESTINATIONS[airport]);
@@ -1511,15 +1626,39 @@ function DestinationsPanel({
   }, [quarters.length, airport]);
   const safeQIdx = quarters.length ? Math.min(Math.max(qIdx, 0), quarters.length - 1) : 0;
   const quarter = quarters[safeQIdx];
-  const snap = quarter ? DESTINATIONS[airport][quarter]?.[direction] : null;
+
+  // Which direction keys actually exist for this airport/quarter -- varies
+  // by which script produced the data: analyze_destinations.py (ping-level
+  // trajectories) yields outbound/inbound; analyze_cross_visits.py (the
+  // pre-aggregated device-count matrix) yields a single cross_visit bucket,
+  // since that format has no time-ordering to derive direction from.
+  const availableDirections = useMemo(() => {
+    if (!quarter || !DESTINATIONS[airport]?.[quarter]) return [];
+    return Object.keys(DESTINATIONS[airport][quarter]);
+  }, [DESTINATIONS, airport, quarter]);
+  useEffect(() => {
+    if (availableDirections.length && !availableDirections.includes(direction)) {
+      setDirection(availableDirections[0]);
+    }
+  }, [availableDirections, direction]);
+  const snap = quarter && direction ? DESTINATIONS[airport][quarter]?.[direction] : null;
   const trend = useMemo(() => {
     if (!hasAirport) return [];
-    return quarters.map(q => ({
-      quarter: q,
-      outbound: DESTINATIONS[airport][q]?.outbound?.total_trips || 0,
-      inbound: DESTINATIONS[airport][q]?.inbound?.total_trips || 0
-    }));
+    return quarters.map(q => {
+      const row = {
+        quarter: q
+      };
+      Object.keys(DESTINATIONS[airport][q] || {}).forEach(d => {
+        row[d] = DESTINATIONS[airport][q][d]?.total_trips || 0;
+      });
+      return row;
+    });
   }, [DESTINATIONS, airport, quarters, hasAirport]);
+  const trendDirections = useMemo(() => {
+    const set = new Set();
+    trend.forEach(row => Object.keys(row).forEach(k => k !== "quarter" && set.add(k)));
+    return Array.from(set);
+  }, [trend]);
   if (!hasAny) {
     return /*#__PURE__*/_jsxs("div", {
       className: "bg-slate-900/60 border border-slate-800 border-dashed rounded-lg p-10 flex flex-col items-center text-center gap-3",
@@ -1527,16 +1666,19 @@ function DestinationsPanel({
         className: "w-8 h-8 text-slate-600"
       }), /*#__PURE__*/_jsx("div", {
         className: "text-sm font-semibold text-slate-300",
-        children: "No destination-trajectory data processed yet"
+        children: "No destination data processed yet"
       }), /*#__PURE__*/_jsxs("p", {
         className: "text-xs text-slate-500 max-w-md",
         children: ["Run ", /*#__PURE__*/_jsx("code", {
           className: "text-amber-400",
           children: "analyze_destinations.py"
-        }), " against a device-trajectory extract and upload the resulting ", /*#__PURE__*/_jsx("code", {
+        }), " (ping-level trajectory extracts) or", " ", /*#__PURE__*/_jsx("code", {
+          className: "text-amber-400",
+          children: "analyze_cross_visits.py"
+        }), " (pre-aggregated device-count matrix extracts) and upload the resulting ", /*#__PURE__*/_jsx("code", {
           className: "text-amber-400",
           children: "data/destinations_summary.json"
-        }), " to enable this tab."]
+        }), " ", "to enable this tab."]
       })]
     });
   }
@@ -1550,33 +1692,31 @@ function DestinationsPanel({
         children: ["No destination data for ", airport, " yet"]
       }), /*#__PURE__*/_jsxs("p", {
         className: "text-xs text-slate-500 max-w-md",
-        children: ["Destination trip data is currently processed for: ", Object.keys(DESTINATIONS).join(", ") || "none", ". Switch airports above, or run ", /*#__PURE__*/_jsx("code", {
-          className: "text-amber-400",
-          children: "analyze_destinations.py"
-        }), " against a", " ", airport, " trajectory extract to add it."]
+        children: ["Destination data is currently processed for: ", Object.keys(DESTINATIONS).join(", ") || "none", ". Switch airports above, or process a ", airport, " extract to add it."]
       })]
     });
   }
+  const isCrossVisit = direction === "cross_visit";
   return /*#__PURE__*/_jsxs("div", {
     className: "space-y-4",
     children: [/*#__PURE__*/_jsxs("div", {
       className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
       children: [/*#__PURE__*/_jsxs("div", {
         className: "flex items-center justify-between mb-3 flex-wrap gap-2",
-        children: [/*#__PURE__*/_jsxs("h3", {
+        children: [/*#__PURE__*/_jsx("h3", {
           className: "text-sm font-semibold text-slate-200",
-          children: ["Where ", airport, " Travelers Actually Go"]
-        }), /*#__PURE__*/_jsx("div", {
+          children: isCrossVisit ? `Airports ${airport} Travelers Also Use` : `Where ${airport} Travelers Actually Go`
+        }), availableDirections.length > 1 && /*#__PURE__*/_jsx("div", {
           className: "flex gap-1",
-          children: ["outbound", "inbound"].map(d => /*#__PURE__*/_jsx("button", {
+          children: availableDirections.map(d => /*#__PURE__*/_jsx("button", {
             onClick: () => setDirection(d),
-            className: `px-2.5 py-1 rounded text-xs border capitalize ${direction === d ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400"}`,
-            children: d
+            className: `px-2.5 py-1 rounded text-xs border ${direction === d ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400"}`,
+            children: DIRECTION_LABELS[d]?.label || d
           }, d))
         })]
       }), /*#__PURE__*/_jsxs("p", {
         className: "text-xs text-slate-500 mb-3",
-        children: [direction === "outbound" ? `Devices seen at ${airport}, then later seen at another tracked polygon \u2014 i.e. where they flew to.` : `Devices seen at another tracked polygon, then later seen at ${airport} \u2014 i.e. where they flew in from.`, " ", "Deduplicated to trips (not raw pings); see methodology note below."]
+        children: [direction === "outbound" && `Devices seen at ${airport}, then later seen at another tracked polygon \u2014 i.e. where they flew to. Deduplicated to trips (not raw pings).`, direction === "inbound" && `Devices seen at another tracked polygon, then later seen at ${airport} \u2014 i.e. where they flew in from. Deduplicated to trips (not raw pings).`, isCrossVisit && `Devices seen at ${airport} at ANY point that were also seen at another tracked polygon at any point in the same quarter. This has no direction or trip count \u2014 it's shared population, not a sequence of travel.`]
       }), quarters.length > 1 && /*#__PURE__*/_jsxs("div", {
         className: "flex items-center gap-2 mb-4",
         children: [/*#__PURE__*/_jsx("span", {
@@ -1595,11 +1735,11 @@ function DestinationsPanel({
         })]
       }), !snap || !snap.destinations.length ? /*#__PURE__*/_jsxs("p", {
         className: "text-xs text-slate-600",
-        children: ["No ", direction, " trips found for ", quarter, "."]
+        children: ["No data found for ", quarter, "."]
       }) : /*#__PURE__*/_jsxs(_Fragment, {
         children: [/*#__PURE__*/_jsxs("div", {
           className: "text-xs text-slate-500 mb-2",
-          children: [quarter, " · ", fmt(snap.total_trips), " total ", direction, " trips"]
+          children: [quarter, " · ", fmt(snap.total_trips), " total ", isCrossVisit ? `devices at ${airport}` : `${direction} trips`]
         }), /*#__PURE__*/_jsx("div", {
           className: "space-y-2",
           children: snap.destinations.map((d, i) => {
@@ -1610,17 +1750,18 @@ function DestinationsPanel({
                 className: "flex justify-between mb-0.5",
                 children: [/*#__PURE__*/_jsxs("span", {
                   className: "text-slate-300",
-                  children: [d.dest, AIRPORT_REGISTRY[d.dest] ? ` \u2014 ${AIRPORT_REGISTRY[d.dest].name}` : ""]
+                  children: [d.dest, AIRPORT_REGISTRY[d.dest] ? ` — ${AIRPORT_REGISTRY[d.dest].name}` : ""]
                 }), /*#__PURE__*/_jsxs("span", {
                   className: "text-slate-400 font-mono",
-                  children: [fmtPct(d.share), " · ", fmt(d.trips), " trips · ", fmt(d.unique_devices), " devices"]
+                  children: [fmtPct(d.share), isCrossVisit ? ` · ${fmt(d.unique_devices)} shared devices` : ` · ${fmt(d.trips)} trips · ${fmt(d.unique_devices)} devices`]
                 })]
               }), /*#__PURE__*/_jsx("div", {
                 className: "h-1.5 bg-slate-800 rounded-full overflow-hidden",
                 children: /*#__PURE__*/_jsx("div", {
-                  className: "h-full rounded-full bg-amber-400",
+                  className: "h-full rounded-full",
                   style: {
-                    width: `${d.trips / maxTrips * 100}%`
+                    width: `${d.trips / maxTrips * 100}%`,
+                    background: DIRECTION_LABELS[direction]?.color || "#facc15"
                   }
                 })
               })]
@@ -1632,7 +1773,7 @@ function DestinationsPanel({
       className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
       children: [/*#__PURE__*/_jsx("h3", {
         className: "text-sm font-semibold text-slate-200 mb-3",
-        children: "Trip Volume Trend"
+        children: isCrossVisit ? "Base Device Volume Trend" : "Trip Volume Trend"
       }), /*#__PURE__*/_jsx("div", {
         style: {
           width: "100%",
@@ -1673,45 +1814,43 @@ function DestinationsPanel({
               labelStyle: {
                 color: "#e2e8f0"
               }
-            }), /*#__PURE__*/_jsx(Line, {
+            }), trendDirections.map(d => /*#__PURE__*/_jsx(Line, {
               type: "monotone",
-              dataKey: "outbound",
-              stroke: "#facc15",
+              dataKey: d,
+              stroke: DIRECTION_LABELS[d]?.color || "#94a3b8",
               strokeWidth: 2,
               dot: {
                 r: 2
-              }
-            }), /*#__PURE__*/_jsx(Line, {
-              type: "monotone",
-              dataKey: "inbound",
-              stroke: "#2dd4bf",
-              strokeWidth: 2,
-              dot: {
-                r: 2
-              }
-            })]
+              },
+              connectNulls: true
+            }, d))]
           })
         })
-      }), /*#__PURE__*/_jsxs("div", {
+      }), /*#__PURE__*/_jsx("div", {
         className: "flex gap-4 mt-2 text-[11px] text-slate-500",
-        children: [/*#__PURE__*/_jsxs("span", {
+        children: trendDirections.map(d => /*#__PURE__*/_jsxs("span", {
           className: "flex items-center gap-1",
           children: [/*#__PURE__*/_jsx("span", {
-            className: "w-2 h-2 rounded-full inline-block bg-amber-400"
-          }), "Outbound trips"]
-        }), /*#__PURE__*/_jsxs("span", {
-          className: "flex items-center gap-1",
-          children: [/*#__PURE__*/_jsx("span", {
-            className: "w-2 h-2 rounded-full inline-block bg-teal-400"
-          }), "Inbound trips"]
-        })]
+            className: "w-2 h-2 rounded-full inline-block",
+            style: {
+              background: DIRECTION_LABELS[d]?.color || "#94a3b8"
+            }
+          }), DIRECTION_LABELS[d]?.label || d]
+        }, d))
       })]
-    }), /*#__PURE__*/_jsxs("p", {
+    }), /*#__PURE__*/_jsx("p", {
       className: "text-[11px] text-slate-600 leading-relaxed px-1",
-      children: ["Methodology: trips are deduplicated from raw device pings (multiple pings from the same visit collapse into one trip), and same-polygon self-references are excluded. A minimum time-separation threshold filters out sightings too close to the origin visit to represent a genuinely distinct destination. See", " ", /*#__PURE__*/_jsx("code", {
-        className: "text-amber-400",
-        children: "analyze_destinations.py"
-      }), " for exact thresholds used."]
+      children: isCrossVisit ? /*#__PURE__*/_jsxs(_Fragment, {
+        children: ["Methodology: this quarter's data came from a pre-aggregated device-count matrix (already deduplicated to unique devices by the vendor), not ping-level trajectories — see ", /*#__PURE__*/_jsx("code", {
+          className: "text-amber-400",
+          children: "analyze_cross_visits.py"
+        }), ". DFW and IAH are consolidated from their per-terminal polygons, which can mildly overcount devices seen at more than one terminal of the same airport."]
+      }) : /*#__PURE__*/_jsxs(_Fragment, {
+        children: ["Methodology: trips are deduplicated from raw device pings (multiple pings from the same visit collapse into one trip), and same-polygon self-references are excluded. A minimum time-separation threshold filters out sightings too close to the origin visit to represent a genuinely distinct destination — see ", /*#__PURE__*/_jsx("code", {
+          className: "text-amber-400",
+          children: "analyze_destinations.py"
+        }), " for exact thresholds used."]
+      })
     })]
   });
 }
