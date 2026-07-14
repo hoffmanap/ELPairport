@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import * as d3 from "d3";
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, Tooltip, CartesianGrid, ResponsiveContainer, LineChart, Line, ReferenceLine, Cell } from "recharts";
 import { Plane, Radar, TrendingUp, MapPinned, ArrowRightLeft, Info, Inbox } from "lucide-react";
@@ -67,6 +67,24 @@ function sortQuarters(a, b) {
   const [ya, qa] = a.split("-Q").map(Number);
   const [yb, qb] = b.split("-Q").map(Number);
   return ya * 10 + qa - (yb * 10 + qb);
+}
+
+// Quarters where 2+ airports actually have processed extracts -- a quarter
+// with only ELP data (e.g. 2019-2022, before the other airports were ever
+// pulled) isn't meaningful for cross-airport leakage comparison, since
+// "ELP has 100% share" there just means nobody else was measured, not that
+// ELP genuinely had no competition. This is computed dynamically (not a
+// hardcoded cutoff date) so it stays correct as more historical or new
+// airport extracts are added later.
+function multiAirportQuarters(DATA, airportCodes) {
+  if (!DATA) return [];
+  const counts = {};
+  airportCodes.forEach(code => {
+    Object.keys(DATA[code].quarters).forEach(q => {
+      counts[q] = (counts[q] || 0) + 1;
+    });
+  });
+  return Object.keys(counts).filter(q => counts[q] >= 2).sort(sortQuarters);
 }
 function distanceBucket(mi) {
   if (mi == null) return {
@@ -604,6 +622,19 @@ export default function CatchmentDashboard() {
             })]
           })]
         }), /*#__PURE__*/_jsxs("div", {
+          className: "grid md:grid-cols-2 gap-4 mb-6",
+          children: [/*#__PURE__*/_jsx(BreakdownPanel, {
+            title: "By State",
+            rows: snap.by_state,
+            rowKey: "state",
+            total: snap.total_devices
+          }), /*#__PURE__*/_jsx(BreakdownPanel, {
+            title: "By Country",
+            rows: snap.by_country,
+            rowKey: "country",
+            total: snap.total_devices
+          })]
+        }), /*#__PURE__*/_jsxs("div", {
           className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
           children: [/*#__PURE__*/_jsxs("div", {
             className: "flex items-center justify-between mb-3 flex-wrap gap-2",
@@ -701,8 +732,9 @@ export default function CatchmentDashboard() {
         children: [/*#__PURE__*/_jsx(LeakageOverlapMap, {
           DATA: DATA,
           geometry: TX_COUNTY_GEOMETRY
-        }), /*#__PURE__*/_jsx(BorderplexPanel, {
-          regions: REGIONS
+        }), /*#__PURE__*/_jsx(AirportLeakageTrend, {
+          DATA: DATA,
+          airport: airport
         }), /*#__PURE__*/_jsx(RoadmapPanel, {
           type: "leakage"
         })]
@@ -717,18 +749,17 @@ export default function CatchmentDashboard() {
   });
 }
 const AIRPORT_COLOR_PALETTE = ["#facc15", "#2dd4bf", "#fb7185", "#818cf8", "#4ade80", "#f472b6", "#38bdf8", "#fb923c", "#a78bfa", "#e879f9", "#fbbf24", "#34d399", "#60a5fa", "#f87171"];
+function airportColor(code, airportCodes) {
+  const i = airportCodes.indexOf(code);
+  return AIRPORT_COLOR_PALETTE[i >= 0 ? i % AIRPORT_COLOR_PALETTE.length : 0];
+}
 function LeakageOverlapMap({
   DATA,
   geometry
 }) {
   const airportCodes = useMemo(() => DATA ? Object.keys(DATA) : [], [DATA]);
-  const colorFor = code => AIRPORT_COLOR_PALETTE[airportCodes.indexOf(code) % AIRPORT_COLOR_PALETTE.length];
-  const allQuarters = useMemo(() => {
-    if (!DATA) return [];
-    const set = new Set();
-    airportCodes.forEach(code => Object.keys(DATA[code].quarters).forEach(q => set.add(q)));
-    return Array.from(set).sort(sortQuarters);
-  }, [DATA, airportCodes]);
+  const colorFor = code => airportColor(code, airportCodes);
+  const allQuarters = useMemo(() => multiAirportQuarters(DATA, airportCodes), [DATA, airportCodes]);
   const [qIdx, setQIdx] = useState(-1);
   useEffect(() => {
     if (allQuarters.length && qIdx === -1) setQIdx(allQuarters.length - 1);
@@ -737,6 +768,19 @@ function LeakageOverlapMap({
   const quarter = allQuarters[safeQIdx];
   const [hovered, setHovered] = useState(null);
   const [overlapOnly, setOverlapOnly] = useState(false);
+  const [mousePos, setMousePos] = useState({
+    x: 0,
+    y: 0
+  });
+  const containerRef = useRef(null);
+  function handleMouseMove(e) {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+  }
 
   // For every TX county, pool RAW device counts across every airport that
   // has data for that county this quarter, then rank airports by their
@@ -822,7 +866,7 @@ function LeakageOverlapMap({
       children: "Each county colored by whichever tracked airport has the largest share of that county's pooled device sample this quarter \\u2014 this is the actual leakage picture, not a distance estimate."
     }), /*#__PURE__*/_jsxs("p", {
       className: "text-xs text-slate-500 mb-3",
-      children: [quarter, " · ", contestedCount, " of ", Object.keys(countyRankings).length, " counties with any data are contested (a second airport holds \\u226525% of that county's sample) · hatched border = contested"]
+      children: [quarter, " · ", contestedCount, " of ", Object.keys(countyRankings).length, " counties with any data are contested · hover any county for the full breakdown"]
     }), /*#__PURE__*/_jsxs("div", {
       className: "flex items-center gap-2 mb-2",
       children: [/*#__PURE__*/_jsx("span", {
@@ -841,6 +885,8 @@ function LeakageOverlapMap({
       })]
     }), /*#__PURE__*/_jsxs("div", {
       className: "relative",
+      ref: containerRef,
+      onMouseMove: handleMouseMove,
       children: [/*#__PURE__*/_jsxs("svg", {
         viewBox: "0 0 760 620",
         className: "w-full h-auto",
@@ -893,7 +939,11 @@ function LeakageOverlapMap({
           }, f.properties.fips);
         })]
       }), hovered?.ranking && /*#__PURE__*/_jsxs("div", {
-        className: "absolute top-2 left-2 bg-slate-900 border border-slate-700 rounded-md px-3 py-2 text-xs max-w-[220px]",
+        className: "absolute bg-slate-900 border border-slate-700 rounded-md px-3 py-2 text-xs max-w-[220px] pointer-events-none z-10",
+        style: {
+          left: Math.min(mousePos.x + 14, 560),
+          top: Math.max(mousePos.y - 10, 0)
+        },
         children: [/*#__PURE__*/_jsxs("div", {
           className: "font-semibold text-slate-100 mb-1",
           children: [hovered.name, " County, TX"]
@@ -916,10 +966,14 @@ function LeakageOverlapMap({
           })]
         }, e.code)), hovered.ranking.contested && /*#__PURE__*/_jsx("div", {
           className: "text-amber-400 mt-1 text-[10px]",
-          children: "Contested county"
+          children: "Contested \\u2014 runner-up holds \\u226525% here"
         })]
       }), hovered && !hovered.ranking && /*#__PURE__*/_jsxs("div", {
-        className: "absolute top-2 left-2 bg-slate-900 border border-slate-700 rounded-md px-3 py-2 text-xs",
+        className: "absolute bg-slate-900 border border-slate-700 rounded-md px-3 py-2 text-xs pointer-events-none z-10",
+        style: {
+          left: Math.min(mousePos.x + 14, 560),
+          top: Math.max(mousePos.y - 10, 0)
+        },
         children: [/*#__PURE__*/_jsxs("div", {
           className: "font-semibold text-slate-100",
           children: [hovered.name, " County, TX"]
@@ -929,7 +983,7 @@ function LeakageOverlapMap({
         })]
       })]
     }), /*#__PURE__*/_jsxs("div", {
-      className: "flex flex-wrap gap-3 mt-3 text-[11px] text-slate-500",
+      className: "flex flex-wrap gap-3 mt-3 text-[11px] text-slate-500 items-center",
       children: [airportCodes.map(code => /*#__PURE__*/_jsxs("span", {
         className: "flex items-center gap-1",
         children: [/*#__PURE__*/_jsx("span", {
@@ -946,6 +1000,23 @@ function LeakageOverlapMap({
             background: "#1e293b"
           }
         }), "No data"]
+      }), /*#__PURE__*/_jsxs("span", {
+        className: "flex items-center gap-1 pl-2 border-l border-slate-700",
+        children: [/*#__PURE__*/_jsxs("svg", {
+          width: "14",
+          height: "14",
+          className: "rounded-sm overflow-hidden",
+          children: [/*#__PURE__*/_jsx("rect", {
+            width: "14",
+            height: "14",
+            fill: "#475569"
+          }), /*#__PURE__*/_jsx("rect", {
+            width: "14",
+            height: "14",
+            fill: "url(#contested-hatch)",
+            opacity: 0.55
+          })]
+        }), "Hatched = contested (2nd airport \\u226525% share)"]
       })]
     }), /*#__PURE__*/_jsx("p", {
       className: "text-[11px] text-slate-600 mt-3 leading-relaxed",
@@ -1031,6 +1102,63 @@ function TexasCountyMap({
     })]
   });
 }
+function BreakdownPanel({
+  title,
+  rows,
+  rowKey,
+  total,
+  limit = 8
+}) {
+  const list = rows || [];
+  const shown = list.slice(0, limit);
+  const otherShare = list.slice(limit).reduce((s, r) => s + r.share, 0);
+  const otherDevices = list.slice(limit).reduce((s, r) => s + r.devices, 0);
+  const maxShare = shown[0]?.share || 1;
+  return /*#__PURE__*/_jsxs("div", {
+    className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
+    children: [/*#__PURE__*/_jsx("h3", {
+      className: "text-sm font-semibold text-slate-200 mb-3",
+      children: title
+    }), !list.length ? /*#__PURE__*/_jsx("p", {
+      className: "text-xs text-slate-600",
+      children: "No data for this quarter."
+    }) : /*#__PURE__*/_jsxs("div", {
+      className: "space-y-2",
+      children: [shown.map((r, i) => /*#__PURE__*/_jsxs("div", {
+        className: "text-xs",
+        children: [/*#__PURE__*/_jsxs("div", {
+          className: "flex justify-between mb-0.5",
+          children: [/*#__PURE__*/_jsx("span", {
+            className: "text-slate-300",
+            children: r[rowKey]
+          }), /*#__PURE__*/_jsxs("span", {
+            className: "text-slate-400 font-mono",
+            children: [fmtPct(r.share), " · ", fmt(r.devices)]
+          })]
+        }), /*#__PURE__*/_jsx("div", {
+          className: "h-1.5 bg-slate-800 rounded-full overflow-hidden",
+          children: /*#__PURE__*/_jsx("div", {
+            className: "h-full rounded-full bg-cyan-400",
+            style: {
+              width: `${r.share / maxShare * 100}%`
+            }
+          })
+        })]
+      }, r[rowKey] + i)), list.length > limit && /*#__PURE__*/_jsx("div", {
+        className: "text-xs pt-1",
+        children: /*#__PURE__*/_jsxs("div", {
+          className: "flex justify-between mb-0.5 text-slate-500",
+          children: [/*#__PURE__*/_jsxs("span", {
+            children: ["Other (", list.length - limit, ")"]
+          }), /*#__PURE__*/_jsxs("span", {
+            className: "font-mono",
+            children: [fmtPct(otherShare), " · ", fmt(otherDevices)]
+          })]
+        })
+      })]
+    })]
+  });
+}
 function KPI({
   label,
   value,
@@ -1051,54 +1179,138 @@ function KPI({
     })]
   });
 }
-const REGION_COLORS = ["#facc15", "#2dd4bf", "#fb7185", "#818cf8", "#4ade80", "#f472b6", "#38bdf8", "#fb923c", "#a78bfa", "#94a3b8"];
-function BorderplexPanel({
-  regions
+function AirportLeakageTrend({
+  DATA,
+  airport
 }) {
-  const region = regions?.EP_BORDERPLEX;
-  if (!region) return null;
-  const quarters = Object.keys(region.quarters).sort(sortQuarters);
-  const latestQ = quarters[quarters.length - 1];
-  const latest = region.quarters[latestQ];
+  const airportCodes = useMemo(() => DATA ? Object.keys(DATA) : [], [DATA]);
+  const quarters = useMemo(() => multiAirportQuarters(DATA, airportCodes), [DATA, airportCodes]);
+  const CATCHMENT_SHARE_THRESHOLD = 0.10;
 
-  // Rank airports by their latest-quarter share, so whichever airports
-  // actually have data (and matter) show up first -- no hardcoded list.
-  const rankedAirports = Object.entries(latest?.by_airport || {}).sort((a, b) => b[1].share - a[1].share).map(([code]) => code);
-  const colorFor = code => REGION_COLORS[rankedAirports.indexOf(code) % REGION_COLORS.length];
+  // Pool every airport's raw device count per county, for a given quarter.
+  function poolCounty(q) {
+    const pooled = {}; // fips -> {code: devices}
+    for (const code of airportCodes) {
+      const snap = DATA[code].quarters[q];
+      if (!snap?.tx_counties) continue;
+      for (const [fips, devices] of Object.entries(snap.tx_counties)) {
+        if (!devices) continue;
+        (pooled[fips] = pooled[fips] || {})[code] = devices;
+      }
+    }
+    return pooled;
+  }
+
+  // This airport's catchment = counties where it holds a REAL share (>=10%)
+  // of that county's cross-airport pooled sample, as of the latest
+  // comparable quarter -- not just "any county it's ever appeared in".
+  // That distinction matters: a small airport shows up with a handful of
+  // devices in huge population centers (Houston, Dallas) it doesn't
+  // meaningfully serve; including those would let those metros' sheer size
+  // swamp the comparison. Requiring a real share keeps this to counties
+  // that are actually contested or owned by this airport.
+  const catchmentFips = useMemo(() => {
+    if (!quarters.length) return new Set();
+    const latestQ = quarters[quarters.length - 1];
+    const pooled = poolCounty(latestQ);
+    const set = new Set();
+    for (const [fips, byCode] of Object.entries(pooled)) {
+      const total = Object.values(byCode).reduce((a, b) => a + b, 0);
+      if (total && (byCode[airport] || 0) / total >= CATCHMENT_SHARE_THRESHOLD) set.add(fips);
+    }
+    return set;
+  }, [DATA, airport, quarters, airportCodes]);
+  const trend = useMemo(() => {
+    return quarters.map(q => {
+      const pooled = poolCounty(q);
+      const totals = {};
+      for (const fips of catchmentFips) {
+        const byCode = pooled[fips];
+        if (!byCode) continue;
+        for (const [code, devices] of Object.entries(byCode)) {
+          totals[code] = (totals[code] || 0) + devices;
+        }
+      }
+      const total = Object.values(totals).reduce((a, b) => a + b, 0);
+      const shares = Object.fromEntries(Object.entries(totals).map(([c, d]) => [c, total ? d / total : 0]));
+      return {
+        quarter: q,
+        shares,
+        total
+      };
+    });
+  }, [quarters, catchmentFips, DATA, airportCodes]);
+  if (!trend.length || !catchmentFips.size) {
+    return /*#__PURE__*/_jsxs("div", {
+      className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
+      children: [/*#__PURE__*/_jsxs("h3", {
+        className: "text-sm font-semibold text-slate-200 mb-1",
+        children: ["Leakage Trend \\u2014 ", airport]
+      }), /*#__PURE__*/_jsxs("p", {
+        className: "text-xs text-slate-500",
+        children: ["Not enough overlapping data yet. This needs at least one quarter where ", airport, " AND at least one other tracked airport both have processed extracts."]
+      })]
+    });
+  }
+  const latest = trend[trend.length - 1];
+  const selfShare = latest.shares[airport] || 0;
+
+  // Rank competitors (everyone except the selected airport) by their most
+  // recent share, so the chart legend/lines always lead with whoever
+  // currently matters most.
+  const competitors = Object.keys(latest.shares).filter(c => c !== airport).sort((a, b) => (latest.shares[b] || 0) - (latest.shares[a] || 0)).slice(0, 5);
+  const chartData = trend.map(t => ({
+    quarter: t.quarter,
+    ...Object.fromEntries(competitors.map(c => [c, Math.round((t.shares[c] || 0) * 1000) / 10]))
+  }));
+  const maxCompetitorPct = Math.max(1, ...chartData.flatMap(d => competitors.map(c => d[c] || 0)));
+  const yMax = Math.min(100, Math.ceil(maxCompetitorPct * 1.3 / 5) * 5);
   return /*#__PURE__*/_jsxs("div", {
     className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
     children: [/*#__PURE__*/_jsxs("div", {
       className: "flex items-center justify-between mb-1",
-      children: [/*#__PURE__*/_jsx("h3", {
+      children: [/*#__PURE__*/_jsxs("h3", {
         className: "text-sm font-semibold text-slate-200",
-        children: region.name
+        children: ["Leakage Trend \\u2014 ", airport, "'s Catchment"]
       }), /*#__PURE__*/_jsx(Info, {
         className: "w-3.5 h-3.5 text-slate-600"
       })]
     }), /*#__PURE__*/_jsxs("p", {
       className: "text-xs text-slate-500 mb-4",
-      children: ["Share of this region's device sample choosing each airport, by quarter (", latestQ, ", n=", fmt(latest?.total_devices), "). Region = El Paso County TX + Do\\u00f1a Ana & Otero Counties NM + Ju\\u00e1rez, MX."]
-    }), /*#__PURE__*/_jsx("div", {
-      className: "flex gap-2 mb-4 flex-wrap",
-      children: rankedAirports.map(code => {
-        const has = latest.by_airport[code];
-        return /*#__PURE__*/_jsxs("div", {
-          className: "flex-1 min-w-[90px] rounded-md border border-slate-700 px-3 py-2",
-          children: [/*#__PURE__*/_jsx("div", {
-            className: "text-[11px] text-slate-500",
-            children: code
-          }), /*#__PURE__*/_jsx("div", {
-            className: "text-lg font-mono",
-            style: {
-              color: colorFor(code)
-            },
-            children: fmtPct(has.share)
-          }), /*#__PURE__*/_jsxs("div", {
-            className: "text-[10px] text-slate-500",
-            children: [fmt(has.devices), " devices"]
-          })]
-        }, code);
-      })
+      children: ["Region = TX counties where ", airport, " holds \\u226510% of that county's cross-airport sample as of the latest quarter (", catchmentFips.size, " counties). Shows what share of that combined pool each airport actually captures, ", latest.quarter, "."]
+    }), /*#__PURE__*/_jsxs("div", {
+      className: "flex gap-3 mb-4 flex-wrap items-stretch",
+      children: [/*#__PURE__*/_jsxs("div", {
+        className: "rounded-md border border-amber-400/40 bg-amber-400/5 px-4 py-3 flex flex-col justify-center",
+        children: [/*#__PURE__*/_jsxs("div", {
+          className: "text-[11px] text-slate-500",
+          children: [airport, " self-capture"]
+        }), /*#__PURE__*/_jsx("div", {
+          className: "text-2xl font-mono text-amber-300",
+          children: fmtPct(selfShare)
+        }), /*#__PURE__*/_jsx("div", {
+          className: "text-[10px] text-slate-500",
+          children: "of its own catchment's pooled sample"
+        })]
+      }), competitors.slice(0, 3).map(code => /*#__PURE__*/_jsxs("div", {
+        className: "flex-1 min-w-[90px] rounded-md border border-slate-700 px-3 py-2",
+        children: [/*#__PURE__*/_jsx("div", {
+          className: "text-[11px] text-slate-500",
+          children: code
+        }), /*#__PURE__*/_jsx("div", {
+          className: "text-lg font-mono",
+          style: {
+            color: airportColor(code, airportCodes)
+          },
+          children: fmtPct(latest.shares[code] || 0)
+        }), /*#__PURE__*/_jsx("div", {
+          className: "text-[10px] text-slate-500",
+          children: "competitor share"
+        })]
+      }, code))]
+    }), /*#__PURE__*/_jsxs("p", {
+      className: "text-[11px] text-slate-500 mb-1",
+      children: ["Competitor share over time \\u2014 ", airport, " itself is excluded from this chart (shown as the badge above instead) so the y-axis isn't squashed flat by its much larger share."]
     }), /*#__PURE__*/_jsx("div", {
       style: {
         width: "100%",
@@ -1106,10 +1318,7 @@ function BorderplexPanel({
       },
       children: /*#__PURE__*/_jsx(ResponsiveContainer, {
         children: /*#__PURE__*/_jsxs(LineChart, {
-          data: quarters.map(q => ({
-            quarter: q,
-            ...Object.fromEntries(Object.entries(region.quarters[q].by_airport).map(([a, v]) => [a, v.share * 100]))
-          })),
+          data: chartData,
           margin: {
             top: 5,
             right: 20,
@@ -1132,7 +1341,7 @@ function BorderplexPanel({
               fontSize: 10
             },
             tickFormatter: v => `${v}%`,
-            domain: [0, 100]
+            domain: [0, yMax]
           }), /*#__PURE__*/_jsx(Tooltip, {
             contentStyle: {
               background: "#0f172a",
@@ -1144,10 +1353,10 @@ function BorderplexPanel({
               color: "#e2e8f0"
             },
             formatter: v => [`${v.toFixed(1)}%`, "share"]
-          }), rankedAirports.map(code => /*#__PURE__*/_jsx(Line, {
+          }), competitors.map(code => /*#__PURE__*/_jsx(Line, {
             type: "monotone",
             dataKey: code,
-            stroke: colorFor(code),
+            stroke: airportColor(code, airportCodes),
             strokeWidth: 2,
             dot: {
               r: 2
@@ -1158,21 +1367,18 @@ function BorderplexPanel({
       })
     }), /*#__PURE__*/_jsx("div", {
       className: "flex gap-4 mt-2 text-[11px] text-slate-500 flex-wrap",
-      children: rankedAirports.map(code => /*#__PURE__*/_jsxs("span", {
+      children: competitors.map(code => /*#__PURE__*/_jsxs("span", {
         className: "flex items-center gap-1",
         children: [/*#__PURE__*/_jsx("span", {
           className: "w-2 h-2 rounded-full inline-block",
           style: {
-            background: colorFor(code)
+            background: airportColor(code, airportCodes)
           }
         }), code]
       }, code))
-    }), /*#__PURE__*/_jsxs("p", {
+    }), /*#__PURE__*/_jsx("p", {
       className: "text-[11px] text-slate-600 mt-3 leading-relaxed",
-      children: ["Ranked by share of the region's ", latestQ, " sample. As more airports process extracts, they'll automatically appear here ranked by share \\u2014 no dashboard changes needed, since this rollup is computed directly from each airport's own home-location data in ", /*#__PURE__*/_jsx("code", {
-        className: "text-amber-400",
-        children: "aggregate.py"
-      }), "."]
+      children: "Switch airports using the selector at the top of the page \\u2014 this panel recomputes for whichever airport is currently selected, using only quarters where a real comparison is possible (2+ airports with processed extracts)."
     })]
   });
 }
