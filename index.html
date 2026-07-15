@@ -4,42 +4,110 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Texas OD &amp; Catchment Console</title>
-
-<!-- Tailwind (CDN build -- fine for an internal BI tool; swap for a real
-     Tailwind build later if this grows into a bigger product). -->
 <script src="https://cdn.tailwindcss.com"></script>
-
-<!-- Import map: pins exact versions so every esm.sh import of "react"
-     resolves to the SAME module instance. Without this, recharts/lucide-react
-     could each pull their own copy of React and throw "invalid hook call". -->
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@18.3.1",
-    "react-dom": "https://esm.sh/react-dom@18.3.1",
-    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
-    "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
-    "recharts": "https://esm.sh/recharts@2.15.0?external=react,react-dom",
-    "lucide-react": "https://esm.sh/lucide-react@0.383.0?external=react,react-dom",
-    "d3": "https://esm.sh/d3@7"
-  }
-}
-</script>
 </head>
-<body>
-<div id="root"></div>
+<body class="bg-slate-950 text-slate-100 font-sans">
 
-<script type="module">
-  // The "?v=2" on app.js is a cache-buster. Browsers (and GitHub Pages'
-  // CDN) aggressively cache .js files -- without a version bump, they can
-  // keep serving an OLD copy of app.js even after you upload a new one to
-  // the repo. Bump this number (v=3, v=4, ...) every time you update app.js.
-  import React from "react";
-  import { createRoot } from "react-dom/client";
-  import CatchmentDashboard from "./app.js?v=17";
+<div class="max-w-4xl mx-auto px-6 py-12 sm:py-16">
 
-  const root = createRoot(document.getElementById("root"));
-  root.render(React.createElement(CatchmentDashboard));
-</script>
+  <!-- Header -->
+  <div class="flex items-center gap-3 mb-3">
+    <div class="w-10 h-10 rounded-md bg-amber-400/10 border border-amber-400/30 flex items-center justify-center shrink-0">
+      <svg class="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-1 .1-1.3.5l-.4.5c-.4.5-.2 1.2.3 1.5L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.5 1 .7 1.5.3l.5-.4c.4-.3.6-.8.5-1.3z"/></svg>
+    </div>
+    <div>
+      <div class="text-lg font-semibold text-slate-100">Texas OD &amp; Catchment Console</div>
+      <div class="text-xs text-slate-500">Airport origin-destination, catchment, and leakage intelligence</div>
+    </div>
+  </div>
+
+  <p class="text-slate-400 text-sm leading-relaxed mb-10 max-w-2xl">
+    A working analysis tool built from anonymized mobile device mobility data, tracking where airport visitors
+    live, which airports compete for the same travelers, and how much shared traffic exists between airports
+    across the Texas–New Mexico–northern Mexico region.
+  </p>
+
+  <!-- What it does -->
+  <div class="grid sm:grid-cols-3 gap-4 mb-10">
+    <div class="bg-slate-900/60 border border-slate-800 rounded-lg p-4">
+      <div class="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-2">Catchment</div>
+      <p class="text-xs text-slate-400 leading-relaxed">
+        For any tracked airport: where its travelers actually live, county by county, plus state and country
+        breakdowns. Answers "who is this airport actually serving?"
+      </p>
+    </div>
+    <div class="bg-slate-900/60 border border-slate-800 rounded-lg p-4">
+      <div class="text-xs font-semibold text-cyan-400 uppercase tracking-wider mb-2">Leakage</div>
+      <p class="text-xs text-slate-400 leading-relaxed">
+        Which airport actually wins each county's traffic, where that competes with a neighboring airport, and
+        where people bypass their geographically nearest airport entirely. Answers "who are we losing travelers to,
+        and where?"
+      </p>
+    </div>
+    <div class="bg-slate-900/60 border border-slate-800 rounded-lg p-4">
+      <div class="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-2">Destinations</div>
+      <p class="text-xs text-slate-400 leading-relaxed">
+        Shared traveler volume between airports — an interactive connection map showing which airports' traveler
+        populations overlap, and by how much. Answers "where else do our travelers show up?"
+      </p>
+    </div>
+  </div>
+
+  <!-- Scope -->
+  <div class="bg-slate-900/60 border border-slate-800 rounded-lg p-5 mb-10">
+    <div class="text-sm font-semibold text-slate-200 mb-3">Scope</div>
+    <div class="flex flex-wrap gap-1.5 mb-3">
+      <span class="text-[11px] font-mono px-2 py-1 rounded border border-slate-700 text-slate-300">ELP</span>
+      <span class="text-[11px] font-mono px-2 py-1 rounded border border-slate-700 text-slate-300">ABQ</span>
+      <span class="text-[11px] font-mono px-2 py-1 rounded border border-slate-700 text-slate-300">AMA</span>
+      <span class="text-[11px] font-mono px-2 py-1 rounded border border-slate-700 text-slate-300">LBB</span>
+      <span class="text-[11px] font-mono px-2 py-1 rounded border border-slate-700 text-slate-300">MAF</span>
+      <span class="text-[11px] font-mono px-2 py-1 rounded border border-slate-700 text-slate-300">DAL</span>
+      <span class="text-[11px] font-mono px-2 py-1 rounded border border-slate-700 text-slate-300">DFW</span>
+      <span class="text-[11px] font-mono px-2 py-1 rounded border border-slate-700 text-slate-300">AUS</span>
+      <span class="text-[11px] font-mono px-2 py-1 rounded border border-slate-700 text-slate-300">SAT</span>
+      <span class="text-[11px] font-mono px-2 py-1 rounded border border-slate-700 text-slate-300">IAH</span>
+      <span class="text-[11px] font-mono px-2 py-1 rounded border border-slate-700 text-slate-300">HOU</span>
+      <span class="text-[11px] font-mono px-2 py-1 rounded border border-slate-700 text-slate-300">CRP</span>
+      <span class="text-[11px] font-mono px-2 py-1 rounded border border-slate-700 text-slate-300">HRL</span>
+      <span class="text-[11px] font-mono px-2 py-1 rounded border border-slate-700 text-slate-300">MFE</span>
+      <span class="text-[11px] font-mono px-2 py-1 rounded border border-slate-700 text-slate-300">CJS</span>
+    </div>
+    <p class="text-xs text-slate-500 leading-relaxed">
+      15 airports tracked: 13 in Texas, Albuquerque International Sunport (NM), and Abraham González
+      International (Ciudad Juárez, MX). Data updates by quarter as new extracts are processed — coverage
+      currently spans 2018 through the present for El Paso, and 2024 onward for the other 14.
+    </p>
+  </div>
+
+  <!-- How to read the data -->
+  <div class="bg-slate-900/60 border border-slate-800 rounded-lg p-5 mb-10">
+    <div class="text-sm font-semibold text-slate-200 mb-3">How to read this data</div>
+    <ul class="space-y-2.5 text-xs text-slate-400 leading-relaxed">
+      <li class="flex gap-2">
+        <span class="text-amber-400 shrink-0">&#9633;</span>
+        <span><strong class="text-slate-300">It's a sample, not a census.</strong> Every figure is a share of the observed device panel for that period, not a count of actual passengers. Panel size varies quarter to quarter, so raw counts aren't directly comparable across time — use the indexed trend views for that.</span>
+      </li>
+      <li class="flex gap-2">
+        <span class="text-amber-400 shrink-0">&#9633;</span>
+        <span><strong class="text-slate-300">Two different data sources feed the Destinations tab</strong>, and they answer different questions. Ping-level trajectory data can show true direction (a device left airport A, later appeared at airport B). The cross-visit device-count matrix — used for most quarters — can only show that a device was seen at both airports sometime in the same period, with no way to know which came first. The tool labels these differently on purpose; "co-visited" never implies a flight sequence.</span>
+      </li>
+      <li class="flex gap-2">
+        <span class="text-amber-400 shrink-0">&#9633;</span>
+        <span><strong class="text-slate-300">"Nearest airport" is pure geography</strong>, computed independently of any device data — straight-line distance from a county's center to each airport. When it disagrees with which airport a county's data actually favors, that's a real signal, not a data error.</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- CTA -->
+  <div class="flex items-center gap-4">
+    <a href="dashboard.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-amber-400 text-slate-950 text-sm font-semibold hover:bg-amber-300 transition-colors">
+      Open the Console
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <span class="text-xs text-slate-600">No login required — internal analysis tool</span>
+  </div>
+
+</div>
 </body>
 </html>
