@@ -1827,7 +1827,7 @@ function ConnectionMap({
   const [dests, setDests] = useState(new Set(airportCodes));
   const [focus, setFocus] = useState(null);
   const [minShared, setMinShared] = useState(0);
-  const [lineOpacity, setLineOpacity] = useState(1);
+  const [mapOpacity, setMapOpacity] = useState(1);
   const [initialized, setInitialized] = useState(false);
   useEffect(() => {
     if (airportCodes.length && !initialized) {
@@ -1965,18 +1965,18 @@ function ConnectionMap({
           className: "flex items-center justify-between mb-2",
           children: [/*#__PURE__*/_jsx("span", {
             className: "text-xs uppercase tracking-wider text-slate-500",
-            children: "Line transparency"
+            children: "Transparency (lines & bubbles)"
           }), /*#__PURE__*/_jsxs("span", {
             className: "text-xs font-mono text-amber-400",
-            children: [Math.round(lineOpacity * 100), "%"]
+            children: [Math.round(mapOpacity * 100), "%"]
           })]
         }), /*#__PURE__*/_jsx("input", {
           type: "range",
           min: 0.1,
           max: 1,
           step: 0.05,
-          value: lineOpacity,
-          onChange: e => setLineOpacity(Number(e.target.value)),
+          value: mapOpacity,
+          onChange: e => setMapOpacity(Number(e.target.value)),
           className: "w-full accent-amber-400"
         })]
       })]
@@ -2027,7 +2027,7 @@ function ConnectionMap({
               fill: "none",
               stroke: focus ? "#facc15" : colorFor(p.a),
               strokeWidth: widthScale(p.shared),
-              opacity: opacityScale(p.shared) * lineOpacity
+              opacity: opacityScale(p.shared) * mapOpacity
             }, i);
           }), airportCodes.map(code => {
             const p = projected[code];
@@ -2045,8 +2045,10 @@ function ConnectionMap({
                 cy: p.y,
                 r: r,
                 fill: colorFor(code),
+                fillOpacity: mapOpacity,
                 stroke: isFocused ? "#fff" : "#0f172a",
-                strokeWidth: isFocused ? 2 : 1
+                strokeWidth: isFocused ? 2 : 1,
+                strokeOpacity: Math.max(mapOpacity, 0.5)
               }), /*#__PURE__*/_jsx("text", {
                 x: p.x,
                 y: p.y - r - 4,
