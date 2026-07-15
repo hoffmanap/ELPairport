@@ -928,8 +928,6 @@ export default function CatchmentDashboard() {
         }), /*#__PURE__*/_jsx(AirportLeakageTrend, {
           DATA: DATA,
           airport: airport
-        }), /*#__PURE__*/_jsx(RoadmapPanel, {
-          type: "leakage"
         })]
       }), tab === "destinations" && /*#__PURE__*/_jsx(DestinationsPanel, {
         DESTINATIONS: DESTINATIONS,
