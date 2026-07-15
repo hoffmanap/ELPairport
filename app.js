@@ -457,8 +457,9 @@ export default function CatchmentDashboard() {
         className: "max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col gap-3",
         children: [/*#__PURE__*/_jsxs("div", {
           className: "flex items-center justify-between flex-wrap gap-3",
-          children: [/*#__PURE__*/_jsxs("div", {
-            className: "flex items-center gap-3",
+          children: [/*#__PURE__*/_jsxs("a", {
+            href: "./index.html",
+            className: "flex items-center gap-3 hover:opacity-80 transition-opacity",
             children: [/*#__PURE__*/_jsx("div", {
               className: "w-9 h-9 rounded-md bg-amber-400/10 border border-amber-400/30 flex items-center justify-center",
               children: /*#__PURE__*/_jsx(Plane, {
