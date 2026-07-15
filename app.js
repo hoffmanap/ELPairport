@@ -931,6 +931,8 @@ export default function CatchmentDashboard() {
         })]
       }), tab === "destinations" && /*#__PURE__*/_jsx(DestinationsPanel, {
         DESTINATIONS: DESTINATIONS,
+        DATA: DATA,
+        geometry: TX_COUNTY_GEOMETRY,
         airport: airport,
         airportCodes: airportCodes
       })]
@@ -1786,18 +1788,351 @@ function combineDestinationQuarters(byQuarter, quarterList, direction) {
     destinations
   };
 }
+function buildConnectionPairs(DESTINATIONS, airportCodes, selectedQuarters) {
+  const totals = {}; // "A|B" (sorted) -> summed shared devices across selectedQuarters
+  for (const q of selectedQuarters) {
+    const perQuarterPairs = {}; // dedupe within this quarter -- co-visitation is symmetric, so
+    // airport A's list and airport B's list both report the same shared count for the pair;
+    // only recording it once per quarter (not once per side) is what avoids double-counting.
+    for (const origin of airportCodes) {
+      const snap = DESTINATIONS[origin]?.[q]?.cross_visit;
+      if (!snap) continue;
+      for (const d of snap.destinations || []) {
+        const key = [origin, d.dest].sort().join("|");
+        perQuarterPairs[key] = d.trips;
+      }
+    }
+    for (const [key, val] of Object.entries(perQuarterPairs)) {
+      totals[key] = (totals[key] || 0) + val;
+    }
+  }
+  return Object.entries(totals).map(([key, shared]) => {
+    const [a, b] = key.split("|");
+    return {
+      a,
+      b,
+      shared
+    };
+  });
+}
+function ConnectionMap({
+  DESTINATIONS,
+  DATA,
+  geometry,
+  airportCodes,
+  selectedQuarters,
+  periodLabel
+}) {
+  const [origins, setOrigins] = useState(new Set(airportCodes));
+  const [dests, setDests] = useState(new Set(airportCodes));
+  const [focus, setFocus] = useState(null);
+  const [minShared, setMinShared] = useState(0);
+  const [initialized, setInitialized] = useState(false);
+  useEffect(() => {
+    if (airportCodes.length && !initialized) {
+      setOrigins(new Set(airportCodes));
+      setDests(new Set(airportCodes));
+      setInitialized(true);
+    }
+  }, [airportCodes, initialized]);
+  const colorFor = code => airportColor(code, airportCodes);
+  const allPairs = useMemo(() => buildConnectionPairs(DESTINATIONS, airportCodes, selectedQuarters), [DESTINATIONS, airportCodes, selectedQuarters]);
+  const {
+    features,
+    pathFor,
+    projected
+  } = useMemo(() => {
+    const fc = {
+      type: "FeatureCollection",
+      features: geometry.map(c => ({
+        type: "Feature",
+        properties: {
+          fips: c.fips
+        },
+        geometry: {
+          type: c.type,
+          coordinates: c.coordinates
+        }
+      }))
+    };
+    const projection = d3.geoMercator().fitSize([760, 620], fc);
+    const path = d3.geoPath(projection);
+    const proj = {};
+    for (const code of airportCodes) {
+      const meta = DATA[code]?.meta;
+      if (!meta) continue;
+      const [x, y] = projection([meta.lon, meta.lat]);
+      proj[code] = {
+        x,
+        y
+      };
+    }
+    return {
+      features: fc.features,
+      pathFor: path,
+      projected: proj
+    };
+  }, [geometry, airportCodes, DATA]);
+  const visiblePairs = useMemo(() => {
+    return allPairs.filter(p => {
+      if (p.shared < minShared) return false;
+      if (!projected[p.a] || !projected[p.b]) return false;
+      const matchesForward = origins.has(p.a) && dests.has(p.b);
+      const matchesReverse = origins.has(p.b) && dests.has(p.a);
+      if (!matchesForward && !matchesReverse) return false;
+      if (focus && p.a !== focus && p.b !== focus) return false;
+      return true;
+    });
+  }, [allPairs, origins, dests, focus, minShared, projected]);
+  const maxShared = Math.max(1, ...allPairs.map(p => p.shared));
+  const widthScale = d3.scaleSqrt().domain([0, maxShared]).range([0.6, 9]);
+  const opacityScale = d3.scaleSqrt().domain([0, maxShared]).range([0.15, 0.85]);
+  function toggleSet(setFn, code) {
+    setFn(prev => {
+      const next = new Set(prev);
+      if (next.has(code)) next.delete(code);else next.add(code);
+      return next;
+    });
+  }
+  const rankings = useMemo(() => {
+    const totals = {};
+    for (const p of visiblePairs) {
+      totals[p.a] = (totals[p.a] || 0) + p.shared;
+      totals[p.b] = (totals[p.b] || 0) + p.shared;
+    }
+    return Object.entries(totals).map(([code, shared]) => ({
+      code,
+      shared
+    })).sort((a, b) => b.shared - a.shared);
+  }, [visiblePairs]);
+  if (!allPairs.length) {
+    return /*#__PURE__*/_jsx("div", {
+      className: "bg-slate-900/60 border border-slate-800 border-dashed rounded-lg p-10 text-center",
+      children: /*#__PURE__*/_jsxs("p", {
+        className: "text-xs text-slate-500",
+        children: ["No cross-visit data for ", periodLabel, " to map."]
+      })
+    });
+  }
+  return /*#__PURE__*/_jsxs("div", {
+    className: "space-y-4",
+    children: [/*#__PURE__*/_jsxs("p", {
+      className: "text-xs text-slate-500 px-1",
+      children: ["Line thickness = shared device volume between two airports during ", periodLabel, " — undirected: the data shows both airports were visited by the same devices, not which came first."]
+    }), /*#__PURE__*/_jsxs("div", {
+      className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
+      children: [/*#__PURE__*/_jsxs("div", {
+        className: "flex items-center justify-between mb-2",
+        children: [/*#__PURE__*/_jsx("span", {
+          className: "text-xs uppercase tracking-wider text-slate-500",
+          children: "Minimum shared devices"
+        }), /*#__PURE__*/_jsxs("span", {
+          className: "text-xs font-mono text-amber-400",
+          children: [minShared, "+"]
+        })]
+      }), /*#__PURE__*/_jsx("input", {
+        type: "range",
+        min: 0,
+        max: Math.round(maxShared * 0.6),
+        step: Math.max(1, Math.round(maxShared / 100)),
+        value: minShared,
+        onChange: e => setMinShared(Number(e.target.value)),
+        className: "w-full accent-amber-400"
+      })]
+    }), /*#__PURE__*/_jsxs("div", {
+      className: "grid lg:grid-cols-3 gap-4",
+      children: [/*#__PURE__*/_jsxs("div", {
+        className: "lg:col-span-2 bg-slate-900/60 border border-slate-800 rounded-lg p-4",
+        children: [/*#__PURE__*/_jsxs("div", {
+          className: "flex items-center justify-between mb-2",
+          children: [/*#__PURE__*/_jsx("h3", {
+            className: "text-sm font-semibold text-slate-200",
+            children: "Connection Map"
+          }), focus && /*#__PURE__*/_jsxs("button", {
+            onClick: () => setFocus(null),
+            className: "text-xs px-2 py-1 rounded border border-amber-400 bg-amber-400/10 text-amber-300",
+            children: ["Focused: ", focus, " — clear"]
+          })]
+        }), /*#__PURE__*/_jsxs("svg", {
+          viewBox: "0 0 760 620",
+          className: "w-full h-auto",
+          children: [features.map((f, i) => /*#__PURE__*/_jsx("path", {
+            d: pathFor(f),
+            fill: "#0f172a",
+            stroke: "#1e293b",
+            strokeWidth: 0.5
+          }, i)), visiblePairs.map((p, i) => {
+            const pa = projected[p.a];
+            const pb = projected[p.b];
+            const mx = (pa.x + pb.x) / 2;
+            const my = (pa.y + pb.y) / 2;
+            const dx = pb.x - pa.x,
+              dy = pb.y - pa.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const curve = Math.min(dist * 0.15, 40);
+            const nx = -dy / (dist || 1),
+              ny = dx / (dist || 1);
+            const cx = mx + nx * curve,
+              cy = my + ny * curve;
+            const isDim = focus && p.a !== focus && p.b !== focus;
+            const d = "M " + pa.x + " " + pa.y + " Q " + cx + " " + cy + " " + pb.x + " " + pb.y;
+            return /*#__PURE__*/_jsx("path", {
+              d: d,
+              fill: "none",
+              stroke: focus ? "#facc15" : colorFor(p.a),
+              strokeWidth: widthScale(p.shared),
+              opacity: isDim ? 0.06 : opacityScale(p.shared)
+            }, i);
+          }), airportCodes.map(code => {
+            const p = projected[code];
+            if (!p) return null;
+            const total = DATA[code]?.meta ? Object.values(DESTINATIONS[code] || {}).reduce((s, q) => s + (q.cross_visit?.total_trips || 0), 0) : 0;
+            const r = Math.max(4, Math.sqrt(total || 1) / 15);
+            const isFocused = focus === code;
+            return /*#__PURE__*/_jsxs("g", {
+              onClick: () => setFocus(focus === code ? null : code),
+              style: {
+                cursor: "pointer"
+              },
+              children: [/*#__PURE__*/_jsx("circle", {
+                cx: p.x,
+                cy: p.y,
+                r: r,
+                fill: colorFor(code),
+                stroke: isFocused ? "#fff" : "#0f172a",
+                strokeWidth: isFocused ? 2 : 1
+              }), /*#__PURE__*/_jsx("text", {
+                x: p.x,
+                y: p.y - r - 4,
+                fill: "#e2e8f0",
+                fontSize: "11",
+                textAnchor: "middle",
+                fontFamily: "monospace",
+                children: code
+              })]
+            }, code);
+          })]
+        }), /*#__PURE__*/_jsx("p", {
+          className: "text-[11px] text-slate-600 mt-2",
+          children: "Click an airport to focus its connections and dim the rest."
+        })]
+      }), /*#__PURE__*/_jsxs("div", {
+        className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
+        children: [/*#__PURE__*/_jsx("h3", {
+          className: "text-sm font-semibold text-slate-200 mb-3",
+          children: "Ranked by Shared Traffic"
+        }), /*#__PURE__*/_jsx("div", {
+          className: "space-y-2",
+          children: rankings.slice(0, 12).map(r => {
+            const max = rankings[0]?.shared || 1;
+            return /*#__PURE__*/_jsxs("div", {
+              className: "text-xs",
+              children: [/*#__PURE__*/_jsxs("div", {
+                className: "flex justify-between mb-0.5",
+                children: [/*#__PURE__*/_jsxs("span", {
+                  className: "flex items-center gap-1.5 text-slate-300",
+                  children: [/*#__PURE__*/_jsx("span", {
+                    className: "w-2 h-2 rounded-full inline-block",
+                    style: {
+                      background: colorFor(r.code)
+                    }
+                  }), r.code]
+                }), /*#__PURE__*/_jsx("span", {
+                  className: "font-mono text-slate-400",
+                  children: fmt(r.shared)
+                })]
+              }), /*#__PURE__*/_jsx("div", {
+                className: "h-1.5 bg-slate-800 rounded-full overflow-hidden",
+                children: /*#__PURE__*/_jsx("div", {
+                  className: "h-full rounded-full",
+                  style: {
+                    width: r.shared / max * 100 + "%",
+                    background: colorFor(r.code)
+                  }
+                })
+              })]
+            }, r.code);
+          })
+        })]
+      })]
+    }), /*#__PURE__*/_jsxs("div", {
+      className: "grid md:grid-cols-2 gap-4",
+      children: [/*#__PURE__*/_jsxs("div", {
+        className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
+        children: [/*#__PURE__*/_jsx("h3", {
+          className: "text-sm font-semibold text-slate-200 mb-2",
+          children: "Origins filter"
+        }), /*#__PURE__*/_jsx("div", {
+          className: "flex flex-wrap gap-1.5",
+          children: airportCodes.map(code => {
+            const active = origins.has(code);
+            return /*#__PURE__*/_jsxs("button", {
+              onClick: () => toggleSet(setOrigins, code),
+              className: `px-2 py-1 rounded text-xs border ${active ? "border-slate-600 text-slate-200" : "border-slate-800 text-slate-600"}`,
+              children: [/*#__PURE__*/_jsx("span", {
+                className: "w-2 h-2 rounded-full inline-block mr-1",
+                style: {
+                  background: colorFor(code)
+                }
+              }), code]
+            }, code);
+          })
+        })]
+      }), /*#__PURE__*/_jsxs("div", {
+        className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
+        children: [/*#__PURE__*/_jsx("h3", {
+          className: "text-sm font-semibold text-slate-200 mb-2",
+          children: "Destinations filter"
+        }), /*#__PURE__*/_jsx("div", {
+          className: "flex flex-wrap gap-1.5",
+          children: airportCodes.map(code => {
+            const active = dests.has(code);
+            return /*#__PURE__*/_jsxs("button", {
+              onClick: () => toggleSet(setDests, code),
+              className: `px-2 py-1 rounded text-xs border ${active ? "border-slate-600 text-slate-200" : "border-slate-800 text-slate-600"}`,
+              children: [/*#__PURE__*/_jsx("span", {
+                className: "w-2 h-2 rounded-full inline-block mr-1",
+                style: {
+                  background: colorFor(code)
+                }
+              }), code]
+            }, code);
+          })
+        })]
+      })]
+    }), /*#__PURE__*/_jsx("p", {
+      className: "text-[11px] text-slate-600 leading-relaxed px-1",
+      children: "\"Origins\" and \"Destinations\" filter which pairs are shown (a connection appears if either endpoint falls in each set) — since this data has no true direction, both filters act on the same underlying undirected pairs. Node size = total device volume across all processed quarters, not just the ones selected above."
+    })]
+  });
+}
 function DestinationsPanel({
   DESTINATIONS,
+  DATA,
+  geometry,
   airport,
   airportCodes
 }) {
   const [direction, setDirection] = useState(null);
+  const [viewMode, setViewMode] = useState("list"); // "list" | "map"
   const [periodMode, setPeriodMode] = useState("single");
   const [singleQuarter, setSingleQuarter] = useState(null);
   const [customQuarters, setCustomQuarters] = useState(new Set());
   const hasAny = Boolean(DESTINATIONS);
   const hasAirport = Boolean(DESTINATIONS && DESTINATIONS[airport]);
-  const quarters = useMemo(() => hasAirport ? Object.keys(DESTINATIONS[airport]).sort(sortQuarters) : [], [DESTINATIONS, airport, hasAirport]);
+
+  // Union of quarters across ALL airports, not just the selected one --
+  // the connection map needs the full picture regardless of which airport
+  // happens to be selected in the header, and using one shared quarter list
+  // keeps the list view and map view on the same period picker.
+  const quarters = useMemo(() => {
+    if (!hasAny) return [];
+    const set = new Set();
+    for (const code of airportCodes) {
+      Object.keys(DESTINATIONS[code] || {}).forEach(q => set.add(q));
+    }
+    return Array.from(set).sort(sortQuarters);
+  }, [DESTINATIONS, airportCodes, hasAny]);
   useEffect(() => {
     if (quarters.length) setSingleQuarter(quarters[quarters.length - 1]);
   }, [quarters.length, airport]);
@@ -1895,17 +2230,27 @@ function DestinationsPanel({
         children: [/*#__PURE__*/_jsx("h3", {
           className: "text-sm font-semibold text-slate-200",
           children: isCrossVisit ? `Airports ${airport} Travelers Also Use` : `Where ${airport} Travelers Actually Go`
-        }), availableDirections.length > 1 && /*#__PURE__*/_jsx("div", {
-          className: "flex gap-1",
-          children: availableDirections.map(d => /*#__PURE__*/_jsx("button", {
-            onClick: () => setDirection(d),
-            className: `px-2.5 py-1 rounded text-xs border ${direction === d ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400"}`,
-            children: DIRECTION_LABELS[d]?.label || d
-          }, d))
+        }), /*#__PURE__*/_jsxs("div", {
+          className: "flex gap-2 items-center flex-wrap",
+          children: [isCrossVisit && /*#__PURE__*/_jsx("div", {
+            className: "flex gap-1",
+            children: [["list", "List"], ["map", "Map"]].map(([m, label]) => /*#__PURE__*/_jsx("button", {
+              onClick: () => setViewMode(m),
+              className: `px-2.5 py-1 rounded text-xs border ${viewMode === m ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400"}`,
+              children: label
+            }, m))
+          }), availableDirections.length > 1 && /*#__PURE__*/_jsx("div", {
+            className: "flex gap-1",
+            children: availableDirections.map(d => /*#__PURE__*/_jsx("button", {
+              onClick: () => setDirection(d),
+              className: `px-2.5 py-1 rounded text-xs border ${direction === d ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-slate-700 text-slate-400"}`,
+              children: DIRECTION_LABELS[d]?.label || d
+            }, d))
+          })]
         })]
       }), /*#__PURE__*/_jsxs("p", {
         className: "text-xs text-slate-500 mb-3",
-        children: [direction === "outbound" && `Devices seen at ${airport}, then later seen at another tracked polygon — i.e. where they flew to. Deduplicated to trips (not raw pings).`, direction === "inbound" && `Devices seen at another tracked polygon, then later seen at ${airport} — i.e. where they flew in from. Deduplicated to trips (not raw pings).`, isCrossVisit && `Devices seen at ${airport} at ANY point that were also seen at another tracked polygon at any point in the same quarter. This has no direction or trip count — it's shared population, not a sequence of travel.`]
+        children: [direction === "outbound" && `Devices seen at ${airport}, then later seen at another tracked polygon — i.e. where they flew to. Deduplicated to trips (not raw pings).`, direction === "inbound" && `Devices seen at another tracked polygon, then later seen at ${airport} — i.e. where they flew in from. Deduplicated to trips (not raw pings).`, isCrossVisit && `Devices seen at ${airport} at any point during the period that were also seen at another tracked polygon at any point in the same period — shared traveler population, not a directional flight record.`]
       }), quarters.length > 1 && /*#__PURE__*/_jsx(QuarterPicker, {
         quarters: quarters,
         mode: periodMode,
@@ -1914,7 +2259,7 @@ function DestinationsPanel({
         setSingle: setSingleQuarter,
         custom: customQuarters,
         setCustom: setCustomQuarters
-      }), !snap || !snap.destinations.length ? /*#__PURE__*/_jsxs("p", {
+      }), (!isCrossVisit || viewMode === "list") && (!snap || !snap.destinations.length ? /*#__PURE__*/_jsxs("p", {
         className: "text-xs text-slate-600",
         children: ["No data found for ", periodLabel, "."]
       }) : /*#__PURE__*/_jsxs(_Fragment, {
@@ -1949,8 +2294,15 @@ function DestinationsPanel({
             }, d.dest + i);
           })
         })]
-      })]
-    }), quarters.length > 1 && /*#__PURE__*/_jsxs("div", {
+      }))]
+    }), isCrossVisit && viewMode === "map" && /*#__PURE__*/_jsx(ConnectionMap, {
+      DESTINATIONS: DESTINATIONS,
+      DATA: DATA,
+      geometry: geometry,
+      airportCodes: airportCodes,
+      selectedQuarters: selectedQuarters,
+      periodLabel: periodLabel
+    }), quarters.length > 1 && viewMode === "list" && /*#__PURE__*/_jsxs("div", {
       className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
       children: [/*#__PURE__*/_jsx("h3", {
         className: "text-sm font-semibold text-slate-200 mb-3",
