@@ -2162,10 +2162,21 @@ function DestinationsPanel({
     }
     return Array.from(set);
   }, [DESTINATIONS, airport, selectedQuarters]);
+
+  // Whether cross-visit (map-eligible) data exists for this selection --
+  // kept independent of `direction`/`isCrossVisit` below, which only
+  // reflects whichever direction happens to be CURRENTLY on screen. Without
+  // this separation, if outbound/inbound data ever coexists with cross_visit
+  // for the same airport/quarter (e.g. residual data from an old run), the
+  // Map toggle could silently vanish just because direction defaulted to
+  // something else first -- with no visible explanation why.
+  const hasCrossVisitOption = availableDirections.includes("cross_visit");
   useEffect(() => {
-    if (availableDirections.length && !availableDirections.includes(direction)) {
-      setDirection(availableDirections[0]);
-    }
+    if (!availableDirections.length) return;
+    if (availableDirections.includes(direction)) return;
+    // Prefer cross_visit if present, so the map is reachable by default
+    // rather than depending on object key insertion order.
+    setDirection(availableDirections.includes("cross_visit") ? "cross_visit" : availableDirections[0]);
   }, [availableDirections, direction]);
   const snap = useMemo(() => {
     if (!hasAirport || !direction || !selectedQuarters.length) return null;
@@ -2238,7 +2249,7 @@ function DestinationsPanel({
           children: isCrossVisit ? `Airports ${airport} Travelers Also Use` : `Where ${airport} Travelers Actually Go`
         }), /*#__PURE__*/_jsxs("div", {
           className: "flex gap-2 items-center flex-wrap",
-          children: [isCrossVisit && /*#__PURE__*/_jsx("div", {
+          children: [hasCrossVisitOption && /*#__PURE__*/_jsx("div", {
             className: "flex gap-1",
             children: [["list", "List"], ["map", "Map"]].map(([m, label]) => /*#__PURE__*/_jsx("button", {
               onClick: () => setViewMode(m),
@@ -2301,7 +2312,7 @@ function DestinationsPanel({
           })
         })]
       }))]
-    }), isCrossVisit && viewMode === "map" && /*#__PURE__*/_jsx(ConnectionMap, {
+    }), hasCrossVisitOption && viewMode === "map" && /*#__PURE__*/_jsx(ConnectionMap, {
       DESTINATIONS: DESTINATIONS,
       DATA: DATA,
       geometry: geometry,
