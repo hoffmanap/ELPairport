@@ -341,16 +341,34 @@ export default function CatchmentDashboard() {
   const [DESTINATIONS, setDESTINATIONS] = useState(null);
   const [loadError, setLoadError] = useState(null);
   useEffect(() => {
-    Promise.all([fetch("./data/summary.json").then(r => {
+    // cache: "no-store" on every data fetch below is deliberate -- these
+    // JSON files update on their own schedule (every time a new quarter's
+    // extract is processed and uploaded), completely independent of when
+    // app.js itself changes. Without this, a browser (or GitHub Pages'
+    // CDN) can keep serving a stale cached copy of e.g.
+    // destinations_summary.json indefinitely after a new quarter is
+    // uploaded, with no visible error -- it just silently shows old data.
+    // app.js never hardcodes which quarters exist; it always reads
+    // whatever's in these files, so this is what makes "upload a new
+    // quarter, it just appears" actually true rather than aspirational.
+    Promise.all([fetch("./data/summary.json", {
+      cache: "no-store"
+    }).then(r => {
       if (!r.ok) throw new Error(`summary.json: ${r.status}`);
       return r.json();
-    }), fetch("./data/tx_counties.geo.json").then(r => {
+    }), fetch("./data/tx_counties.geo.json", {
+      cache: "no-store"
+    }).then(r => {
       if (!r.ok) throw new Error(`tx_counties.geo.json: ${r.status}`);
       return r.json();
-    }), fetch("./data/regions.json").then(r => r.ok ? r.json() : {}).catch(() => ({})),
+    }), fetch("./data/regions.json", {
+      cache: "no-store"
+    }).then(r => r.ok ? r.json() : {}).catch(() => ({})),
     // Destinations data is optional -- the tab shows a "not available yet"
     // state instead of erroring if this file isn't present.
-    fetch("./data/destinations_summary.json").then(r => r.ok ? r.json() : null).catch(() => null)]).then(([summary, geometry, regions, destinations]) => {
+    fetch("./data/destinations_summary.json", {
+      cache: "no-store"
+    }).then(r => r.ok ? r.json() : null).catch(() => null)]).then(([summary, geometry, regions, destinations]) => {
       setDATA(summary);
       setGeometry(geometry);
       setREGIONS(regions);
