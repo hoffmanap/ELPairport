@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Texas OD &amp; Catchment Console</title>
+
+<!-- Tailwind (CDN build -- fine for an internal BI tool; swap for a real
+     Tailwind build later if this grows into a bigger product). -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Import map: pins exact versions so every esm.sh import of "react"
+     resolves to the SAME module instance. Without this, recharts/lucide-react
+     could each pull their own copy of React and throw "invalid hook call". -->
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.3.1",
+    "react-dom": "https://esm.sh/react-dom@18.3.1",
+    "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+    "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+    "recharts": "https://esm.sh/recharts@2.15.0?external=react,react-dom",
+    "lucide-react": "https://esm.sh/lucide-react@0.383.0?external=react,react-dom",
+    "d3": "https://esm.sh/d3@7"
+  }
+}
+</script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="module">
+  // The "?v=2" on app.js is a cache-buster. Browsers (and GitHub Pages'
+  // CDN) aggressively cache .js files -- without a version bump, they can
+  // keep serving an OLD copy of app.js even after you upload a new one to
+  // the repo. Bump this number (v=3, v=4, ...) every time you update app.js.
+  import React from "react";
+  import { createRoot } from "react-dom/client";
+  import CatchmentDashboard from "./app.js?v=19";
+
+  const root = createRoot(document.getElementById("root"));
+  root.render(React.createElement(CatchmentDashboard));
+</script>
+</body>
+</html>
