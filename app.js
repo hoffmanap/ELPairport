@@ -1827,6 +1827,7 @@ function ConnectionMap({
   const [dests, setDests] = useState(new Set(airportCodes));
   const [focus, setFocus] = useState(null);
   const [minShared, setMinShared] = useState(0);
+  const [lineOpacity, setLineOpacity] = useState(1);
   const [initialized, setInitialized] = useState(false);
   useEffect(() => {
     if (airportCodes.length && !initialized) {
@@ -1900,11 +1901,30 @@ function ConnectionMap({
       totals[p.a] = (totals[p.a] || 0) + p.shared;
       totals[p.b] = (totals[p.b] || 0) + p.shared;
     }
+    // When focused, the focus airport itself would otherwise show up in
+    // this list too (summing all of its own connections) -- not useful
+    // next to a list of "who it connects to", so it's excluded here.
+    if (focus) delete totals[focus];
     return Object.entries(totals).map(([code, shared]) => ({
       code,
       shared
     })).sort((a, b) => b.shared - a.shared);
-  }, [visiblePairs]);
+  }, [visiblePairs, focus]);
+
+  // Which airport nodes to actually draw: everyone, normally -- but once a
+  // node is focused, only that node plus whatever it's still connected to
+  // (after the origin/destination/min-shared filters) stay visible, so
+  // truly unrelated airports disappear from the map entirely rather than
+  // just sitting there unconnected.
+  const visibleNodeCodes = useMemo(() => {
+    if (!focus) return new Set(airportCodes);
+    const set = new Set([focus]);
+    for (const p of visiblePairs) {
+      set.add(p.a);
+      set.add(p.b);
+    }
+    return set;
+  }, [focus, airportCodes, visiblePairs]);
   if (!allPairs.length) {
     return /*#__PURE__*/_jsx("div", {
       className: "bg-slate-900/60 border border-slate-800 border-dashed rounded-lg p-10 text-center",
@@ -1920,24 +1940,45 @@ function ConnectionMap({
       className: "text-xs text-slate-500 px-1",
       children: ["Line thickness = shared device volume between two airports during ", periodLabel, " — undirected: the data shows both airports were visited by the same devices, not which came first."]
     }), /*#__PURE__*/_jsxs("div", {
-      className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
+      className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4 grid sm:grid-cols-2 gap-4",
       children: [/*#__PURE__*/_jsxs("div", {
-        className: "flex items-center justify-between mb-2",
-        children: [/*#__PURE__*/_jsx("span", {
-          className: "text-xs uppercase tracking-wider text-slate-500",
-          children: "Minimum shared devices"
-        }), /*#__PURE__*/_jsxs("span", {
-          className: "text-xs font-mono text-amber-400",
-          children: [minShared, "+"]
+        children: [/*#__PURE__*/_jsxs("div", {
+          className: "flex items-center justify-between mb-2",
+          children: [/*#__PURE__*/_jsx("span", {
+            className: "text-xs uppercase tracking-wider text-slate-500",
+            children: "Minimum shared devices"
+          }), /*#__PURE__*/_jsxs("span", {
+            className: "text-xs font-mono text-amber-400",
+            children: [minShared, "+"]
+          })]
+        }), /*#__PURE__*/_jsx("input", {
+          type: "range",
+          min: 0,
+          max: Math.round(maxShared * 0.6),
+          step: Math.max(1, Math.round(maxShared / 100)),
+          value: minShared,
+          onChange: e => setMinShared(Number(e.target.value)),
+          className: "w-full accent-amber-400"
         })]
-      }), /*#__PURE__*/_jsx("input", {
-        type: "range",
-        min: 0,
-        max: Math.round(maxShared * 0.6),
-        step: Math.max(1, Math.round(maxShared / 100)),
-        value: minShared,
-        onChange: e => setMinShared(Number(e.target.value)),
-        className: "w-full accent-amber-400"
+      }), /*#__PURE__*/_jsxs("div", {
+        children: [/*#__PURE__*/_jsxs("div", {
+          className: "flex items-center justify-between mb-2",
+          children: [/*#__PURE__*/_jsx("span", {
+            className: "text-xs uppercase tracking-wider text-slate-500",
+            children: "Line transparency"
+          }), /*#__PURE__*/_jsxs("span", {
+            className: "text-xs font-mono text-amber-400",
+            children: [Math.round(lineOpacity * 100), "%"]
+          })]
+        }), /*#__PURE__*/_jsx("input", {
+          type: "range",
+          min: 0.1,
+          max: 1,
+          step: 0.05,
+          value: lineOpacity,
+          onChange: e => setLineOpacity(Number(e.target.value)),
+          className: "w-full accent-amber-400"
+        })]
       })]
     }), /*#__PURE__*/_jsxs("div", {
       className: "grid lg:grid-cols-3 gap-4",
@@ -1980,18 +2021,17 @@ function ConnectionMap({
               ny = dx / (dist || 1);
             const cx = mx + nx * curve,
               cy = my + ny * curve;
-            const isDim = focus && p.a !== focus && p.b !== focus;
             const d = "M " + pa.x + " " + pa.y + " Q " + cx + " " + cy + " " + pb.x + " " + pb.y;
             return /*#__PURE__*/_jsx("path", {
               d: d,
               fill: "none",
               stroke: focus ? "#facc15" : colorFor(p.a),
               strokeWidth: widthScale(p.shared),
-              opacity: isDim ? 0.06 : opacityScale(p.shared)
+              opacity: opacityScale(p.shared) * lineOpacity
             }, i);
           }), airportCodes.map(code => {
             const p = projected[code];
-            if (!p) return null;
+            if (!p || !visibleNodeCodes.has(code)) return null;
             const total = DATA[code]?.meta ? Object.values(DESTINATIONS[code] || {}).reduce((s, q) => s + (q.cross_visit?.total_trips || 0), 0) : 0;
             const r = Math.max(4, Math.sqrt(total || 1) / 15);
             const isFocused = focus === code;
@@ -2020,7 +2060,7 @@ function ConnectionMap({
           })]
         }), /*#__PURE__*/_jsx("p", {
           className: "text-[11px] text-slate-600 mt-2",
-          children: "Click an airport to focus its connections and dim the rest."
+          children: "Click an airport to isolate its connections — every other airport and connection disappears until you clear it."
         })]
       }), /*#__PURE__*/_jsxs("div", {
         className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
