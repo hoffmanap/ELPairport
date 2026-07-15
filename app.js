@@ -1955,12 +1955,18 @@ function ConnectionMap({
           })]
         }), /*#__PURE__*/_jsxs("svg", {
           viewBox: "0 0 760 620",
-          className: "w-full h-auto",
-          children: [features.map((f, i) => /*#__PURE__*/_jsx("path", {
+          className: "w-full h-auto rounded-md overflow-hidden",
+          children: [/*#__PURE__*/_jsx("rect", {
+            x: "0",
+            y: "0",
+            width: "760",
+            height: "620",
+            fill: "#000000"
+          }), features.map((f, i) => /*#__PURE__*/_jsx("path", {
             d: pathFor(f),
-            fill: "#0f172a",
-            stroke: "#1e293b",
-            strokeWidth: 0.5
+            fill: "#141d33",
+            stroke: "#2a3752",
+            strokeWidth: 0.6
           }, i)), visiblePairs.map((p, i) => {
             const pa = projected[p.a];
             const pb = projected[p.b];
