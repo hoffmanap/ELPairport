@@ -1062,7 +1062,7 @@ function LeakageOverlapMap({
       pathFor: d3.geoPath(projection)
     };
   }, [geometry]);
-  if (!DATA || !quarter) return null;
+  if (!DATA || !selectedQuarters.length) return null;
   const exampleMismatch = Object.entries(countyRankings).map(([fips, r]) => ({
     fips,
     r,
