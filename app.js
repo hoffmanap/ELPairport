@@ -1821,11 +1821,19 @@ function ConnectionMap({
   geometry,
   airportCodes,
   selectedQuarters,
-  periodLabel
+  periodLabel,
+  defaultFocus
 }) {
   const [origins, setOrigins] = useState(new Set(airportCodes));
   const [dests, setDests] = useState(new Set(airportCodes));
-  const [focus, setFocus] = useState(null);
+  // Defaults to whichever airport is selected up in the header, so this
+  // map opens already scoped to match the "Airports {airport} Travelers
+  // Also Use" heading above it, instead of showing the undifferentiated
+  // full 15-airport network (which also meant that airport showed up in
+  // its own "Ranked by Shared Traffic" list, which never made sense).
+  // Still resets to that default whenever the header airport changes, but
+  // a manual click on a different bubble, or the Clear button, overrides it.
+  const [focus, setFocus] = useState(defaultFocus || null);
   const [minShared, setMinShared] = useState(0);
   const [mapOpacity, setMapOpacity] = useState(1);
   const [initialized, setInitialized] = useState(false);
@@ -1836,6 +1844,9 @@ function ConnectionMap({
       setInitialized(true);
     }
   }, [airportCodes, initialized]);
+  useEffect(() => {
+    setFocus(defaultFocus || null);
+  }, [defaultFocus]);
   const colorFor = code => airportColor(code, airportCodes);
   const allPairs = useMemo(() => buildConnectionPairs(DESTINATIONS, airportCodes, selectedQuarters), [DESTINATIONS, airportCodes, selectedQuarters]);
   const {
@@ -2374,7 +2385,8 @@ function DestinationsPanel({
       geometry: geometry,
       airportCodes: airportCodes,
       selectedQuarters: selectedQuarters,
-      periodLabel: periodLabel
+      periodLabel: periodLabel,
+      defaultFocus: airport
     }), quarters.length > 1 && viewMode === "list" && /*#__PURE__*/_jsxs("div", {
       className: "bg-slate-900/60 border border-slate-800 rounded-lg p-4",
       children: [/*#__PURE__*/_jsx("h3", {
