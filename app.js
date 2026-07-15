@@ -2170,7 +2170,21 @@ function DestinationsPanel({
   // for the same airport/quarter (e.g. residual data from an old run), the
   // Map toggle could silently vanish just because direction defaulted to
   // something else first -- with no visible explanation why.
-  const hasCrossVisitOption = availableDirections.includes("cross_visit");
+  // Whether cross-visit (map-eligible) data exists for the selected
+  // quarter(s) ANYWHERE in the dataset -- deliberately NOT scoped to just
+  // the currently-selected header airport, because the connection map
+  // pulls from every tracked airport regardless of which one happens to be
+  // selected up top. Scoping this to a single airport was the actual bug:
+  // if that one airport/quarter combination came up empty, the toggle
+  // vanished even though plenty of cross-visit data existed everywhere else.
+  const hasCrossVisitOption = useMemo(() => {
+    for (const code of airportCodes) {
+      for (const q of selectedQuarters) {
+        if (DESTINATIONS?.[code]?.[q]?.cross_visit) return true;
+      }
+    }
+    return false;
+  }, [DESTINATIONS, airportCodes, selectedQuarters]);
   useEffect(() => {
     if (!availableDirections.length) return;
     if (availableDirections.includes(direction)) return;
