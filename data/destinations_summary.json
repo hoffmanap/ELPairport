@@ -351,6 +351,188 @@
           }
         ]
       }
+    },
+    "2025-Q3": {
+      "cross_visit": {
+        "total_trips": 22214,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 1160,
+            "unique_devices": 1160,
+            "share": 0.0522
+          },
+          {
+            "dest": "DAL",
+            "trips": 644,
+            "unique_devices": 644,
+            "share": 0.029
+          },
+          {
+            "dest": "HOU",
+            "trips": 346,
+            "unique_devices": 346,
+            "share": 0.0156
+          },
+          {
+            "dest": "IAH",
+            "trips": 293,
+            "unique_devices": 293,
+            "share": 0.0132
+          },
+          {
+            "dest": "AUS",
+            "trips": 187,
+            "unique_devices": 187,
+            "share": 0.0084
+          },
+          {
+            "dest": "SAT",
+            "trips": 109,
+            "unique_devices": 109,
+            "share": 0.0049
+          },
+          {
+            "dest": "ELP",
+            "trips": 35,
+            "unique_devices": 35,
+            "share": 0.0016
+          },
+          {
+            "dest": "MAF",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.0005
+          },
+          {
+            "dest": "CRP",
+            "trips": 10,
+            "unique_devices": 10,
+            "share": 0.0005
+          },
+          {
+            "dest": "MFE",
+            "trips": 10,
+            "unique_devices": 10,
+            "share": 0.0005
+          },
+          {
+            "dest": "HRL",
+            "trips": 8,
+            "unique_devices": 8,
+            "share": 0.0004
+          },
+          {
+            "dest": "AMA",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.0003
+          },
+          {
+            "dest": "LBB",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.0003
+          },
+          {
+            "dest": "CJS",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0001
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "cross_visit": {
+        "total_trips": 24655,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 1626,
+            "unique_devices": 1626,
+            "share": 0.066
+          },
+          {
+            "dest": "DAL",
+            "trips": 950,
+            "unique_devices": 950,
+            "share": 0.0385
+          },
+          {
+            "dest": "HOU",
+            "trips": 525,
+            "unique_devices": 525,
+            "share": 0.0213
+          },
+          {
+            "dest": "IAH",
+            "trips": 404,
+            "unique_devices": 404,
+            "share": 0.0164
+          },
+          {
+            "dest": "AUS",
+            "trips": 302,
+            "unique_devices": 302,
+            "share": 0.0122
+          },
+          {
+            "dest": "SAT",
+            "trips": 153,
+            "unique_devices": 153,
+            "share": 0.0062
+          },
+          {
+            "dest": "ELP",
+            "trips": 53,
+            "unique_devices": 53,
+            "share": 0.0021
+          },
+          {
+            "dest": "CRP",
+            "trips": 18,
+            "unique_devices": 18,
+            "share": 0.0007
+          },
+          {
+            "dest": "HRL",
+            "trips": 14,
+            "unique_devices": 14,
+            "share": 0.0006
+          },
+          {
+            "dest": "MFE",
+            "trips": 14,
+            "unique_devices": 14,
+            "share": 0.0006
+          },
+          {
+            "dest": "LBB",
+            "trips": 12,
+            "unique_devices": 12,
+            "share": 0.0005
+          },
+          {
+            "dest": "MAF",
+            "trips": 12,
+            "unique_devices": 12,
+            "share": 0.0005
+          },
+          {
+            "dest": "AMA",
+            "trips": 9,
+            "unique_devices": 9,
+            "share": 0.0004
+          },
+          {
+            "dest": "CJS",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0001
+          }
+        ]
+      }
     }
   },
   "AMA": {
@@ -702,6 +884,176 @@
             "trips": 3,
             "unique_devices": 3,
             "share": 0.0005
+          }
+        ]
+      }
+    },
+    "2025-Q3": {
+      "cross_visit": {
+        "total_trips": 5109,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 586,
+            "unique_devices": 586,
+            "share": 0.1147
+          },
+          {
+            "dest": "DAL",
+            "trips": 479,
+            "unique_devices": 479,
+            "share": 0.0938
+          },
+          {
+            "dest": "IAH",
+            "trips": 109,
+            "unique_devices": 109,
+            "share": 0.0213
+          },
+          {
+            "dest": "HOU",
+            "trips": 71,
+            "unique_devices": 71,
+            "share": 0.0139
+          },
+          {
+            "dest": "AUS",
+            "trips": 53,
+            "unique_devices": 53,
+            "share": 0.0104
+          },
+          {
+            "dest": "SAT",
+            "trips": 34,
+            "unique_devices": 34,
+            "share": 0.0067
+          },
+          {
+            "dest": "LBB",
+            "trips": 24,
+            "unique_devices": 24,
+            "share": 0.0047
+          },
+          {
+            "dest": "MAF",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.0022
+          },
+          {
+            "dest": "ABQ",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.0014
+          },
+          {
+            "dest": "CRP",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.0012
+          },
+          {
+            "dest": "HRL",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.001
+          },
+          {
+            "dest": "ELP",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0006
+          },
+          {
+            "dest": "MFE",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0006
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "cross_visit": {
+        "total_trips": 6871,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 931,
+            "unique_devices": 931,
+            "share": 0.1355
+          },
+          {
+            "dest": "DAL",
+            "trips": 827,
+            "unique_devices": 827,
+            "share": 0.1204
+          },
+          {
+            "dest": "IAH",
+            "trips": 227,
+            "unique_devices": 227,
+            "share": 0.033
+          },
+          {
+            "dest": "HOU",
+            "trips": 121,
+            "unique_devices": 121,
+            "share": 0.0176
+          },
+          {
+            "dest": "AUS",
+            "trips": 106,
+            "unique_devices": 106,
+            "share": 0.0154
+          },
+          {
+            "dest": "SAT",
+            "trips": 51,
+            "unique_devices": 51,
+            "share": 0.0074
+          },
+          {
+            "dest": "LBB",
+            "trips": 34,
+            "unique_devices": 34,
+            "share": 0.0049
+          },
+          {
+            "dest": "ELP",
+            "trips": 17,
+            "unique_devices": 17,
+            "share": 0.0025
+          },
+          {
+            "dest": "MAF",
+            "trips": 17,
+            "unique_devices": 17,
+            "share": 0.0025
+          },
+          {
+            "dest": "CRP",
+            "trips": 15,
+            "unique_devices": 15,
+            "share": 0.0022
+          },
+          {
+            "dest": "ABQ",
+            "trips": 9,
+            "unique_devices": 9,
+            "share": 0.0013
+          },
+          {
+            "dest": "MFE",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.001
+          },
+          {
+            "dest": "HRL",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.0006
           }
         ]
       }
@@ -1065,6 +1417,182 @@
           }
         ]
       }
+    },
+    "2025-Q3": {
+      "cross_visit": {
+        "total_trips": 51786,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 2646,
+            "unique_devices": 2646,
+            "share": 0.0511
+          },
+          {
+            "dest": "DAL",
+            "trips": 1308,
+            "unique_devices": 1308,
+            "share": 0.0253
+          },
+          {
+            "dest": "IAH",
+            "trips": 1002,
+            "unique_devices": 1002,
+            "share": 0.0193
+          },
+          {
+            "dest": "HOU",
+            "trips": 945,
+            "unique_devices": 945,
+            "share": 0.0182
+          },
+          {
+            "dest": "ELP",
+            "trips": 277,
+            "unique_devices": 277,
+            "share": 0.0053
+          },
+          {
+            "dest": "SAT",
+            "trips": 215,
+            "unique_devices": 215,
+            "share": 0.0042
+          },
+          {
+            "dest": "ABQ",
+            "trips": 187,
+            "unique_devices": 187,
+            "share": 0.0036
+          },
+          {
+            "dest": "LBB",
+            "trips": 143,
+            "unique_devices": 143,
+            "share": 0.0028
+          },
+          {
+            "dest": "HRL",
+            "trips": 108,
+            "unique_devices": 108,
+            "share": 0.0021
+          },
+          {
+            "dest": "MAF",
+            "trips": 63,
+            "unique_devices": 63,
+            "share": 0.0012
+          },
+          {
+            "dest": "MFE",
+            "trips": 54,
+            "unique_devices": 54,
+            "share": 0.001
+          },
+          {
+            "dest": "AMA",
+            "trips": 53,
+            "unique_devices": 53,
+            "share": 0.001
+          },
+          {
+            "dest": "CRP",
+            "trips": 13,
+            "unique_devices": 13,
+            "share": 0.0003
+          },
+          {
+            "dest": "CJS",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "cross_visit": {
+        "total_trips": 78873,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 3874,
+            "unique_devices": 3874,
+            "share": 0.0491
+          },
+          {
+            "dest": "DAL",
+            "trips": 2060,
+            "unique_devices": 2060,
+            "share": 0.0261
+          },
+          {
+            "dest": "IAH",
+            "trips": 1573,
+            "unique_devices": 1573,
+            "share": 0.0199
+          },
+          {
+            "dest": "HOU",
+            "trips": 1527,
+            "unique_devices": 1527,
+            "share": 0.0194
+          },
+          {
+            "dest": "ELP",
+            "trips": 485,
+            "unique_devices": 485,
+            "share": 0.0061
+          },
+          {
+            "dest": "SAT",
+            "trips": 340,
+            "unique_devices": 340,
+            "share": 0.0043
+          },
+          {
+            "dest": "ABQ",
+            "trips": 302,
+            "unique_devices": 302,
+            "share": 0.0038
+          },
+          {
+            "dest": "HRL",
+            "trips": 245,
+            "unique_devices": 245,
+            "share": 0.0031
+          },
+          {
+            "dest": "LBB",
+            "trips": 214,
+            "unique_devices": 214,
+            "share": 0.0027
+          },
+          {
+            "dest": "AMA",
+            "trips": 106,
+            "unique_devices": 106,
+            "share": 0.0013
+          },
+          {
+            "dest": "MAF",
+            "trips": 76,
+            "unique_devices": 76,
+            "share": 0.001
+          },
+          {
+            "dest": "MFE",
+            "trips": 60,
+            "unique_devices": 60,
+            "share": 0.0008
+          },
+          {
+            "dest": "CRP",
+            "trips": 18,
+            "unique_devices": 18,
+            "share": 0.0002
+          }
+        ]
+      }
     }
   },
   "CJS": {
@@ -1317,6 +1845,116 @@
           },
           {
             "dest": "SAT",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0002
+          }
+        ]
+      }
+    },
+    "2025-Q3": {
+      "cross_visit": {
+        "total_trips": 4153,
+        "destinations": [
+          {
+            "dest": "ELP",
+            "trips": 13,
+            "unique_devices": 13,
+            "share": 0.0031
+          },
+          {
+            "dest": "DFW",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.0014
+          },
+          {
+            "dest": "ABQ",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0005
+          },
+          {
+            "dest": "IAH",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0005
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0005
+          },
+          {
+            "dest": "AUS",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0002
+          },
+          {
+            "dest": "DAL",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0002
+          },
+          {
+            "dest": "MFE",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0002
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "cross_visit": {
+        "total_trips": 6265,
+        "destinations": [
+          {
+            "dest": "ELP",
+            "trips": 25,
+            "unique_devices": 25,
+            "share": 0.004
+          },
+          {
+            "dest": "DFW",
+            "trips": 9,
+            "unique_devices": 9,
+            "share": 0.0014
+          },
+          {
+            "dest": "IAH",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.0008
+          },
+          {
+            "dest": "DAL",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0005
+          },
+          {
+            "dest": "ABQ",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0003
+          },
+          {
+            "dest": "SAT",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0003
+          },
+          {
+            "dest": "HOU",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0002
+          },
+          {
+            "dest": "MAF",
             "trips": 1,
             "unique_devices": 1,
             "share": 0.0002
@@ -1662,6 +2300,176 @@
             "trips": 1,
             "unique_devices": 1,
             "share": 0.0005
+          }
+        ]
+      }
+    },
+    "2025-Q3": {
+      "cross_visit": {
+        "total_trips": 2499,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 425,
+            "unique_devices": 425,
+            "share": 0.1701
+          },
+          {
+            "dest": "HOU",
+            "trips": 249,
+            "unique_devices": 249,
+            "share": 0.0996
+          },
+          {
+            "dest": "IAH",
+            "trips": 244,
+            "unique_devices": 244,
+            "share": 0.0976
+          },
+          {
+            "dest": "DAL",
+            "trips": 60,
+            "unique_devices": 60,
+            "share": 0.024
+          },
+          {
+            "dest": "MAF",
+            "trips": 14,
+            "unique_devices": 14,
+            "share": 0.0056
+          },
+          {
+            "dest": "AUS",
+            "trips": 13,
+            "unique_devices": 13,
+            "share": 0.0052
+          },
+          {
+            "dest": "SAT",
+            "trips": 13,
+            "unique_devices": 13,
+            "share": 0.0052
+          },
+          {
+            "dest": "ABQ",
+            "trips": 10,
+            "unique_devices": 10,
+            "share": 0.004
+          },
+          {
+            "dest": "ELP",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.0028
+          },
+          {
+            "dest": "LBB",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.0028
+          },
+          {
+            "dest": "AMA",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.0024
+          },
+          {
+            "dest": "HRL",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.0024
+          },
+          {
+            "dest": "MFE",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.0024
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "cross_visit": {
+        "total_trips": 3935,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 705,
+            "unique_devices": 705,
+            "share": 0.1792
+          },
+          {
+            "dest": "HOU",
+            "trips": 521,
+            "unique_devices": 521,
+            "share": 0.1324
+          },
+          {
+            "dest": "IAH",
+            "trips": 367,
+            "unique_devices": 367,
+            "share": 0.0933
+          },
+          {
+            "dest": "DAL",
+            "trips": 122,
+            "unique_devices": 122,
+            "share": 0.031
+          },
+          {
+            "dest": "SAT",
+            "trips": 39,
+            "unique_devices": 39,
+            "share": 0.0099
+          },
+          {
+            "dest": "ABQ",
+            "trips": 18,
+            "unique_devices": 18,
+            "share": 0.0046
+          },
+          {
+            "dest": "AUS",
+            "trips": 18,
+            "unique_devices": 18,
+            "share": 0.0046
+          },
+          {
+            "dest": "AMA",
+            "trips": 15,
+            "unique_devices": 15,
+            "share": 0.0038
+          },
+          {
+            "dest": "MAF",
+            "trips": 14,
+            "unique_devices": 14,
+            "share": 0.0036
+          },
+          {
+            "dest": "ELP",
+            "trips": 12,
+            "unique_devices": 12,
+            "share": 0.003
+          },
+          {
+            "dest": "HRL",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.0028
+          },
+          {
+            "dest": "MFE",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.0028
+          },
+          {
+            "dest": "LBB",
+            "trips": 8,
+            "unique_devices": 8,
+            "share": 0.002
           }
         ]
       }
@@ -2027,6 +2835,188 @@
             "dest": "CJS",
             "trips": 2,
             "unique_devices": 2,
+            "share": 0.0
+          }
+        ]
+      }
+    },
+    "2025-Q3": {
+      "cross_visit": {
+        "total_trips": 62097,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 3031,
+            "unique_devices": 3031,
+            "share": 0.0488
+          },
+          {
+            "dest": "DFW",
+            "trips": 1923,
+            "unique_devices": 1923,
+            "share": 0.031
+          },
+          {
+            "dest": "SAT",
+            "trips": 1543,
+            "unique_devices": 1543,
+            "share": 0.0248
+          },
+          {
+            "dest": "AUS",
+            "trips": 1308,
+            "unique_devices": 1308,
+            "share": 0.0211
+          },
+          {
+            "dest": "LBB",
+            "trips": 693,
+            "unique_devices": 693,
+            "share": 0.0112
+          },
+          {
+            "dest": "ABQ",
+            "trips": 644,
+            "unique_devices": 644,
+            "share": 0.0104
+          },
+          {
+            "dest": "ELP",
+            "trips": 596,
+            "unique_devices": 596,
+            "share": 0.0096
+          },
+          {
+            "dest": "AMA",
+            "trips": 479,
+            "unique_devices": 479,
+            "share": 0.0077
+          },
+          {
+            "dest": "MAF",
+            "trips": 420,
+            "unique_devices": 420,
+            "share": 0.0068
+          },
+          {
+            "dest": "IAH",
+            "trips": 275,
+            "unique_devices": 275,
+            "share": 0.0044
+          },
+          {
+            "dest": "HRL",
+            "trips": 126,
+            "unique_devices": 126,
+            "share": 0.002
+          },
+          {
+            "dest": "CRP",
+            "trips": 60,
+            "unique_devices": 60,
+            "share": 0.001
+          },
+          {
+            "dest": "MFE",
+            "trips": 14,
+            "unique_devices": 14,
+            "share": 0.0002
+          },
+          {
+            "dest": "CJS",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "cross_visit": {
+        "total_trips": 93914,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 4322,
+            "unique_devices": 4322,
+            "share": 0.046
+          },
+          {
+            "dest": "DFW",
+            "trips": 3149,
+            "unique_devices": 3149,
+            "share": 0.0335
+          },
+          {
+            "dest": "SAT",
+            "trips": 2181,
+            "unique_devices": 2181,
+            "share": 0.0232
+          },
+          {
+            "dest": "AUS",
+            "trips": 2060,
+            "unique_devices": 2060,
+            "share": 0.0219
+          },
+          {
+            "dest": "LBB",
+            "trips": 957,
+            "unique_devices": 957,
+            "share": 0.0102
+          },
+          {
+            "dest": "ABQ",
+            "trips": 950,
+            "unique_devices": 950,
+            "share": 0.0101
+          },
+          {
+            "dest": "ELP",
+            "trips": 946,
+            "unique_devices": 946,
+            "share": 0.0101
+          },
+          {
+            "dest": "AMA",
+            "trips": 827,
+            "unique_devices": 827,
+            "share": 0.0088
+          },
+          {
+            "dest": "MAF",
+            "trips": 730,
+            "unique_devices": 730,
+            "share": 0.0078
+          },
+          {
+            "dest": "IAH",
+            "trips": 476,
+            "unique_devices": 476,
+            "share": 0.0051
+          },
+          {
+            "dest": "HRL",
+            "trips": 184,
+            "unique_devices": 184,
+            "share": 0.002
+          },
+          {
+            "dest": "CRP",
+            "trips": 122,
+            "unique_devices": 122,
+            "share": 0.0013
+          },
+          {
+            "dest": "MFE",
+            "trips": 15,
+            "unique_devices": 15,
+            "share": 0.0002
+          },
+          {
+            "dest": "CJS",
+            "trips": 3,
+            "unique_devices": 3,
             "share": 0.0
           }
         ]
@@ -2397,6 +3387,188 @@
           }
         ]
       }
+    },
+    "2025-Q3": {
+      "cross_visit": {
+        "total_trips": 314579,
+        "destinations": [
+          {
+            "dest": "SAT",
+            "trips": 2799,
+            "unique_devices": 2799,
+            "share": 0.0089
+          },
+          {
+            "dest": "AUS",
+            "trips": 2646,
+            "unique_devices": 2646,
+            "share": 0.0084
+          },
+          {
+            "dest": "DAL",
+            "trips": 1923,
+            "unique_devices": 1923,
+            "share": 0.0061
+          },
+          {
+            "dest": "IAH",
+            "trips": 1863,
+            "unique_devices": 1863,
+            "share": 0.0059
+          },
+          {
+            "dest": "ABQ",
+            "trips": 1160,
+            "unique_devices": 1160,
+            "share": 0.0037
+          },
+          {
+            "dest": "HOU",
+            "trips": 998,
+            "unique_devices": 998,
+            "share": 0.0032
+          },
+          {
+            "dest": "ELP",
+            "trips": 964,
+            "unique_devices": 964,
+            "share": 0.0031
+          },
+          {
+            "dest": "LBB",
+            "trips": 769,
+            "unique_devices": 769,
+            "share": 0.0024
+          },
+          {
+            "dest": "MFE",
+            "trips": 679,
+            "unique_devices": 679,
+            "share": 0.0022
+          },
+          {
+            "dest": "MAF",
+            "trips": 609,
+            "unique_devices": 609,
+            "share": 0.0019
+          },
+          {
+            "dest": "AMA",
+            "trips": 586,
+            "unique_devices": 586,
+            "share": 0.0019
+          },
+          {
+            "dest": "CRP",
+            "trips": 425,
+            "unique_devices": 425,
+            "share": 0.0014
+          },
+          {
+            "dest": "HRL",
+            "trips": 215,
+            "unique_devices": 215,
+            "share": 0.0007
+          },
+          {
+            "dest": "CJS",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.0
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "cross_visit": {
+        "total_trips": 407953,
+        "destinations": [
+          {
+            "dest": "SAT",
+            "trips": 4130,
+            "unique_devices": 4130,
+            "share": 0.0101
+          },
+          {
+            "dest": "AUS",
+            "trips": 3874,
+            "unique_devices": 3874,
+            "share": 0.0095
+          },
+          {
+            "dest": "DAL",
+            "trips": 3149,
+            "unique_devices": 3149,
+            "share": 0.0077
+          },
+          {
+            "dest": "IAH",
+            "trips": 2949,
+            "unique_devices": 2949,
+            "share": 0.0072
+          },
+          {
+            "dest": "ABQ",
+            "trips": 1626,
+            "unique_devices": 1626,
+            "share": 0.004
+          },
+          {
+            "dest": "HOU",
+            "trips": 1510,
+            "unique_devices": 1510,
+            "share": 0.0037
+          },
+          {
+            "dest": "ELP",
+            "trips": 1499,
+            "unique_devices": 1499,
+            "share": 0.0037
+          },
+          {
+            "dest": "MFE",
+            "trips": 1276,
+            "unique_devices": 1276,
+            "share": 0.0031
+          },
+          {
+            "dest": "AMA",
+            "trips": 931,
+            "unique_devices": 931,
+            "share": 0.0023
+          },
+          {
+            "dest": "LBB",
+            "trips": 918,
+            "unique_devices": 918,
+            "share": 0.0023
+          },
+          {
+            "dest": "MAF",
+            "trips": 917,
+            "unique_devices": 917,
+            "share": 0.0022
+          },
+          {
+            "dest": "CRP",
+            "trips": 705,
+            "unique_devices": 705,
+            "share": 0.0017
+          },
+          {
+            "dest": "HRL",
+            "trips": 462,
+            "unique_devices": 462,
+            "share": 0.0011
+          },
+          {
+            "dest": "CJS",
+            "trips": 9,
+            "unique_devices": 9,
+            "share": 0.0
+          }
+        ]
+      }
     }
   },
   "ELP": {
@@ -2763,6 +3935,188 @@
           }
         ]
       }
+    },
+    "2025-Q3": {
+      "cross_visit": {
+        "total_trips": 10548,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 964,
+            "unique_devices": 964,
+            "share": 0.0914
+          },
+          {
+            "dest": "DAL",
+            "trips": 596,
+            "unique_devices": 596,
+            "share": 0.0565
+          },
+          {
+            "dest": "HOU",
+            "trips": 369,
+            "unique_devices": 369,
+            "share": 0.035
+          },
+          {
+            "dest": "IAH",
+            "trips": 334,
+            "unique_devices": 334,
+            "share": 0.0317
+          },
+          {
+            "dest": "AUS",
+            "trips": 277,
+            "unique_devices": 277,
+            "share": 0.0263
+          },
+          {
+            "dest": "SAT",
+            "trips": 206,
+            "unique_devices": 206,
+            "share": 0.0195
+          },
+          {
+            "dest": "ABQ",
+            "trips": 35,
+            "unique_devices": 35,
+            "share": 0.0033
+          },
+          {
+            "dest": "LBB",
+            "trips": 16,
+            "unique_devices": 16,
+            "share": 0.0015
+          },
+          {
+            "dest": "MFE",
+            "trips": 15,
+            "unique_devices": 15,
+            "share": 0.0014
+          },
+          {
+            "dest": "CJS",
+            "trips": 13,
+            "unique_devices": 13,
+            "share": 0.0012
+          },
+          {
+            "dest": "HRL",
+            "trips": 13,
+            "unique_devices": 13,
+            "share": 0.0012
+          },
+          {
+            "dest": "MAF",
+            "trips": 10,
+            "unique_devices": 10,
+            "share": 0.0009
+          },
+          {
+            "dest": "CRP",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.0007
+          },
+          {
+            "dest": "AMA",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0003
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "cross_visit": {
+        "total_trips": 15552,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 1499,
+            "unique_devices": 1499,
+            "share": 0.0964
+          },
+          {
+            "dest": "DAL",
+            "trips": 946,
+            "unique_devices": 946,
+            "share": 0.0608
+          },
+          {
+            "dest": "HOU",
+            "trips": 545,
+            "unique_devices": 545,
+            "share": 0.035
+          },
+          {
+            "dest": "AUS",
+            "trips": 485,
+            "unique_devices": 485,
+            "share": 0.0312
+          },
+          {
+            "dest": "IAH",
+            "trips": 424,
+            "unique_devices": 424,
+            "share": 0.0273
+          },
+          {
+            "dest": "SAT",
+            "trips": 302,
+            "unique_devices": 302,
+            "share": 0.0194
+          },
+          {
+            "dest": "ABQ",
+            "trips": 53,
+            "unique_devices": 53,
+            "share": 0.0034
+          },
+          {
+            "dest": "MFE",
+            "trips": 30,
+            "unique_devices": 30,
+            "share": 0.0019
+          },
+          {
+            "dest": "HRL",
+            "trips": 28,
+            "unique_devices": 28,
+            "share": 0.0018
+          },
+          {
+            "dest": "CJS",
+            "trips": 25,
+            "unique_devices": 25,
+            "share": 0.0016
+          },
+          {
+            "dest": "MAF",
+            "trips": 21,
+            "unique_devices": 21,
+            "share": 0.0014
+          },
+          {
+            "dest": "LBB",
+            "trips": 18,
+            "unique_devices": 18,
+            "share": 0.0012
+          },
+          {
+            "dest": "AMA",
+            "trips": 17,
+            "unique_devices": 17,
+            "share": 0.0011
+          },
+          {
+            "dest": "CRP",
+            "trips": 12,
+            "unique_devices": 12,
+            "share": 0.0008
+          }
+        ]
+      }
     }
   },
   "HOU": {
@@ -3123,6 +4477,182 @@
           }
         ]
       }
+    },
+    "2025-Q3": {
+      "cross_visit": {
+        "total_trips": 51993,
+        "destinations": [
+          {
+            "dest": "DAL",
+            "trips": 3031,
+            "unique_devices": 3031,
+            "share": 0.0583
+          },
+          {
+            "dest": "DFW",
+            "trips": 998,
+            "unique_devices": 998,
+            "share": 0.0192
+          },
+          {
+            "dest": "SAT",
+            "trips": 996,
+            "unique_devices": 996,
+            "share": 0.0192
+          },
+          {
+            "dest": "AUS",
+            "trips": 945,
+            "unique_devices": 945,
+            "share": 0.0182
+          },
+          {
+            "dest": "IAH",
+            "trips": 819,
+            "unique_devices": 819,
+            "share": 0.0158
+          },
+          {
+            "dest": "HRL",
+            "trips": 460,
+            "unique_devices": 460,
+            "share": 0.0088
+          },
+          {
+            "dest": "MAF",
+            "trips": 411,
+            "unique_devices": 411,
+            "share": 0.0079
+          },
+          {
+            "dest": "ELP",
+            "trips": 369,
+            "unique_devices": 369,
+            "share": 0.0071
+          },
+          {
+            "dest": "ABQ",
+            "trips": 346,
+            "unique_devices": 346,
+            "share": 0.0067
+          },
+          {
+            "dest": "CRP",
+            "trips": 249,
+            "unique_devices": 249,
+            "share": 0.0048
+          },
+          {
+            "dest": "LBB",
+            "trips": 113,
+            "unique_devices": 113,
+            "share": 0.0022
+          },
+          {
+            "dest": "AMA",
+            "trips": 71,
+            "unique_devices": 71,
+            "share": 0.0014
+          },
+          {
+            "dest": "MFE",
+            "trips": 27,
+            "unique_devices": 27,
+            "share": 0.0005
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "cross_visit": {
+        "total_trips": 77559,
+        "destinations": [
+          {
+            "dest": "DAL",
+            "trips": 4322,
+            "unique_devices": 4322,
+            "share": 0.0557
+          },
+          {
+            "dest": "AUS",
+            "trips": 1527,
+            "unique_devices": 1527,
+            "share": 0.0197
+          },
+          {
+            "dest": "DFW",
+            "trips": 1510,
+            "unique_devices": 1510,
+            "share": 0.0195
+          },
+          {
+            "dest": "SAT",
+            "trips": 1499,
+            "unique_devices": 1499,
+            "share": 0.0193
+          },
+          {
+            "dest": "IAH",
+            "trips": 1277,
+            "unique_devices": 1277,
+            "share": 0.0165
+          },
+          {
+            "dest": "HRL",
+            "trips": 868,
+            "unique_devices": 868,
+            "share": 0.0112
+          },
+          {
+            "dest": "MAF",
+            "trips": 562,
+            "unique_devices": 562,
+            "share": 0.0072
+          },
+          {
+            "dest": "ELP",
+            "trips": 545,
+            "unique_devices": 545,
+            "share": 0.007
+          },
+          {
+            "dest": "ABQ",
+            "trips": 525,
+            "unique_devices": 525,
+            "share": 0.0068
+          },
+          {
+            "dest": "CRP",
+            "trips": 521,
+            "unique_devices": 521,
+            "share": 0.0067
+          },
+          {
+            "dest": "LBB",
+            "trips": 193,
+            "unique_devices": 193,
+            "share": 0.0025
+          },
+          {
+            "dest": "AMA",
+            "trips": 121,
+            "unique_devices": 121,
+            "share": 0.0016
+          },
+          {
+            "dest": "MFE",
+            "trips": 34,
+            "unique_devices": 34,
+            "share": 0.0004
+          },
+          {
+            "dest": "CJS",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0
+          }
+        ]
+      }
     }
   },
   "HRL": {
@@ -3456,6 +4986,176 @@
             "trips": 1,
             "unique_devices": 1,
             "share": 0.0004
+          }
+        ]
+      }
+    },
+    "2025-Q3": {
+      "cross_visit": {
+        "total_trips": 2970,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 460,
+            "unique_devices": 460,
+            "share": 0.1549
+          },
+          {
+            "dest": "DFW",
+            "trips": 215,
+            "unique_devices": 215,
+            "share": 0.0724
+          },
+          {
+            "dest": "IAH",
+            "trips": 198,
+            "unique_devices": 198,
+            "share": 0.0667
+          },
+          {
+            "dest": "DAL",
+            "trips": 126,
+            "unique_devices": 126,
+            "share": 0.0424
+          },
+          {
+            "dest": "AUS",
+            "trips": 108,
+            "unique_devices": 108,
+            "share": 0.0364
+          },
+          {
+            "dest": "MFE",
+            "trips": 48,
+            "unique_devices": 48,
+            "share": 0.0162
+          },
+          {
+            "dest": "SAT",
+            "trips": 17,
+            "unique_devices": 17,
+            "share": 0.0057
+          },
+          {
+            "dest": "ELP",
+            "trips": 13,
+            "unique_devices": 13,
+            "share": 0.0044
+          },
+          {
+            "dest": "ABQ",
+            "trips": 8,
+            "unique_devices": 8,
+            "share": 0.0027
+          },
+          {
+            "dest": "CRP",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.002
+          },
+          {
+            "dest": "MAF",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.002
+          },
+          {
+            "dest": "AMA",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.0017
+          },
+          {
+            "dest": "LBB",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.0017
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "cross_visit": {
+        "total_trips": 6062,
+        "destinations": [
+          {
+            "dest": "HOU",
+            "trips": 868,
+            "unique_devices": 868,
+            "share": 0.1432
+          },
+          {
+            "dest": "DFW",
+            "trips": 462,
+            "unique_devices": 462,
+            "share": 0.0762
+          },
+          {
+            "dest": "IAH",
+            "trips": 360,
+            "unique_devices": 360,
+            "share": 0.0594
+          },
+          {
+            "dest": "AUS",
+            "trips": 245,
+            "unique_devices": 245,
+            "share": 0.0404
+          },
+          {
+            "dest": "DAL",
+            "trips": 184,
+            "unique_devices": 184,
+            "share": 0.0304
+          },
+          {
+            "dest": "MFE",
+            "trips": 86,
+            "unique_devices": 86,
+            "share": 0.0142
+          },
+          {
+            "dest": "SAT",
+            "trips": 36,
+            "unique_devices": 36,
+            "share": 0.0059
+          },
+          {
+            "dest": "ELP",
+            "trips": 28,
+            "unique_devices": 28,
+            "share": 0.0046
+          },
+          {
+            "dest": "MAF",
+            "trips": 21,
+            "unique_devices": 21,
+            "share": 0.0035
+          },
+          {
+            "dest": "LBB",
+            "trips": 16,
+            "unique_devices": 16,
+            "share": 0.0026
+          },
+          {
+            "dest": "ABQ",
+            "trips": 14,
+            "unique_devices": 14,
+            "share": 0.0023
+          },
+          {
+            "dest": "CRP",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.0018
+          },
+          {
+            "dest": "AMA",
+            "trips": 4,
+            "unique_devices": 4,
+            "share": 0.0007
           }
         ]
       }
@@ -3825,6 +5525,188 @@
           }
         ]
       }
+    },
+    "2025-Q3": {
+      "cross_visit": {
+        "total_trips": 104097,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 1863,
+            "unique_devices": 1863,
+            "share": 0.0179
+          },
+          {
+            "dest": "SAT",
+            "trips": 1018,
+            "unique_devices": 1018,
+            "share": 0.0098
+          },
+          {
+            "dest": "AUS",
+            "trips": 1002,
+            "unique_devices": 1002,
+            "share": 0.0096
+          },
+          {
+            "dest": "HOU",
+            "trips": 819,
+            "unique_devices": 819,
+            "share": 0.0079
+          },
+          {
+            "dest": "MFE",
+            "trips": 434,
+            "unique_devices": 434,
+            "share": 0.0042
+          },
+          {
+            "dest": "MAF",
+            "trips": 345,
+            "unique_devices": 345,
+            "share": 0.0033
+          },
+          {
+            "dest": "ELP",
+            "trips": 334,
+            "unique_devices": 334,
+            "share": 0.0032
+          },
+          {
+            "dest": "ABQ",
+            "trips": 293,
+            "unique_devices": 293,
+            "share": 0.0028
+          },
+          {
+            "dest": "DAL",
+            "trips": 275,
+            "unique_devices": 275,
+            "share": 0.0026
+          },
+          {
+            "dest": "CRP",
+            "trips": 244,
+            "unique_devices": 244,
+            "share": 0.0023
+          },
+          {
+            "dest": "LBB",
+            "trips": 211,
+            "unique_devices": 211,
+            "share": 0.002
+          },
+          {
+            "dest": "HRL",
+            "trips": 198,
+            "unique_devices": 198,
+            "share": 0.0019
+          },
+          {
+            "dest": "AMA",
+            "trips": 109,
+            "unique_devices": 109,
+            "share": 0.001
+          },
+          {
+            "dest": "CJS",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "cross_visit": {
+        "total_trips": 147492,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 2949,
+            "unique_devices": 2949,
+            "share": 0.02
+          },
+          {
+            "dest": "SAT",
+            "trips": 1763,
+            "unique_devices": 1763,
+            "share": 0.012
+          },
+          {
+            "dest": "AUS",
+            "trips": 1573,
+            "unique_devices": 1573,
+            "share": 0.0107
+          },
+          {
+            "dest": "HOU",
+            "trips": 1277,
+            "unique_devices": 1277,
+            "share": 0.0087
+          },
+          {
+            "dest": "MFE",
+            "trips": 741,
+            "unique_devices": 741,
+            "share": 0.005
+          },
+          {
+            "dest": "MAF",
+            "trips": 542,
+            "unique_devices": 542,
+            "share": 0.0037
+          },
+          {
+            "dest": "DAL",
+            "trips": 476,
+            "unique_devices": 476,
+            "share": 0.0032
+          },
+          {
+            "dest": "ELP",
+            "trips": 424,
+            "unique_devices": 424,
+            "share": 0.0029
+          },
+          {
+            "dest": "ABQ",
+            "trips": 404,
+            "unique_devices": 404,
+            "share": 0.0027
+          },
+          {
+            "dest": "CRP",
+            "trips": 367,
+            "unique_devices": 367,
+            "share": 0.0025
+          },
+          {
+            "dest": "HRL",
+            "trips": 360,
+            "unique_devices": 360,
+            "share": 0.0024
+          },
+          {
+            "dest": "LBB",
+            "trips": 260,
+            "unique_devices": 260,
+            "share": 0.0018
+          },
+          {
+            "dest": "AMA",
+            "trips": 227,
+            "unique_devices": 227,
+            "share": 0.0015
+          },
+          {
+            "dest": "CJS",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.0
+          }
+        ]
+      }
     }
   },
   "LBB": {
@@ -4176,6 +6058,176 @@
             "trips": 2,
             "unique_devices": 2,
             "share": 0.0003
+          }
+        ]
+      }
+    },
+    "2025-Q3": {
+      "cross_visit": {
+        "total_trips": 5713,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 769,
+            "unique_devices": 769,
+            "share": 0.1346
+          },
+          {
+            "dest": "DAL",
+            "trips": 693,
+            "unique_devices": 693,
+            "share": 0.1213
+          },
+          {
+            "dest": "IAH",
+            "trips": 211,
+            "unique_devices": 211,
+            "share": 0.0369
+          },
+          {
+            "dest": "AUS",
+            "trips": 143,
+            "unique_devices": 143,
+            "share": 0.025
+          },
+          {
+            "dest": "HOU",
+            "trips": 113,
+            "unique_devices": 113,
+            "share": 0.0198
+          },
+          {
+            "dest": "SAT",
+            "trips": 56,
+            "unique_devices": 56,
+            "share": 0.0098
+          },
+          {
+            "dest": "AMA",
+            "trips": 24,
+            "unique_devices": 24,
+            "share": 0.0042
+          },
+          {
+            "dest": "ELP",
+            "trips": 16,
+            "unique_devices": 16,
+            "share": 0.0028
+          },
+          {
+            "dest": "MAF",
+            "trips": 14,
+            "unique_devices": 14,
+            "share": 0.0025
+          },
+          {
+            "dest": "ABQ",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.0012
+          },
+          {
+            "dest": "CRP",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.0012
+          },
+          {
+            "dest": "HRL",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.0009
+          },
+          {
+            "dest": "MFE",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.0009
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "cross_visit": {
+        "total_trips": 6762,
+        "destinations": [
+          {
+            "dest": "DAL",
+            "trips": 957,
+            "unique_devices": 957,
+            "share": 0.1415
+          },
+          {
+            "dest": "DFW",
+            "trips": 918,
+            "unique_devices": 918,
+            "share": 0.1358
+          },
+          {
+            "dest": "IAH",
+            "trips": 260,
+            "unique_devices": 260,
+            "share": 0.0385
+          },
+          {
+            "dest": "AUS",
+            "trips": 214,
+            "unique_devices": 214,
+            "share": 0.0316
+          },
+          {
+            "dest": "HOU",
+            "trips": 193,
+            "unique_devices": 193,
+            "share": 0.0285
+          },
+          {
+            "dest": "SAT",
+            "trips": 61,
+            "unique_devices": 61,
+            "share": 0.009
+          },
+          {
+            "dest": "AMA",
+            "trips": 34,
+            "unique_devices": 34,
+            "share": 0.005
+          },
+          {
+            "dest": "MAF",
+            "trips": 20,
+            "unique_devices": 20,
+            "share": 0.003
+          },
+          {
+            "dest": "ELP",
+            "trips": 18,
+            "unique_devices": 18,
+            "share": 0.0027
+          },
+          {
+            "dest": "HRL",
+            "trips": 16,
+            "unique_devices": 16,
+            "share": 0.0024
+          },
+          {
+            "dest": "ABQ",
+            "trips": 12,
+            "unique_devices": 12,
+            "share": 0.0018
+          },
+          {
+            "dest": "MFE",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.0016
+          },
+          {
+            "dest": "CRP",
+            "trips": 8,
+            "unique_devices": 8,
+            "share": 0.0012
           }
         ]
       }
@@ -4539,6 +6591,182 @@
           }
         ]
       }
+    },
+    "2025-Q3": {
+      "cross_visit": {
+        "total_trips": 5475,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 609,
+            "unique_devices": 609,
+            "share": 0.1112
+          },
+          {
+            "dest": "DAL",
+            "trips": 420,
+            "unique_devices": 420,
+            "share": 0.0767
+          },
+          {
+            "dest": "HOU",
+            "trips": 411,
+            "unique_devices": 411,
+            "share": 0.0751
+          },
+          {
+            "dest": "IAH",
+            "trips": 345,
+            "unique_devices": 345,
+            "share": 0.063
+          },
+          {
+            "dest": "AUS",
+            "trips": 63,
+            "unique_devices": 63,
+            "share": 0.0115
+          },
+          {
+            "dest": "SAT",
+            "trips": 26,
+            "unique_devices": 26,
+            "share": 0.0047
+          },
+          {
+            "dest": "CRP",
+            "trips": 14,
+            "unique_devices": 14,
+            "share": 0.0026
+          },
+          {
+            "dest": "LBB",
+            "trips": 14,
+            "unique_devices": 14,
+            "share": 0.0026
+          },
+          {
+            "dest": "ABQ",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.002
+          },
+          {
+            "dest": "AMA",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.002
+          },
+          {
+            "dest": "ELP",
+            "trips": 10,
+            "unique_devices": 10,
+            "share": 0.0018
+          },
+          {
+            "dest": "MFE",
+            "trips": 8,
+            "unique_devices": 8,
+            "share": 0.0015
+          },
+          {
+            "dest": "HRL",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.0011
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "cross_visit": {
+        "total_trips": 7437,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 917,
+            "unique_devices": 917,
+            "share": 0.1233
+          },
+          {
+            "dest": "DAL",
+            "trips": 730,
+            "unique_devices": 730,
+            "share": 0.0982
+          },
+          {
+            "dest": "HOU",
+            "trips": 562,
+            "unique_devices": 562,
+            "share": 0.0756
+          },
+          {
+            "dest": "IAH",
+            "trips": 542,
+            "unique_devices": 542,
+            "share": 0.0729
+          },
+          {
+            "dest": "AUS",
+            "trips": 76,
+            "unique_devices": 76,
+            "share": 0.0102
+          },
+          {
+            "dest": "SAT",
+            "trips": 41,
+            "unique_devices": 41,
+            "share": 0.0055
+          },
+          {
+            "dest": "ELP",
+            "trips": 21,
+            "unique_devices": 21,
+            "share": 0.0028
+          },
+          {
+            "dest": "HRL",
+            "trips": 21,
+            "unique_devices": 21,
+            "share": 0.0028
+          },
+          {
+            "dest": "LBB",
+            "trips": 20,
+            "unique_devices": 20,
+            "share": 0.0027
+          },
+          {
+            "dest": "MFE",
+            "trips": 19,
+            "unique_devices": 19,
+            "share": 0.0026
+          },
+          {
+            "dest": "AMA",
+            "trips": 17,
+            "unique_devices": 17,
+            "share": 0.0023
+          },
+          {
+            "dest": "CRP",
+            "trips": 14,
+            "unique_devices": 14,
+            "share": 0.0019
+          },
+          {
+            "dest": "ABQ",
+            "trips": 12,
+            "unique_devices": 12,
+            "share": 0.0016
+          },
+          {
+            "dest": "CJS",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0001
+          }
+        ]
+      }
     }
   },
   "MFE": {
@@ -4899,6 +7127,182 @@
           }
         ]
       }
+    },
+    "2025-Q3": {
+      "cross_visit": {
+        "total_trips": 12009,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 679,
+            "unique_devices": 679,
+            "share": 0.0565
+          },
+          {
+            "dest": "IAH",
+            "trips": 434,
+            "unique_devices": 434,
+            "share": 0.0361
+          },
+          {
+            "dest": "AUS",
+            "trips": 54,
+            "unique_devices": 54,
+            "share": 0.0045
+          },
+          {
+            "dest": "HRL",
+            "trips": 48,
+            "unique_devices": 48,
+            "share": 0.004
+          },
+          {
+            "dest": "HOU",
+            "trips": 27,
+            "unique_devices": 27,
+            "share": 0.0022
+          },
+          {
+            "dest": "SAT",
+            "trips": 16,
+            "unique_devices": 16,
+            "share": 0.0013
+          },
+          {
+            "dest": "ELP",
+            "trips": 15,
+            "unique_devices": 15,
+            "share": 0.0012
+          },
+          {
+            "dest": "DAL",
+            "trips": 14,
+            "unique_devices": 14,
+            "share": 0.0012
+          },
+          {
+            "dest": "ABQ",
+            "trips": 10,
+            "unique_devices": 10,
+            "share": 0.0008
+          },
+          {
+            "dest": "MAF",
+            "trips": 8,
+            "unique_devices": 8,
+            "share": 0.0007
+          },
+          {
+            "dest": "CRP",
+            "trips": 6,
+            "unique_devices": 6,
+            "share": 0.0005
+          },
+          {
+            "dest": "LBB",
+            "trips": 5,
+            "unique_devices": 5,
+            "share": 0.0004
+          },
+          {
+            "dest": "AMA",
+            "trips": 3,
+            "unique_devices": 3,
+            "share": 0.0002
+          },
+          {
+            "dest": "CJS",
+            "trips": 1,
+            "unique_devices": 1,
+            "share": 0.0001
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "cross_visit": {
+        "total_trips": 10120,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 1276,
+            "unique_devices": 1276,
+            "share": 0.1261
+          },
+          {
+            "dest": "IAH",
+            "trips": 741,
+            "unique_devices": 741,
+            "share": 0.0732
+          },
+          {
+            "dest": "HRL",
+            "trips": 86,
+            "unique_devices": 86,
+            "share": 0.0085
+          },
+          {
+            "dest": "AUS",
+            "trips": 60,
+            "unique_devices": 60,
+            "share": 0.0059
+          },
+          {
+            "dest": "HOU",
+            "trips": 34,
+            "unique_devices": 34,
+            "share": 0.0034
+          },
+          {
+            "dest": "ELP",
+            "trips": 30,
+            "unique_devices": 30,
+            "share": 0.003
+          },
+          {
+            "dest": "SAT",
+            "trips": 27,
+            "unique_devices": 27,
+            "share": 0.0027
+          },
+          {
+            "dest": "MAF",
+            "trips": 19,
+            "unique_devices": 19,
+            "share": 0.0019
+          },
+          {
+            "dest": "DAL",
+            "trips": 15,
+            "unique_devices": 15,
+            "share": 0.0015
+          },
+          {
+            "dest": "ABQ",
+            "trips": 14,
+            "unique_devices": 14,
+            "share": 0.0014
+          },
+          {
+            "dest": "CRP",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.0011
+          },
+          {
+            "dest": "LBB",
+            "trips": 11,
+            "unique_devices": 11,
+            "share": 0.0011
+          },
+          {
+            "dest": "AMA",
+            "trips": 7,
+            "unique_devices": 7,
+            "share": 0.0007
+          }
+        ]
+      }
     }
   },
   "SAT": {
@@ -5255,6 +7659,188 @@
             "dest": "CJS",
             "trips": 1,
             "unique_devices": 1,
+            "share": 0.0
+          }
+        ]
+      }
+    },
+    "2025-Q3": {
+      "cross_visit": {
+        "total_trips": 37163,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 2799,
+            "unique_devices": 2799,
+            "share": 0.0753
+          },
+          {
+            "dest": "DAL",
+            "trips": 1543,
+            "unique_devices": 1543,
+            "share": 0.0415
+          },
+          {
+            "dest": "IAH",
+            "trips": 1018,
+            "unique_devices": 1018,
+            "share": 0.0274
+          },
+          {
+            "dest": "HOU",
+            "trips": 996,
+            "unique_devices": 996,
+            "share": 0.0268
+          },
+          {
+            "dest": "AUS",
+            "trips": 215,
+            "unique_devices": 215,
+            "share": 0.0058
+          },
+          {
+            "dest": "ELP",
+            "trips": 206,
+            "unique_devices": 206,
+            "share": 0.0055
+          },
+          {
+            "dest": "ABQ",
+            "trips": 109,
+            "unique_devices": 109,
+            "share": 0.0029
+          },
+          {
+            "dest": "LBB",
+            "trips": 56,
+            "unique_devices": 56,
+            "share": 0.0015
+          },
+          {
+            "dest": "AMA",
+            "trips": 34,
+            "unique_devices": 34,
+            "share": 0.0009
+          },
+          {
+            "dest": "MAF",
+            "trips": 26,
+            "unique_devices": 26,
+            "share": 0.0007
+          },
+          {
+            "dest": "HRL",
+            "trips": 17,
+            "unique_devices": 17,
+            "share": 0.0005
+          },
+          {
+            "dest": "MFE",
+            "trips": 16,
+            "unique_devices": 16,
+            "share": 0.0004
+          },
+          {
+            "dest": "CRP",
+            "trips": 13,
+            "unique_devices": 13,
+            "share": 0.0003
+          },
+          {
+            "dest": "CJS",
+            "trips": 2,
+            "unique_devices": 2,
+            "share": 0.0001
+          }
+        ]
+      }
+    },
+    "2025-Q4": {
+      "cross_visit": {
+        "total_trips": 54631,
+        "destinations": [
+          {
+            "dest": "DFW",
+            "trips": 4130,
+            "unique_devices": 4130,
+            "share": 0.0756
+          },
+          {
+            "dest": "DAL",
+            "trips": 2181,
+            "unique_devices": 2181,
+            "share": 0.0399
+          },
+          {
+            "dest": "IAH",
+            "trips": 1763,
+            "unique_devices": 1763,
+            "share": 0.0323
+          },
+          {
+            "dest": "HOU",
+            "trips": 1499,
+            "unique_devices": 1499,
+            "share": 0.0274
+          },
+          {
+            "dest": "AUS",
+            "trips": 340,
+            "unique_devices": 340,
+            "share": 0.0062
+          },
+          {
+            "dest": "ELP",
+            "trips": 302,
+            "unique_devices": 302,
+            "share": 0.0055
+          },
+          {
+            "dest": "ABQ",
+            "trips": 153,
+            "unique_devices": 153,
+            "share": 0.0028
+          },
+          {
+            "dest": "LBB",
+            "trips": 61,
+            "unique_devices": 61,
+            "share": 0.0011
+          },
+          {
+            "dest": "AMA",
+            "trips": 51,
+            "unique_devices": 51,
+            "share": 0.0009
+          },
+          {
+            "dest": "MAF",
+            "trips": 41,
+            "unique_devices": 41,
+            "share": 0.0008
+          },
+          {
+            "dest": "CRP",
+            "trips": 39,
+            "unique_devices": 39,
+            "share": 0.0007
+          },
+          {
+            "dest": "HRL",
+            "trips": 36,
+            "unique_devices": 36,
+            "share": 0.0007
+          },
+          {
+            "dest": "MFE",
+            "trips": 27,
+            "unique_devices": 27,
+            "share": 0.0005
+          },
+          {
+            "dest": "CJS",
+            "trips": 2,
+            "unique_devices": 2,
             "share": 0.0
           }
         ]
